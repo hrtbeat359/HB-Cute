@@ -234,7 +234,7 @@ async def match_command(client, message):
 
         selected = random.sample(members, 3)
 
-        text = f"🎯 **Top 3 Matches for [{user.first_name}](tg://user?id={user.id})** 💘\n\n"
+        text = f"<blockquote>🎯 **𝐓ᴏᴘ 3 𝐌ᴀᴛᴄʜᴇs 𝐅ᴏʀ\n[{user.first_name}](tg://user?id={user.id})** 💘</blockquote>\n"
         for idx, member in enumerate(selected, start=1):
             name = member.first_name or "Unknown"
             uid = member.id
@@ -246,8 +246,8 @@ async def match_command(client, message):
             alert = "💞 **Perfect Couple Alert!** 💞" if percent >= 85 and result_letter in ["L", "S", "M"] else ""
 
             text += (
-                f"{idx}. {tag} → {result['title']} ({percent}%) {emoji_bar(percent)}\n"
-                f"📝 {result['desc']}\n{alert}\n\n"
+                f"<blockquote>{idx}. {tag} → {result['title']} ({percent}%)\n{emoji_bar(percent)}\n"
+                f"📝 {result['desc']}\n{alert}</blockquote>\n"
             )
 
         all_images = [img for res in RESULTS.values() for img in res["images"]]
