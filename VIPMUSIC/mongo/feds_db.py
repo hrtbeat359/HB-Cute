@@ -4,7 +4,7 @@ import pytz
 
 # this expects your project to already provide a `database` module that exposes `dbname`
 # which is the usual pattern in HB-Cute / VIPMUSIC forks.
-from database import dbname
+from VIPMUSIC.mongo import dbname
 from config import OWNER_ID, SUDOERS
 
 # normalize SUDO list from config
