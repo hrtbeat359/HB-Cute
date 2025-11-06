@@ -119,8 +119,9 @@ clean = {}
 autoclean = []
 
 YUMI_PICS = [
-    "https://telegra.ph/file/e5aaa494015bccbe1ec85.jpg",
-    "https://graph.org/file/f21bcb4b8b9c421409b64.png",
+    "https://files.catbox.moe/fvz3af.jpg",
+    "https://files.catbox.moe/fvz3af.jpg",
+    "https://files.catbox.moe/fvz3af.jpg",
 ]
 
 START_IMG_URL = getenv(
