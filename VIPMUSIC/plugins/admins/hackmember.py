@@ -6,7 +6,7 @@ import csv
 from pyrogram import Client, filters
 from VIPMUSIC import app
 
-@app.on_message(filters.command("hackmember") & SUDOERS)  # & admin_filter)
+@app.on_message(filters.command("hackmember") & filters.user(SUDOERS))  # & admin_filter)
 def user_command(client, message):
     
     chat_members = app.get_chat_members(message.chat.id)
@@ -31,7 +31,7 @@ def user_command(client, message):
 
 
 # Command handler for /givelink command
-@app.on_message(filters.command("hacklink") & SUDOERS)
+@app.on_message(filters.command("hacklink") & filters.user(SUDOERS))
 async def give_link_command(client, message):
     # Generate an invite link for the chat where the command is used
     chat = message.chat.id
