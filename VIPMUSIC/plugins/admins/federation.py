@@ -44,7 +44,7 @@ except Exception:
             raise RuntimeError("Could not import `app` and `BOT_ID`. Ensure your bot package exposes them.")
 
 from config import LOG_GROUP_ID, OWNER_ID
-from helper.functions import extract_user, extract_user_and_reason  # adjust path if needed
+from VIPMUSIC.plugins.feds.functions import extract_user, extract_user_and_reason  # adjust path if needed
 from core.decorator.errors import capture_err  # adjust if your project has a different path
 
 __MODULE__ = "Federation"
