@@ -158,10 +158,10 @@ def make_poster(image_url, name1, name2, title_cap, percentage):
         return text.encode("ascii", "ignore").decode("ascii")
     
     draw_centered_text(40, "F L A M E S", font_title)
-    draw_centered_text(170, f"🔥 {name1.title()} ❤️ {name2.title()}", font_text)
-    draw_centered_text(270, f"✨ Result: {title_cap}", font_text)
-    draw_centered_text(360, f"💞 Compatibility: {percentage}%", font_small)
-    draw_centered_text(530, "Made With ❤️ @HeartBeat_Fam", font_fancy)
+    draw_centered_text(170, f"❦ {name1.title()} ♥ {name2.title()}", font_text)
+    draw_centered_text(270, f"★ Result: {title_cap}", font_text)
+    draw_centered_text(360, f"❣ Compatibility: {percentage}%", font_small)
+    draw_centered_text(530, "Made With ♡ @HeartBeat_Fam", font_fancy)
 
     bio = io.BytesIO()
     bio.name = "flames_result.jpg"   
