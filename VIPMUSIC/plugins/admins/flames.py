@@ -118,7 +118,7 @@ def flames_result(name1, name2):
 
 
 # --- CREATE POSTER ---
-async def make_poster(image_url, name1, name2, title, percentage):
+def make_poster(image_url, name1, name2, title, percentage):
     try:
         # Try to download background image
         response = requests.get(image_url, timeout=10)
@@ -134,10 +134,6 @@ async def make_poster(image_url, name1, name2, title, percentage):
     brightness = sum(stat.mean[:3]) / 3
     text_color = "black" if brightness > 130 else "white"
 
-
-    if bg is None:
-        bg = Image.new("RGB", (900, 600), (255, 192, 203))
-
     draw = ImageDraw.Draw(bg)
     try:
         font_title = ImageFont.truetype("VIPMUSIC/assets/DejaVuSans-Bold.ttf", 60)
@@ -146,7 +142,7 @@ async def make_poster(image_url, name1, name2, title, percentage):
     except:
         font_title = font_text = font_small = ImageFont.load_default()
 
-    def center(y, text, font):
+    def draw_centered_text(y, text, font):
         w, h = draw.textsize(text, font=font)
         draw.text(((900 - w) / 2, y), text, fill=text_color, font=font)
 
@@ -157,7 +153,7 @@ async def make_poster(image_url, name1, name2, title, percentage):
     draw_centered_text(530, "˙⋆✮ мᴀᴅᴇ ᴡɪᴛʜ ❤️ 𝐇в-𝐅ᴀᴍ ✮⋆˙") #, font_small)
 
     bio = io.BytesIO()
-    bio.name = "flames_result.jpg"   
+    bio.name = "ANNIEMUSIC/assets/annie/ANNIECP.png" #"flames_result.jpg"   
     bg.save(bio, "JPEG")
     bio.seek(0)
     return bio
