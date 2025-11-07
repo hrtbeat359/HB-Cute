@@ -2,6 +2,7 @@ import asyncio
 import random
 from pyrogram import filters
 from pyrogram.types import Message
+from pyrogram.enums import ChatMemberStatus
 from VIPMUSIC import app
 from config import BANNED_USERS, MENTION_USERNAMES, START_REACTIONS
 from VIPMUSIC.utils.database import mongodb, get_sudoers, add_sudo, remove_sudo
@@ -15,7 +16,6 @@ custom_mentions = set(MENTION_USERNAMES)
 
 # =================== LOAD CUSTOM MENTIONS ===================
 async def load_custom_mentions():
-    """Load mention triggers from database into cache."""
     docs = await COLLECTION.find().to_list(None)
     for doc in docs:
         custom_mentions.add(doc["name"].lower())
@@ -28,20 +28,22 @@ asyncio.get_event_loop().create_task(load_custom_mentions())
 
 # =================== PERMISSION CHECK ===================
 async def is_admin_or_sudo(client, message: Message) -> bool:
-    """Check if the user is admin or in sudoers."""
+    """Check if the user is admin, creator, or in sudoers."""
     sudoers = await get_sudoers()
     user_id = message.from_user.id
 
+    # Sudoers or bot owner
     if user_id in sudoers or user_id == app.id:
         return True
 
+    # Only check in groups or supergroups
     if message.chat.type in ["group", "supergroup"]:
         try:
-            member = await message.chat.get_member(user_id)
-            if member.status in ["administrator", "creator"]:
+            member = await client.get_chat_member(message.chat.id, user_id)
+            if member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR]:
                 return True
         except Exception:
-            pass
+            return False
     return False
 
 
@@ -71,7 +73,7 @@ async def add_reaction_name(client, message: Message):
     )
 
 
-# =================== COMMAND: /reactlist ===================
+# =================== COMMAND: /reactlist (Everyone) ===================
 @app.on_message(filters.command("reactlist") & ~BANNED_USERS)
 async def list_reactions(client, message: Message):
     """Show all active reaction trigger names."""
@@ -104,9 +106,7 @@ async def delete_reaction_name(client, message: Message):
 
     await COLLECTION.delete_one({"name": name_to_del})
     custom_mentions.remove(name_to_del)
-    await message.reply_text(
-        f"🗑 Removed `{name_to_del}` from mention list."
-    )
+    await message.reply_text(f"🗑 Removed `{name_to_del}` from mention list.")
 
 
 # =================== COMMAND: /clearreact ===================
@@ -134,3 +134,4 @@ async def react_on_mentions(client, message: Message):
             await message.react(emoji)
     except Exception as e:
         print(f"[mention_react] Error: {e}")
+        pass
