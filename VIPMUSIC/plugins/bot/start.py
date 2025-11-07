@@ -43,7 +43,7 @@ SPAM_WINDOW_SECONDS = 5
 async def start_pm(client, message: Message, _):
     # ---- Prepare caption safely ----
     try:
-        caption = _["start_2"].format(str(message.from_user.id))
+        caption = _["start_2"].format(str(message.from_user.mention))
     except Exception as e:
         print(f"DEBUG caption format error: {e}")
         caption = str(_["start_2"])
