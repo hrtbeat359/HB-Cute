@@ -173,7 +173,7 @@ def make_poster(image_url, name1, name2, title_cap, percentage):
         draw_centered_text(40, "F L A M E S", font_title)
         draw_centered_text(150, f"{name1.title()} x {name2.title()}\n", font_small)
         draw_centered_text(310, f"{title_cap}", font_text)
-        draw_centered_text(360, f"Compatibility: {percentage}%", font_text)
+        draw_centered_text(350, f"Compatibility: {percentage}%", font_text)
         draw_centered_text(530, "Made By x @HeartBeat_Fam", font_fancy)
 
         # --- Output image ---
@@ -230,11 +230,11 @@ async def flames_command(client, message):
 
         buttons = InlineKeyboardMarkup([
             [
-                InlineKeyboardButton("🔻 ᴛʀʏ ᴀɢᴀɪɴ 🔻", callback_data="flames_retry"),
+                InlineKeyboardButton("🔻ᴛʀʏ ᴀɢᴀɪɴ🔻", callback_data="flames_retry"),
                 #InlineKeyboardButton("🔻 sʜᴀʀᴇ 🔻", switch_inline_query="flames love test"),
             #],
             #[
-                InlineKeyboardButton("🔻 ᴠɪᴇᴡ ᴀʟʟ 🔻", callback_data="flames_list")
+                InlineKeyboardButton("🔻ᴠɪᴇᴡ ᴀʟʟ🔻", callback_data="flames_list")
             ]
         ])
 
