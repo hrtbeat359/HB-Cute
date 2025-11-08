@@ -11,14 +11,14 @@ from pyrogram.enums import ChatType
 # --- FLAMES RESULT CONFIG ---
 RESULTS = {
     "F": {
-        "title": "          💛 𝐅ʀɪᴇɴᴅ𝗌",
+        "title": "💛 𝐅ʀɪᴇɴᴅ𝗌",
         "title_cap": "Friends",
         "desc": "A strong bond filled with laughter, trust, and memories. You two are perfect as friends forever! 🤝",
         "image_url": [""],
         "images": [f"VIPMUSIC/assets/flames/friends/{i}.jpg" for i in range(1, 6)]
     },
     "L": {
-        "title": "            ❤️ 𝐋ᴏᴠᴇ",
+        "title": "❤️ 𝐋ᴏᴠᴇ",
         "title_cap": "Love",
         "desc": "There’s a spark and magic between you both — a true love story is forming! 💞",
         "image_url": [
@@ -29,7 +29,7 @@ RESULTS = {
         "images": [f"VIPMUSIC/assets/flames/love/{i}.jpg" for i in range(1, 6)]
     },
     "A": {
-        "title": "          💖 𝐀ғғᴇᴄᴛɪᴏɴ",
+        "title": "💖 𝐀ғғᴇᴄᴛɪᴏɴ",
         "title_cap": "Affection",
         "desc": "You both care deeply for each other — gentle hearts and pure emotion bloom! 🌸",
         "image_url": [
@@ -40,21 +40,21 @@ RESULTS = {
         "images": [f"VIPMUSIC/assets/flames/affection/{i}.jpg" for i in range(1, 6)]
     },
     "M": {
-        "title": "          💍 𝐌ᴀʀʀɪᴀɢᴇ",
+        "title": "💍 𝐌ᴀʀʀɪᴀɢᴇ",
         "title_cap": "Marriage",
         "desc": "Destiny has already written your names together — a wedding bell symphony awaits! 💫",
         "image_url": [""],
         "images": [f"VIPMUSIC/assets/flames/marriage/{i}.jpg" for i in range(1, 6)]
     },
     "E": {
-        "title": "           💔 𝐄ɴᴇᴍʏ",
+        "title": "💔 𝐄ɴᴇᴍʏ",
         "title_cap": "Enemy",
         "desc": "Clashing energies and fiery tempers — maybe not meant to be this time 😅",
         "image_url": [""],
         "images": [f"VIPMUSIC/assets/flames/enemy/{i}.jpg" for i in range(1, 6)]
     },
     "S": {
-        "title": "          💜 𝐒ɪʙʟɪɴɢ𝗌",
+        "title": "💜 𝐒ɪʙʟɪɴɢ𝗌",
         "title_cap": "Siblings",
         "desc": "You both share a sibling-like connection — teasing, caring, and protective 💫",
         "image_url": [""],
@@ -145,10 +145,10 @@ def make_poster(image_url, name1, name2, title_cap, percentage):
 
         # --- Load fonts ---
         try:
-            font_title = ImageFont.truetype("VIPMUSIC/assets/DejaVuSans-Bold.ttf", 60)
-            font_text = ImageFont.truetype("VIPMUSIC/assets/Rekalgera-Regular.otf", 45)
-            font_small = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 35)
-            font_fancy = ImageFont.truetype("VIPMUSIC/assets/DejaVuSans.ttf", 35)
+            font_title = ImageFont.truetype("VIPMUSIC/assets/Mollani-Regular.ttf", 60)
+            font_text = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 45)
+            font_small = ImageFont.truetype("VIPMUSIC/assets/Bilderberg Italic OTF.otf", 35)
+            font_fancy = ImageFont.truetype("VIPMUSIC/assets/Rostex-Regular.ttf", 35)
         except Exception as e:
             print(f"[FLAMES] Font load failed: {e}")
             font_title = font_text = font_small = font_fancy = ImageFont.load_default()
@@ -171,9 +171,9 @@ def make_poster(image_url, name1, name2, title_cap, percentage):
 
         # --- Draw texts on poster ---
         draw_centered_text(40, "F L A M E S", font_title)
-        draw_centered_text(170, f"{name1.title()} x {name2.title()}", font_text)
-        draw_centered_text(270, f"Result: {title_cap}", font_text)
-        draw_centered_text(360, f"Compatibility: {percentage}%", font_small)
+        draw_centered_text(170, f"{name1.title()} x {name2.title()}\n•••\n", font_small)
+        draw_centered_text(270, f"{title_cap}", font_text)
+        draw_centered_text(360, f"Compatibility: {percentage}%", font_text)
         draw_centered_text(530, "Made By x @HeartBeat_Fam", font_fancy)
 
         # --- Output image ---
