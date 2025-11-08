@@ -1,179 +1,356 @@
 import asyncio
 import random
+import time
+from typing import Set, Tuple, Optional
+
 from pyrogram import filters
-from pyrogram.types import Message
+from pyrogram.types import Message, MessageEntity
 from pyrogram.enums import ChatMemberStatus
 from VIPMUSIC import app
 from config import BANNED_USERS, MENTION_USERNAMES, START_REACTIONS, OWNER_ID
 from VIPMUSIC.utils.database import mongodb, get_sudoers
 
-# --- DB COLLECTION ---
+# ---------------- DB ----------------
 COLLECTION = mongodb["reaction_mentions"]
 
-# --- CACHE ---
-custom_mentions = set(x.lower().lstrip("@") for x in MENTION_USERNAMES)
+# ---------------- CACHES ----------------
+# triggers stored as plain tokens (username without @, words) and "id:<num>" for user-id triggers
+custom_mentions: Set[str] = set(x.lower().lstrip("@") for x in MENTION_USERNAMES)
 
-
-# =================== LOAD CUSTOM MENTIONS ===================
+# ---------------- util load ----------------
 async def load_custom_mentions():
-    docs = await COLLECTION.find().to_list(None)
-    for doc in docs:
-        custom_mentions.add(doc["name"].lower().lstrip("@"))
-    print(f"[Reaction Manager] Loaded {len(custom_mentions)} mention triggers.")
-
+    try:
+        docs = await COLLECTION.find().to_list(None)
+        for doc in docs:
+            name = doc.get("name")
+            if name:
+                custom_mentions.add(str(name).lower().lstrip("@"))
+        print(f"[Reaction Manager] Loaded {len(custom_mentions)} mention triggers.")
+    except Exception as e:
+        print(f"[Reaction Manager] DB load error: {e}")
 
 asyncio.get_event_loop().create_task(load_custom_mentions())
 
 
-# =================== ADMIN CHECK (FINAL FIXED) ===================
-async def is_admin_or_sudo(client, message: Message) -> bool:
-    """Reliable admin/sudo/owner check — handles linked channels & bot permissions."""
+# ---------------- admin helpers ----------------
+async def fetch_admins(client, chat_id: int) -> Set[int]:
+    ids = set()
+    try:
+        async for memb in client.get_chat_members(chat_id, filter="administrators"):
+            if getattr(memb, "user", None):
+                ids.add(memb.user.id)
+    except Exception as e:
+        print(f"[fetch_admins] error fetching admins for {chat_id}: {e}")
+    return ids
 
+
+async def get_chat_and_linked(client, chat_id: int):
+    """Return (chat_obj, linked_chat_id or None) safely."""
+    try:
+        chat = await client.get_chat(chat_id)
+        linked = None
+        # Pyrogram Chat object may have linked_chat or linked_chat_id depending on version
+        if getattr(chat, "linked_chat", None):
+            linked = getattr(chat.linked_chat, "id", None)
+        elif getattr(chat, "linked_chat_id", None):
+            linked = getattr(chat, "linked_chat_id", None)
+        return chat, linked
+    except Exception as e:
+        print(f"[get_chat_and_linked] error for {chat_id}: {e}")
+        return None, None
+
+
+# ---------------- admin check (robust + debug) ----------------
+async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str]]:
+    """
+    Returns (is_admin_bool, debug_string_or_None)
+    debug string is None on success; on failure contains details to help diagnose.
+    """
     if not message.from_user:
-        return False
+        return False, "no from_user on message"
 
     user_id = message.from_user.id
     chat_id = message.chat.id
     chat_type = message.chat.type
 
-    # --- SUDO or OWNER bypass ---
+    # check sudoers/owner
     try:
         sudoers = await get_sudoers()
-    except Exception:
+    except Exception as e:
         sudoers = set()
+        print(f"[is_admin_or_sudo] get_sudoers error: {e}")
+
     if user_id == OWNER_ID or user_id in sudoers:
-        return True
+        return True, None
 
-    # --- Skip for private chats ---
     if chat_type not in ("group", "supergroup"):
-        return False
+        return False, "not a group or supergroup"
 
-    # --- First try direct get_chat_member ---
+    # 1) direct get_chat_member
+    member_info = None
     try:
         member = await client.get_chat_member(chat_id, user_id)
-        if member.status in (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER):
-            return True
+        member_info = member
+        status = getattr(member, "status", None)
+        if status in (ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR):
+            return True, None
     except Exception as e:
-        print(f"[AdminCheck] get_chat_member failed: {e}")
+        # record the exception for debug
+        dm_get_error = f"get_chat_member error: {e}"
+        print(f"[is_admin_or_sudo] get_chat_member exception: {e}")
+    else:
+        dm_get_error = None
 
-    # --- Fallback: fetch full admin list ---
+    # 2) fetch admin list
+    admin_ids = set()
     try:
-        admin_ids = set()
-        async for admin in client.get_chat_members(chat_id, filter="administrators"):
-            if admin and admin.user:
-                admin_ids.add(admin.user.id)
-        if user_id in admin_ids:
-            return True
+        async for adm in client.get_chat_members(chat_id, filter="administrators"):
+            if getattr(adm, "user", None):
+                admin_ids.add(adm.user.id)
     except Exception as e:
-        print(f"[AdminCheck] fallback admin list fetch error: {e}")
+        admin_list_error = f"admin list fetch error: {e}"
+        print(f"[is_admin_or_sudo] admin list fetch exception: {e}")
+    else:
+        admin_list_error = None
 
-    # --- Linked Channel Workaround ---
-    # If the group is linked to a channel, get_chat_member may fail.
-    # We check if the group has a linked_chat_id and if the user is an admin in that channel.
+    if user_id in admin_ids:
+        return True, None
+
+    # 3) linked chat channel check
+    linked_chat_id = None
+    linked_status = None
     try:
-        chat = await client.get_chat(chat_id)
-        if getattr(chat, "linked_chat", None):
-            linked_id = chat.linked_chat.id
+        chat, linked_chat_id = await get_chat_and_linked(client, chat_id)
+        if linked_chat_id:
             try:
-                linked_member = await client.get_chat_member(linked_id, user_id)
-                if linked_member.status in (
-                    ChatMemberStatus.ADMINISTRATOR,
-                    ChatMemberStatus.OWNER,
-                ):
-                    return True
+                linked_member = await client.get_chat_member(linked_chat_id, user_id)
+                linked_status = getattr(linked_member, "status", None)
+                if linked_status in (ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR):
+                    return True, None
             except Exception as e:
-                print(f"[AdminCheck] linked channel check failed: {e}")
+                print(f"[is_admin_or_sudo] linked chat get_chat_member error: {e}")
     except Exception as e:
-        print(f"[AdminCheck] get_chat linked check failed: {e}")
+        print(f"[is_admin_or_sudo] linked chat fetch error: {e}")
 
-    return False
+    # 4) final fallback: check whether bot itself is admin (if bot is not admin, many checks won't work)
+    bot_id = None
+    bot_status = None
+    try:
+        me = await client.get_me()
+        bot_id = me.id
+        try:
+            bot_member = await client.get_chat_member(chat_id, bot_id)
+            bot_status = getattr(bot_member, "status", None)
+        except Exception as e:
+            bot_status = f"get_chat_member failed: {e}"
+    except Exception as e:
+        print(f"[is_admin_or_sudo] get_me failed: {e}")
+
+    # Build debug string
+    debug_lines = []
+    debug_lines.append(f"user_id={user_id}")
+    debug_lines.append(f"user_status_direct={getattr(member_info, 'status', None)}")
+    debug_lines.append(f"dm_get_error={dm_get_error}")
+    debug_lines.append(f"admin_ids_count={len(admin_ids)}")
+    # include a few admin ids sample
+    sample_admins = ",".join(str(x) for x in list(admin_ids)[:10])
+    debug_lines.append(f"admin_ids_sample={sample_admins or 'none'}")
+    debug_lines.append(f"linked_chat_id={linked_chat_id}")
+    debug_lines.append(f"linked_status={linked_status}")
+    debug_lines.append(f"bot_id={bot_id}")
+    debug_lines.append(f"bot_status={bot_status}")
+    debug_lines.append(f"OWNER_ID={OWNER_ID}")
+    if sudoers:
+        debug_lines.append(f"sudoers_sample={','.join(str(x) for x in list(sudoers)[:5])}")
+
+    debug_text = "\n".join(debug_lines)
+    # return False with debug text so caller can report it
+    return False, debug_text
 
 
-# =================== COMMAND: /addreact ===================
+# ---------------- command: /addreact ----------------
 @app.on_message(filters.command("addreact") & ~BANNED_USERS)
 async def add_reaction_name(client, message: Message):
-    """Add a username or keyword to the reaction list."""
-    if not await is_admin_or_sudo(client, message):
-        return await message.reply_text("⚠️ Only admins or sudo users can add reaction names.")
+    """Add a username or keyword to the reaction list. Resolves usernames to ids."""
+    ok, debug = await is_admin_or_sudo(client, message)
+    if not ok:
+        # send debug info to chat (owner/senders will see it) to diagnose why Telegram didn't mark you admin
+        await message.reply_text(
+            "⚠️ Only admins or sudo users can add reaction names.\n\n"
+            "Debug info:\n" + (debug or "no debug"),
+            quote=True,
+        )
+        print("[add_reaction_name] admin check failed:\n" + (debug or "no debug"))
+        return
 
     if len(message.command) < 2:
         return await message.reply_text("Usage: `/addreact <keyword_or_username>`", quote=True)
 
-    name = message.text.split(None, 1)[1].strip().lower().lstrip("@")
+    raw = message.text.split(None, 1)[1].strip()
+    if not raw:
+        return await message.reply_text("Usage: `/addreact <keyword_or_username>`", quote=True)
 
-    if name in custom_mentions:
-        return await message.reply_text(f"✅ `{name}` is already in the mention list!")
+    name = raw.lower().lstrip("@")
 
-    await COLLECTION.insert_one({"name": name})
+    # Try to resolve username to user id (so text_mention entities match)
+    resolved_id = None
+    try:
+        # get_users accepts usernames like "username" or "tg://user?id=123"
+        user = await client.get_users(name)
+        if getattr(user, "id", None):
+            resolved_id = user.id
+    except Exception:
+        # ignore resolve errors; still store text form
+        resolved_id = None
+
+    # store username form
+    try:
+        await COLLECTION.insert_one({"name": name})
+    except Exception as e:
+        print(f"[add_reaction_name] DB insert error (username): {e}")
+
     custom_mentions.add(name)
-    await message.reply_text(f"✨ Added `{name}` to mention reaction list.")
+    # if resolved to an id, also store id form
+    if resolved_id:
+        id_token = f"id:{resolved_id}"
+        try:
+            await COLLECTION.insert_one({"name": id_token})
+        except Exception as e:
+            # duplicate inserts are fine; ignore
+            print(f"[add_reaction_name] DB insert error (id): {e}")
+        custom_mentions.add(id_token)
+
+    added_msg = f"✨ Added `{name}`"
+    if resolved_id:
+        added_msg += f" (resolved id: `{resolved_id}`)"
+    added_msg += " to the mention reaction list."
+    await message.reply_text(added_msg, quote=True)
 
 
-# =================== COMMAND: /delreact ===================
+# ---------------- command: /delreact ----------------
 @app.on_message(filters.command("delreact") & ~BANNED_USERS)
 async def delete_reaction_name(client, message: Message):
-    """Remove a reaction trigger."""
-    if not await is_admin_or_sudo(client, message):
-        return await message.reply_text("⚠️ Only admins or sudo users can delete reaction names.")
+    ok, debug = await is_admin_or_sudo(client, message)
+    if not ok:
+        await message.reply_text(
+            "⚠️ Only admins or sudo users can delete reaction names.\n\nDebug info:\n" + (debug or "no debug"),
+            quote=True,
+        )
+        print("[delete_reaction_name] admin check failed:\n" + (debug or "no debug"))
+        return
 
     if len(message.command) < 2:
-        return await message.reply_text("Usage: `/delreact <keyword_or_username>`")
+        return await message.reply_text("Usage: `/delreact <keyword_or_username>`", quote=True)
 
-    name = message.text.split(None, 1)[1].strip().lower().lstrip("@")
+    raw = message.text.split(None, 1)[1].strip()
+    if not raw:
+        return await message.reply_text("Usage: `/delreact <keyword_or_username>`", quote=True)
 
-    if name not in custom_mentions:
-        return await message.reply_text(f"❌ `{name}` not found in mention list.")
+    name = raw.lower().lstrip("@")
+    removed_any = False
 
-    await COLLECTION.delete_one({"name": name})
-    custom_mentions.remove(name)
-    await message.reply_text(f"🗑 Removed `{name}` from mention list.")
+    # remove username form
+    if name in custom_mentions:
+        custom_mentions.discard(name)
+        try:
+            await COLLECTION.delete_one({"name": name})
+        except Exception as e:
+            print(f"[delete_reaction_name] DB delete error (name): {e}")
+        removed_any = True
+
+    # if it's a username, also try to resolve id and remove id: token
+    try:
+        user = await client.get_users(name)
+        if getattr(user, "id", None):
+            id_token = f"id:{user.id}"
+            if id_token in custom_mentions:
+                custom_mentions.discard(id_token)
+                try:
+                    await COLLECTION.delete_one({"name": id_token})
+                except Exception as e:
+                    print(f"[delete_reaction_name] DB delete error (id): {e}")
+                removed_any = True
+    except Exception:
+        pass
+
+    if removed_any:
+        await message.reply_text(f"🗑 Removed `{name}` from mention list.", quote=True)
+    else:
+        await message.reply_text(f"❌ `{name}` not found in mention list.", quote=True)
 
 
-# =================== COMMAND: /clearreact ===================
-@app.on_message(filters.command("clearreact") & ~BANNED_USERS)
-async def clear_reactions(client, message: Message):
-    """Clear all reaction triggers."""
-    if not await is_admin_or_sudo(client, message):
-        return await message.reply_text("⚠️ Only admins or sudo users can clear reactions.")
-
-    await COLLECTION.delete_many({})
-    custom_mentions.clear()
-    await message.reply_text("🧹 Cleared all custom reaction mentions.")
-
-
-# =================== COMMAND: /reactlist ===================
+# ---------------- command: /reactlist ----------------
 @app.on_message(filters.command("reactlist") & ~BANNED_USERS)
 async def list_reactions(client, message: Message):
-    """Show all active reaction trigger names."""
     if not custom_mentions:
-        return await message.reply_text("ℹ️ No mention triggers found.")
-    msg = "**🧠 Reaction Trigger List:**\n" + "\n".join(f"• `{x}`" for x in sorted(custom_mentions))
-    await message.reply_text(msg)
+        return await message.reply_text("ℹ️ No mention triggers found.", quote=True)
+    items = sorted(custom_mentions)
+    # don't show raw id tokens directly to users; present friendly view
+    display = []
+    for it in items:
+        if it.startswith("id:"):
+            display.append(f"(user id) `{it}`")
+        else:
+            display.append(f"`{it}`")
+    msg = "**🧠 Reaction Trigger List:**\n" + "\n".join(f"• {x}" for x in display)
+    await message.reply_text(msg, quote=True)
 
 
-# =================== REACT ON MENTION ===================
-@app.on_message(filters.text | filters.caption & ~BANNED_USERS)
-async def react_on_mentions(client, message: Message):
-    """Automatically react when a trigger name or @username appears."""
-
-    text = (message.text or message.caption or "").lower()
+# ---------------- helpers: extract entities ----------------
+def extract_usernames_and_ids_from_entities(message: Message) -> Tuple[Set[str], Set[int]]:
+    """Return (usernames_set, user_ids_set) found in message entities (mention + text_mention)."""
+    usernames = set()
+    user_ids = set()
+    text_source = message.text or message.caption or ""
     entities = (message.entities or []) + (message.caption_entities or [])
-
-    # Collect usernames from @mentions and text_mentions
-    mentioned_users = set()
     for ent in entities:
-        if ent.type == "mention":
-            username = (message.text or message.caption)[ent.offset : ent.offset + ent.length]
-            mentioned_users.add(username.lower().lstrip("@"))
-        elif ent.type == "text_mention" and getattr(ent.user, "username", None):
-            mentioned_users.add(ent.user.username.lower())
+        try:
+            if ent.type == "mention":
+                start = ent.offset
+                end = ent.offset + ent.length
+                uname = text_source[start:end].lstrip("@").lower()
+                if uname:
+                    usernames.add(uname)
+            elif ent.type == "text_mention":
+                # text_mention contains .user
+                if getattr(ent, "user", None):
+                    if getattr(ent.user, "username", None):
+                        usernames.add(ent.user.username.lower())
+                    user_ids.add(ent.user.id)
+        except Exception:
+            continue
+    return usernames, user_ids
 
+
+# ---------------- actual reacting logic ----------------
+@app.on_message((filters.text | filters.caption) & ~BANNED_USERS)
+async def react_on_mentions(client, message: Message):
     try:
-        for name in custom_mentions:
-            if name in text or name in mentioned_users:
-                emoji = random.choice(START_REACTIONS)
-                await message.react(emoji)
+        text = (message.text or message.caption or "").lower()
+        usernames, user_ids = extract_usernames_and_ids_from_entities(message)
+
+        # 1) check entity-based username mentions first
+        for uname in usernames:
+            if uname in custom_mentions:
+                await message.react(random.choice(START_REACTIONS))
+                return
+            # also check id token if someone stored the username resolved to id earlier
+            # attempt to resolve to id is not done here (too heavy)
+
+        # 2) check entity-based user ids (text_mention)
+        for uid in user_ids:
+            if f"id:{uid}" in custom_mentions:
+                await message.react(random.choice(START_REACTIONS))
+                return
+
+        # 3) check plain keyword anywhere in combined text
+        for trigger in custom_mentions:
+            # skip id: tokens for text matching
+            if trigger.startswith("id:"):
+                continue
+            if trigger and trigger in text:
+                await message.react(random.choice(START_REACTIONS))
                 return
     except Exception as e:
-        print(f"[mention_react] Error: {e}")
-        pass
+        print(f"[react_on_mentions] error: {e}")
+        return
