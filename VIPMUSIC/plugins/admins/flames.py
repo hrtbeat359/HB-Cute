@@ -16,35 +16,41 @@ RESULTS = {
         "title": "💛 𝐅ʀɪᴇɴᴅ𝗌",
         "title_cap": "Friends",
         "desc": "A strong bond filled with laughter, trust, and memories. You two are perfect as friends forever! 🤝",
+        "image_url" : [ "" ],
         "images": [f"VIPMUSIC/assets/flames/friends/f{random.randint(1,5)}.jpg"]
     },
     "L": {
         "title": "❤️ 𝐋ᴏᴠᴇ",
         "title_cap": "Love",
         "desc": "There’s a spark and magic between you both — a true love story is forming! 💞",
+        "image_url" : [ "" ],
         "images": [f"VIPMUSIC/assets/flames/love/l{random.randint(1,5)}.jpg"]
     },
     "A": {
         "title": "💖 𝐀ғғᴇᴄᴛɪᴏɴ",
         "title_cap": "Affection",
         "desc": "You both care deeply for each other — gentle hearts and pure emotion bloom! 🌸",
+        "image_url" : [ "" ],
         "images": [f"VIPMUSIC/assets/flames/affection/a{random.randint(1,5)}.jpg"]
     },
     "M": {
         "title": "💍 𝐌ᴀʀʀɪᴀɢᴇ",
         "title_cap": "Marriage",
         "desc": "Destiny has already written your names together — a wedding bell symphony awaits! 💫",
+        "image_url" : [ "" ],
         "images": [f"VIPMUSIC/assets/flames/marriage/m{random.randint(1,5)}.jpg"]
     },
     "E": {
         "title": "💔 𝐄ɴᴇᴍʏ",
         "title_cap": "Enemy",
         "desc": "Clashing energies and fiery tempers — maybe not meant to be this time 😅",
+        "image_url" : [ "" ],
         "images": [f"VIPMUSIC/assets/flames/enemy/e{random.randint(1,5)}.jpg"]
     },
     "S": {
         "title": "💜 𝐒ɪʙʟɪɴɢ𝗌",
         "title_cap": "Siblings",
+        "image_url" : [ "" ],
         "desc": "You both share a sibling-like connection — teasing, caring, and protective 💫",
         "images": [f"VIPMUSIC/assets/flames/siblings/s{random.randint(1,5)}.jpg"]
     }
