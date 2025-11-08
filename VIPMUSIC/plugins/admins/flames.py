@@ -146,7 +146,7 @@ def draw_result(image, title_cap, desc, percent, name1=None, name2=None):
 
     # --- NAMES ---
     if name1 and name2:
-        names_text = f"{name1.title()} ❤ {name2.title()}"
+        names_text = f"{name1.title()} x {name2.title()}"
         shadowed_text((W - draw.textlength(names_text, font=font_name)) / 2, H * 0.25, names_text, font_name)
 
     # --- TITLE (Result Type) ---
@@ -160,7 +160,7 @@ def draw_result(image, title_cap, desc, percent, name1=None, name2=None):
     shadowed_text((W - draw.textlength(desc, font=font_small)) / 2, H * 0.64, desc, font_small)
 
     # --- FOOTER ---
-    footer = "Made With ❤ @HeartBeat_Fam"
+    footer = "Made With x @HeartBeat_Fam"
     shadowed_text((W - draw.textlength(footer, font=font_bottom)) / 2, H * 0.86, footer, font_bottom)
 
     return image
