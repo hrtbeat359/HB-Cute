@@ -1,17 +1,19 @@
 import asyncio
 import random
+import time
 from pyrogram import filters
 from pyrogram.types import Message
 from pyrogram.enums import ChatMemberStatus
 from VIPMUSIC import app
-from config import BANNED_USERS, MENTION_USERNAMES, START_REACTIONS
-from VIPMUSIC.utils.database import mongodb, get_sudoers, add_sudo, remove_sudo
+from config import BANNED_USERS, MENTION_USERNAMES, START_REACTIONS, OWNER_ID
+from VIPMUSIC.utils.database import mongodb, get_sudoers
 
 # =================== DATABASE COLLECTION ===================
 COLLECTION = mongodb["reaction_mentions"]
 
 # =================== CACHE ===================
 custom_mentions = set(MENTION_USERNAMES)
+admin_cache = {}  # {chat_id: {"admins": set(), "time": float}}
 
 
 # =================== LOAD CUSTOM MENTIONS ===================
@@ -22,55 +24,62 @@ async def load_custom_mentions():
     print(f"[Reaction Manager] Loaded {len(custom_mentions)} mention triggers.")
 
 
-# Auto-load once when bot starts
+# Auto-load on startup
 asyncio.get_event_loop().create_task(load_custom_mentions())
+
+
+# =================== ADMIN CACHE SYSTEM ===================
+async def get_admins(client, chat_id: int):
+    """Fetch or return cached admin list (cached for 10 minutes)."""
+    now = time.time()
+    if chat_id in admin_cache and (now - admin_cache[chat_id]["time"]) < 600:
+        return admin_cache[chat_id]["admins"]
+
+    try:
+        admins = set()
+        async for member in client.get_chat_members(chat_id, filter="administrators"):
+            admins.add(member.user.id)
+        admin_cache[chat_id] = {"admins": admins, "time": now}
+        return admins
+    except Exception as e:
+        print(f"[AdminCache] Error: {e}")
+        return set()
 
 
 # =================== PERMISSION CHECK ===================
 async def is_admin_or_sudo(client, message: Message) -> bool:
-    """Check if the user is admin, creator, or in sudoers."""
-    sudoers = await get_sudoers()
+    """Check if user is admin, owner, or sudo."""
     user_id = message.from_user.id
+    sudoers = await get_sudoers()
 
-    # Sudoers or bot owner
-    if user_id in sudoers or user_id == app.id:
+    if user_id == OWNER_ID or user_id in sudoers:
         return True
 
-    # Only check in groups or supergroups
-    if message.chat.type in ["group", "supergroup"]:
-        try:
-            member = await client.get_chat_member(message.chat.id, user_id)
-            if member.status in [ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR]:
-                return True
-        except Exception:
-            return False
-    return False
+    if message.chat.type not in ["group", "supergroup"]:
+        return False
+
+    admins = await get_admins(client, message.chat.id)
+    return user_id in admins
 
 
 # =================== COMMAND: /addreact ===================
 @app.on_message(filters.command("addreact") & ~BANNED_USERS)
 async def add_reaction_name(client, message: Message):
-    """Add a username or keyword to the reaction list."""
+    """Add a new reaction keyword."""
     if not await is_admin_or_sudo(client, message):
-        return await message.reply_text(
-            "⚠️ Only admins or sudo users can add reaction names."
-        )
+        return await message.reply_text("⚠️ Only admins or sudo users can add reaction names.")
 
     if len(message.command) < 2:
-        return await message.reply_text("Usage: `/addreact <name>`", quote=True)
+        return await message.reply_text("Usage: `/addreact <keyword>`", quote=True)
 
     name_to_add = message.text.split(None, 1)[1].strip().lower()
 
     if name_to_add in custom_mentions:
-        return await message.reply_text(
-            f"✅ `{name_to_add}` is already in the mention list!"
-        )
+        return await message.reply_text(f"✅ `{name_to_add}` is already in the mention list!")
 
     await COLLECTION.insert_one({"name": name_to_add})
     custom_mentions.add(name_to_add)
-    await message.reply_text(
-        f"✨ Added `{name_to_add}` to mention reaction list."
-    )
+    await message.reply_text(f"✨ Added `{name_to_add}` to the mention reaction list.")
 
 
 # =================== COMMAND: /reactlist (Everyone) ===================
@@ -78,7 +87,7 @@ async def add_reaction_name(client, message: Message):
 async def list_reactions(client, message: Message):
     """Show all active reaction trigger names."""
     if not custom_mentions:
-        return await message.reply_text("ℹ️ No mention triggers found.")
+        return await message.reply_text("ℹ️ No mention triggers found yet.")
 
     msg = "**🧠 Reaction Trigger List:**\n"
     msg += "\n".join([f"• `{x}`" for x in sorted(custom_mentions)])
@@ -90,19 +99,15 @@ async def list_reactions(client, message: Message):
 async def delete_reaction_name(client, message: Message):
     """Remove a reaction trigger."""
     if not await is_admin_or_sudo(client, message):
-        return await message.reply_text(
-            "⚠️ Only admins or sudo users can delete reaction names."
-        )
+        return await message.reply_text("⚠️ Only admins or sudo users can delete reaction names.")
 
     if len(message.command) < 2:
-        return await message.reply_text("Usage: `/delreact <name>`")
+        return await message.reply_text("Usage: `/delreact <keyword>`")
 
     name_to_del = message.text.split(None, 1)[1].strip().lower()
 
     if name_to_del not in custom_mentions:
-        return await message.reply_text(
-            f"❌ `{name_to_del}` not found in mention list."
-        )
+        return await message.reply_text(f"❌ `{name_to_del}` not found in mention list.")
 
     await COLLECTION.delete_one({"name": name_to_del})
     custom_mentions.remove(name_to_del)
@@ -114,9 +119,7 @@ async def delete_reaction_name(client, message: Message):
 async def clear_reactions(client, message: Message):
     """Clear all reaction triggers."""
     if not await is_admin_or_sudo(client, message):
-        return await message.reply_text(
-            "⚠️ Only admins or sudo users can clear reactions."
-        )
+        return await message.reply_text("⚠️ Only admins or sudo users can clear reactions.")
 
     await COLLECTION.delete_many({})
     custom_mentions.clear()
@@ -124,14 +127,25 @@ async def clear_reactions(client, message: Message):
 
 
 # =================== REACT ON MENTION ===================
-@app.on_message(filters.text & ~BANNED_USERS)
+@app.on_message((filters.text | filters.caption) & ~BANNED_USERS)
 async def react_on_mentions(client, message: Message):
-    """Automatically react with emoji when a trigger name is mentioned."""
-    text = message.text.lower()
+    """Automatically react when a trigger is found in text, caption, or usernames."""
+    text = ""
+    if message.text:
+        text += message.text.lower()
+    if message.caption:
+        text += " " + message.caption.lower()
+    if message.entities:
+        for ent in message.entities:
+            if ent.type == "mention" and message.text:
+                text += " " + message.text[ent.offset:ent.offset + ent.length].lower()
+
     try:
-        if any(name in text for name in custom_mentions):
-            emoji = random.choice(START_REACTIONS)
-            await message.react(emoji)
+        for name in custom_mentions:
+            if name in text:
+                emoji = random.choice(START_REACTIONS)
+                await message.react(emoji)
+                break
     except Exception as e:
         print(f"[mention_react] Error: {e}")
         pass
