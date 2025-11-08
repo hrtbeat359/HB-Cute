@@ -25,6 +25,7 @@ VALID_REACTIONS = {
 }
 SAFE_REACTIONS = [e for e in START_REACTIONS if e in VALID_REACTIONS] or list(VALID_REACTIONS)
 
+
 # -------------------- UTILITIES --------------------
 async def load_reaction_chats():
     """Load enabled chats from DB."""
@@ -40,6 +41,7 @@ async def load_reaction_chats():
 
 asyncio.get_event_loop().create_task(load_reaction_chats())
 
+
 def next_emoji(chat_id: int) -> str:
     """Return a random non-repeating emoji per chat."""
     if chat_id not in chat_used_reactions:
@@ -53,6 +55,7 @@ def next_emoji(chat_id: int) -> str:
     emoji = random.choice(remaining)
     used.add(emoji)
     return emoji
+
 
 # -------------------- ADMIN CHECK --------------------
 async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str]]:
@@ -83,35 +86,65 @@ async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str
     except Exception as e:
         return False, str(e)
 
+
 # -------------------- COMMAND: /reaction --------------------
-@app.on_message(filters.command("reaction") & filters.group & ~BANNED_USERS)
+@app.on_message(filters.command(["reaction", "Reaction", "REACTION"]) & ~BANNED_USERS)
 async def toggle_reaction(client, message: Message):
     """Enable or disable reaction bot in this chat."""
+    if not message.from_user:
+        return
+
+    chat_id = message.chat.id
+    chat_type = getattr(message.chat, "type", None)
+    if chat_type not in (ChatType.GROUP, ChatType.SUPERGROUP):
+        return await message.reply_text("❌ This command works only in groups/supergroups.", quote=True)
+
+    args = message.text.split(maxsplit=1)
+
+    # No argument → show current status
+    if len(args) < 2:
+        status = "✅ ON" if chat_id in reaction_enabled_chats else "❌ OFF"
+        return await message.reply_text(
+            f"🤖 **Reaction Bot Status:** `{status}`\n\nUse `/reaction on` or `/reaction off`",
+            quote=True,
+        )
+
+    action = args[1].strip().lower()
+
     ok, debug = await is_admin_or_sudo(client, message)
     if not ok:
         return await message.reply_text(
-            f"⚠️ Only admins, owner, or sudo users can toggle reactions.\n\nDebug: {debug or 'unknown'}"
+            f"⚠️ Only admins, owner, or sudo users can toggle reactions.\n\nDebug: {debug or 'unknown'}",
+            quote=True,
         )
 
-    if len(message.command) < 2:
-        return await message.reply_text("Usage: `/reaction on` or `/reaction off`")
-
-    action = message.command[1].lower()
-    chat_id = message.chat.id
-
+    # Toggle ON
     if action == "on":
-        await COLLECTION.update_one({"chat_id": chat_id}, {"$set": {"chat_id": chat_id}}, upsert=True)
-        reaction_enabled_chats.add(chat_id)
-        await message.reply_text("✅ **Reaction Bot enabled** for this chat.")
-    elif action == "off":
-        await COLLECTION.delete_one({"chat_id": chat_id})
-        reaction_enabled_chats.discard(chat_id)
-        await message.reply_text("🚫 **Reaction Bot disabled** for this chat.")
-    else:
-        await message.reply_text("Usage: `/reaction on` or `/reaction off`")
+        try:
+            await COLLECTION.update_one({"chat_id": chat_id}, {"$set": {"chat_id": chat_id}}, upsert=True)
+            reaction_enabled_chats.add(chat_id)
+            return await message.reply_text("❤️ Reaction Bot **enabled** for this chat!", quote=True)
+        except Exception as e:
+            return await message.reply_text(f"❌ DB Error: {e}", quote=True)
 
-# -------------------- REACT TO MESSAGES --------------------
-@app.on_message(filters.text & filters.group & ~BANNED_USERS)
+    # Toggle OFF
+    elif action == "off":
+        try:
+            await COLLECTION.delete_one({"chat_id": chat_id})
+            reaction_enabled_chats.discard(chat_id)
+            return await message.reply_text("💤 Reaction Bot **disabled** for this chat!", quote=True)
+        except Exception as e:
+            return await message.reply_text(f"❌ DB Error: {e}", quote=True)
+
+    else:
+        return await message.reply_text("Usage: `/reaction on` or `/reaction off`", quote=True)
+
+
+# -------------------- AUTO REACT --------------------
+@app.on_message(
+    filters.group & ~BANNED_USERS &
+    (filters.text | filters.sticker | filters.photo | filters.video | filters.document)
+)
 async def auto_react(client, message: Message):
     """React automatically if enabled and globally allowed."""
     if not REACTION_BOT:
@@ -119,7 +152,7 @@ async def auto_react(client, message: Message):
     chat_id = message.chat.id
     if chat_id not in reaction_enabled_chats:
         return
-    if message.text.startswith("/"):
+    if message.text and message.text.startswith("/"):
         return
     try:
         emoji = next_emoji(chat_id)
