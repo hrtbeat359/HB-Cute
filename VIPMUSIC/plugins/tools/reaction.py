@@ -176,7 +176,7 @@ async def list_reactions(client, message: Message):
         return await message.reply_text("ℹ️ No mention triggers found.")
 
     text = "\n".join(f"• `{m}`" for m in sorted(custom_mentions))
-    await message.reply_text(f"**💥 Reaction Triggers:**\n{text}")
+    await message.reply_text(f"**🧠 Reaction Triggers:**\n{text}")
 
 # ---------------- /clearreact ----------------
 @app.on_message(filters.command("clearreact") & ~BANNED_USERS)
@@ -195,6 +195,10 @@ async def clear_reactions(client, message: Message):
 @app.on_message((filters.text | filters.caption) & ~BANNED_USERS)
 async def react_on_mentions(client, message: Message):
     try:
+        # Skip bot commands like /addreact, /delreact, etc.
+        if message.text and message.text.startswith("/"):
+            return
+
         text = (message.text or message.caption or "").lower()
         entities = (message.entities or []) + (message.caption_entities or [])
         usernames, user_ids = set(), set()
@@ -209,37 +213,46 @@ async def react_on_mentions(client, message: Message):
                 if ent.user.username:
                     usernames.add(ent.user.username.lower())
 
+        reacted = False
+
         # 1️⃣ Entity-based mention detection
         for uname in usernames:
             if uname in custom_mentions or f"@{uname}" in text:
                 emoji = next_emoji()
                 try:
                     await message.react(emoji)
+                    print(f"[Reaction] Reacted with {emoji} for @{uname}")
                 except Exception:
-                    await message.react(emoji)
-                return
+                    await message.react("❤️")
+                reacted = True
+                break
 
         # 2️⃣ ID-based detection
-        for uid in user_ids:
-            if f"id:{uid}" in custom_mentions:
-                emoji = next_emoji()
-                try:
-                    await message.react(emoji)
-                except Exception:
-                    await message.react(emoji)
-                return
+        if not reacted:
+            for uid in user_ids:
+                if f"id:{uid}" in custom_mentions:
+                    emoji = next_emoji()
+                    try:
+                        await message.react(emoji)
+                        print(f"[Reaction] Reacted with {emoji} for id:{uid}")
+                    except Exception:
+                        await message.react("❤️")
+                    reacted = True
+                    break
 
         # 3️⃣ Keyword match fallback
-        for trig in custom_mentions:
-            if trig.startswith("id:"):
-                continue
-            if trig in text or f"@{trig}" in text:
-                emoji = next_emoji()
-                try:
-                    await message.react(emoji)
-                except Exception:
-                    await message.react(emoji)
-                return
+        if not reacted:
+            for trig in custom_mentions:
+                if trig.startswith("id:"):
+                    continue
+                if trig in text or f"@{trig}" in text:
+                    emoji = next_emoji()
+                    try:
+                        await message.react(emoji)
+                        print(f"[Reaction] Reacted with {emoji} for trigger '{trig}'")
+                    except Exception:
+                        await message.react("❤️")
+                    break
 
     except Exception as e:
         print(f"[react_on_mentions] error: {e}")
