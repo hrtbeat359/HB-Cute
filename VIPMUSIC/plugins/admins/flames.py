@@ -14,7 +14,13 @@ RESULTS = {
         "title": "💛 𝐅ʀɪᴇɴᴅ𝗌",
         "title_cap": "Friends",
         "desc": "A strong bond filled with laughter, trust, and memories. You two are perfect as friends forever! 🤝",
-        "image_url": [""],
+        "image_url": [
+            "https://files.catbox.moe/cvstcx.jpg",
+            "https://files.catbox.moe/boonda.jpg",
+            "https://files.catbox.moe/fwppcq.jpg",
+            "https://files.catbox.moe/xq3j81.jpg",
+            "https://files.catbox.moe/iqqef4.jpg"
+        ],
         "images": [f"VIPMUSIC/assets/flames/friends/{i}.jpg" for i in range(1, 6)]
     },
     "L": {
@@ -55,7 +61,13 @@ RESULTS = {
         "title": "💔 𝐄ɴᴇᴍʏ",
         "title_cap": "Enemy",
         "desc": "Clashing energies and fiery tempers — maybe not meant to be this time 😅",
-        "image_url": [""],
+        "image_url": [
+            "https://files.catbox.moe/otx3hc.jpg",
+            "https://files.catbox.moe/s1fz6q.jpg",
+            "https://files.catbox.moe/rfqnd4.jpg",
+            "https://files.catbox.moe/7yz7mr.jpg",
+            "https://files.catbox.moe/gub3ue.jpg"
+        ],
         "images": [f"VIPMUSIC/assets/flames/enemy/{i}.jpg" for i in range(1, 6)]
     },
     "S": {
