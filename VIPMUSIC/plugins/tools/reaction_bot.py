@@ -1,147 +1,81 @@
-import random
-from pyrogram import Client, filters
+# VIPMUSIC/plugins/tools/reaction_bot.py
+from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from VIPMUSIC import app
-from VIPMUSIC.utils.databases.reactiondb import is_reaction_on, reaction_on, reaction_off
-from VIPMUSIC.misc import SUDOERS
-from config import OWNER_ID, START_REACTIONS
+from VIPMUSIC.utils.databases import reactiondb
+import config
 
+print("[ReactionBot] Plugin loaded!")
 
-print("[ReactionBot] Diagnostic plugin loaded!")
-
-
-async def is_admin_or_sudo(client, message):
-    if message.from_user is None:
-        return False
-    uid = message.from_user.id
-    if uid == OWNER_ID or uid in SUDOERS:
+# --- Helper to check if user can manage reactions ---
+async def can_manage(user_id: int, chat_id: int):
+    if user_id == config.OWNER_ID or user_id in map(int, config.SUDOERS):
         return True
-    try:
-        member = await message.chat.get_member(uid)
-        return member.status in ("administrator", "creator")
-    except Exception as e:
-        print(f"[ReactionBot] Admin check error: {e}")
-        return False
+    member = await app.get_chat_member(chat_id, user_id)
+    if member.status in ["administrator", "creator"]:
+        return True
+    return False
 
+# --- /reactionon Command ---
+@app.on_message(filters.command("reactionon", prefixes="/") & (filters.group | filters.supergroup))
+async def reaction_on_cmd(_, message):
+    if not await can_manage(message.from_user.id, message.chat.id):
+        await message.reply_text("❌ You are not allowed to use this command!")
+        return
 
-def reaction_buttons(status):
-    if status:
-        text = "✅ Reaction is currently *Enabled*"
-        btn = [[InlineKeyboardButton("🛑 Disable", callback_data="reaction_disable")]]
+    await reactiondb.reaction_on(message.chat.id)
+    await message.reply_text("✅ Reactions enabled for this group!")
+
+# --- /reactionoff Command ---
+@app.on_message(filters.command("reactionoff", prefixes="/") & (filters.group | filters.supergroup))
+async def reaction_off_cmd(_, message):
+    if not await can_manage(message.from_user.id, message.chat.id):
+        await message.reply_text("❌ You are not allowed to use this command!")
+        return
+
+    await reactiondb.reaction_off(message.chat.id)
+    await message.reply_text("❌ Reactions disabled for this group!")
+
+# --- /reaction Command (buttons) ---
+@app.on_message(filters.command("reaction", prefixes="/") & (filters.group | filters.supergroup))
+async def reaction_button_cmd(_, message):
+    if not await can_manage(message.from_user.id, message.chat.id):
+        await message.reply_text("❌ You are not allowed to use this command!")
+        return
+
+    # Check current status
+    status = await reactiondb.is_reaction_on(message.chat.id)
+    kb = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("✅ Enable", callback_data="reaction_enable"),
+                InlineKeyboardButton("❌ Disable", callback_data="reaction_disable")
+            ]
+        ]
+    )
+    text = f"Reactions are currently **{'Enabled' if status else 'Disabled'}**"
+    await message.reply_text(text, reply_markup=kb)
+
+# --- Callback for Buttons ---
+@app.on_callback_query(filters.regex(r"^reaction_(enable|disable)$"))
+async def reaction_callback(_, query):
+    user_id = query.from_user.id
+    chat_id = query.message.chat.id
+
+    if not await can_manage(user_id, chat_id):
+        await query.answer("❌ You are not allowed to do this!", show_alert=True)
+        return
+
+    action = query.data.split("_")[1]
+    if action == "enable":
+        await reactiondb.reaction_on(chat_id)
+        await query.message.edit_text("✅ Reactions enabled!", reply_markup=None)
     else:
-        text = "❌ Reaction is currently *Disabled*"
-        btn = [[InlineKeyboardButton("✅ Enable", callback_data="reaction_enable")]]
-    return text, InlineKeyboardMarkup(btn)
+        await reactiondb.reaction_off(chat_id)
+        await query.message.edit_text("❌ Reactions disabled!", reply_markup=None)
 
-
-# ------------------------------------------------------------
-# GLOBAL MESSAGE LOGGER
-# ------------------------------------------------------------
-@app.on_message(filters.group)
-async def all_message_logger(_, message):
-    try:
-        if message.text:
-            print(f"[ReactionBot] MSG: {message.text}")
-        else:
-            print(f"[ReactionBot] MSG: (non-text)")
-    except Exception as e:
-        print(f"[ReactionBot] all_message_logger error: {e}")
-
-
-# ------------------------------------------------------------
-# COMMANDS
-# ------------------------------------------------------------
-@app.on_message(filters.command(["reactionon"], prefixes=["/", "!", "."]) & filters.group)
-async def cmd_on(client, message):
-    print("[ReactionBot] /reactionon triggered")
-    try:
-        if not await is_admin_or_sudo(client, message):
-            print("[ReactionBot] Not admin or sudo.")
-            return await message.reply_text("🚫 Permission denied.")
-        await reaction_on(message.chat.id)
-        await message.reply_text("✅ Reaction enabled for this group.")
-        print("[ReactionBot] Reaction turned ON.")
-    except Exception as e:
-        print(f"[ReactionBot ERROR /reactionon]: {e}")
-
-
-@app.on_message(filters.command(["reactionoff"], prefixes=["/", "!", "."]) & filters.group)
-async def cmd_off(client, message):
-    print("[ReactionBot] /reactionoff triggered")
-    try:
-        if not await is_admin_or_sudo(client, message):
-            print("[ReactionBot] Not admin or sudo.")
-            return await message.reply_text("🚫 Permission denied.")
-        await reaction_off(message.chat.id)
-        await message.reply_text("🛑 Reaction disabled for this group.")
-        print("[ReactionBot] Reaction turned OFF.")
-    except Exception as e:
-        print(f"[ReactionBot ERROR /reactionoff]: {e}")
-
-
-@app.on_message(filters.command(["reaction"], prefixes=["/", "!", "."]) & filters.group)
-async def cmd_status(client, message):
-    print("[ReactionBot] /reaction triggered")
-    try:
-        if not await is_admin_or_sudo(client, message):
-            print("[ReactionBot] Not admin or sudo.")
-            return await message.reply_text("🚫 Permission denied.")
-
-        status = await is_reaction_on(message.chat.id)
-        text, keyboard = reaction_buttons(status)
-        await message.reply_text(text, reply_markup=keyboard)
-        print(f"[ReactionBot] Sent status message (Enabled={status})")
-    except Exception as e:
-        print(f"[ReactionBot ERROR /reaction]: {e}")
-
-
-@app.on_callback_query(filters.regex("^reaction_"))
-async def callback_handler(client, cq):
-    print(f"[ReactionBot] Callback: {cq.data} by {cq.from_user.id}")
-    try:
-        uid = cq.from_user.id
-        member = await cq.message.chat.get_member(uid)
-        if (
-            uid != OWNER_ID
-            and uid not in SUDOERS
-            and member.status not in ("administrator", "creator")
-        ):
-            return await cq.answer("🚫 Not allowed.", show_alert=True)
-
-        if cq.data == "reaction_enable":
-            await reaction_on(cq.message.chat.id)
-            text, kb = reaction_buttons(True)
-            await cq.message.edit_text(text, reply_markup=kb)
-            await cq.answer("✅ Reaction enabled!")
-
-        elif cq.data == "reaction_disable":
-            await reaction_off(cq.message.chat.id)
-            text, kb = reaction_buttons(False)
-            await cq.message.edit_text(text, reply_markup=kb)
-            await cq.answer("🛑 Reaction disabled!")
-
-    except Exception as e:
-        print(f"[ReactionBot ERROR callback]: {e}")
-
-
-# ------------------------------------------------------------
-# REACTION LISTENER
-# ------------------------------------------------------------
-@app.on_message((filters.text | filters.caption) & filters.group)
-async def react_listener(client, message):
-    try:
-        status = await is_reaction_on(message.chat.id)
-        if not status:
-            return
-        if message.text and message.text.startswith(("/", "!", ".")):
-            return
-        emoji = random.choice(START_REACTIONS)
-        await message.react(emoji)
-    except Exception as e:
-        print(f"[ReactionBot ERROR react_listener]: {e}")
-
-
-@app.on_message(filters.command("reactiontest") & filters.group)
-async def test(_, message):
+# --- Test command ---
+@app.on_message(filters.command("reactiontest", prefixes="/") & (filters.group | filters.supergroup))
+async def test_react_cmd(_, message):
     print("[ReactionBot] /reactiontest command triggered!")
     await message.reply_text("✅ Reaction test command works!")
