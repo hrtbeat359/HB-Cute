@@ -1,7 +1,8 @@
 import asyncio
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from VIPMUSIC import app, REACTION_BOT
+from VIPMUSIC import app
+from config import REACTION_BOT
 from VIPMUSIC.utils.database import get_sudoers
 from VIPMUSIC.utils.database.reactiondb import (
     get_reaction_status,
