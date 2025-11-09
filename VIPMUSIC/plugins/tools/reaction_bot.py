@@ -5,8 +5,8 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from VIPMUSIC import app
 from config import BANNED_USERS, OWNER_ID, START_REACTIONS, REACTION_BOT
-from VIPMUSIC.utils.database import get_reaction_status, set_reaction_status
-from VIPMUSIC.utils.database import load_reaction_data
+from VIPMUSIC.utils.databases import get_reaction_status, set_reaction_status
+from VIPMUSIC.utils.databases import load_reaction_data
 
 # Maintain separate emoji rotation per chat
 chat_emoji_cycle = {}
