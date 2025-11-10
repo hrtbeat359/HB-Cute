@@ -6,6 +6,7 @@ from pyrogram.types import Message
 from VIPMUSIC.utils.vip_ban import admin_filter
 from VIPMUSIC import app
 
+print("[purge] purge, spurge")
 
 @app.on_message(filters.command("purge") & admin_filter)
 async def purge(app: app, msg: Message):
