@@ -3,6 +3,7 @@ from youtubesearchpython.__future__ import VideosSearch
 
 from VIPMUSIC import app
 
+print("[get_thumb] getthumb")
 # Command handler for /getthumbnail
 @app.on_message(filters.command("getthumb", prefixes="/"))
 async def get_thumbnail_command(client, message):
