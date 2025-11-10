@@ -2,6 +2,7 @@ import requests
 from VIPMUSIC import app as Checker
 from pyrogram import filters
 
+print("[fakeinfo] fake")
 
 @Checker.on_message(filters.command("fake"))
 async def address(_, message):
