@@ -50,7 +50,7 @@ def is_authorized(user_id):
 
 # ---------------- /REACTIONON COMMAND ---------------- #
 
-@app.on_message(filters.command("reactionon", ["/", "!", "%", ".", ",", "@", "#", ""]) & (admin_filter | filters.user(SUDOERS)))
+@app.on_message(filters.command("reactionon", ["/", "!", "%", ".", ",", "@", "#", ""]) & admin_filter)
 async def reaction_on(app: app, msg: Message):
     chat_id = str(msg.chat.id)
 
@@ -65,7 +65,7 @@ async def reaction_on(app: app, msg: Message):
 
 # ---------------- /REACTIONOFF COMMAND ---------------- #
 
-@app.on_message(filters.command("reactionoff", ["/", "!", "%", ".", ",", "@", "#", ""]) & (admin_filter | filters.user(SUDOERS)))
+@app.on_message(filters.command("reactionoff", ["/", "!", "%", ".", ",", "@", "#", ""]) & admin_filter)
 async def reaction_off(app: app, msg: Message):
     chat_id = str(msg.chat.id)
 
@@ -80,7 +80,7 @@ async def reaction_off(app: app, msg: Message):
 
 # ---------------- /REACTION (BUTTON CONTROL) ---------------- #
 
-@app.on_message(filters.command("reaction", ["/", "!", "%", ".", ",", "@", "#", ""]) & (admin_filter | filters.user(SUDOERS)))
+@app.on_message(filters.command("reaction", ["/", "!", "%", ".", ",", "@", "#", ""]) & admin_filter)
 async def reaction_settings(app: app, msg: Message):
     chat_id = str(msg.chat.id)
     status = REACTION_DB.get(chat_id, False)
