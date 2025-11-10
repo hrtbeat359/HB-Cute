@@ -10,6 +10,8 @@ from VIPMUSIC.utils.decorators.language import languageCB
 from VIPMUSIC.utils.inline import close_markup, speed_markup
 from config import BANNED_USERS, adminlist
 
+print("[speed] speed, cspeed, slow, cslow, playback, cplayback")
+
 checker = []
 
 
