@@ -1,8 +1,4 @@
 # federation.py
-"""
-Federation plugin — corrected and adapted for VIPMUSIC.
-"""
-
 import asyncio
 import uuid
 from pyrogram import filters
