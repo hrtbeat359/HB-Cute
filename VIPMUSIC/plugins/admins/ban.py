@@ -14,7 +14,7 @@ from pyrogram.errors.exceptions.bad_request_400 import (
 import datetime
 from VIPMUSIC import app
 
-
+print("[ban] ban, unban, mute, unmute, tmute")
 
 
 def mention(user, name, mention=True):
