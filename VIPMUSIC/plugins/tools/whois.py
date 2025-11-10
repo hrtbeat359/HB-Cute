@@ -6,6 +6,7 @@ from pyrogram.types import Message, User
 
 from VIPMUSIC import app
 
+print("[whois] whois")
 
 def ReplyCheck(message: Message):
     reply_id = None
