@@ -2,9 +2,9 @@
 from pyrogram import filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from VIPMUSIC import app
-from VIPMUSIC.misc import SUDOERS, OWNER_ID
+from VIPMUSIC.misc import SUDOERS
 from VIPMUSIC.utils.databases.reactiondb import is_reaction_on, reaction_on, reaction_off
-from config import START_REACTIONS
+from config import START_REACTIONS, OWNER_ID
 
 print("[ReactionBot] Plugin loaded!")
 
