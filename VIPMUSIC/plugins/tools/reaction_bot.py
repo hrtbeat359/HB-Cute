@@ -1,89 +1,146 @@
+import os
+import json
+import random
+import asyncio
 from pyrogram import filters
 from pyrogram.enums import ChatType
 from pyrogram.errors import RPCError
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+
 from VIPMUSIC import app
-from VIPMUSIC.utils.vip_ban import admin_filter
+from VIPMUSIC.misc import SUDOERS
 from config import START_REACTIONS
-import random
-import asyncio
+from VIPMUSIC.utils.vip_ban import admin_filter
 
-# In-memory toggle storage for each chat
-REACTION_STATUS = {}
+# File to store chat reaction states
+REACTION_DB_FILE = "reaction_db.json"
 
-# Command prefixes to match your repo style
-PREFIXES = ["/", "!", "%", ",", ".", "@", "#", ""]
+# ---------------- LOAD / SAVE FUNCTIONS ---------------- #
 
-# Function to get reactions safely
+def load_reaction_db():
+    if os.path.exists(REACTION_DB_FILE):
+        with open(REACTION_DB_FILE, "r", encoding="utf-8") as f:
+            try:
+                return json.load(f)
+            except json.JSONDecodeError:
+                return {}
+    return {}
+
+def save_reaction_db(data):
+    with open(REACTION_DB_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+# Initialize database
+REACTION_DB = load_reaction_db()
+
+
+# ---------------- UTILS ---------------- #
+
 def get_reactions():
+    """Return list of available emojis from config."""
     if isinstance(START_REACTIONS, list) and START_REACTIONS:
         return START_REACTIONS
-    # Default fallback if empty or misconfigured
     return ["❤️", "🔥", "😂", "😍", "👍", "💯", "😎", "👏"]
 
-# ---------------- REACTION ON ---------------- #
-@app.on_message(filters.command("reactionon", PREFIXES) & admin_filter)
-async def enable_reaction(app: app, msg: Message):
-    chat_id = msg.chat.id
 
-    if msg.chat.type != ChatType.SUPERGROUP:
-        await msg.reply_text("**ʀᴇᴀᴄᴛɪᴏɴs ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴇɴᴀʙʟᴇᴅ ɪɴ sᴜᴘᴇʀɢʀᴏᴜᴘs.**")
+def is_authorized(user_id):
+    """Check if user is sudo or admin via decorator."""
+    return user_id in SUDOERS
+
+
+# ---------------- /REACTIONON COMMAND ---------------- #
+
+@app.on_message(filters.command("reactionon", ["/", "!", "%", ".", ",", "@", "#", ""]) & (admin_filter | filters.user(SUDOERS)))
+async def reaction_on(app: app, msg: Message):
+    chat_id = str(msg.chat.id)
+
+    if msg.chat.type not in [ChatType.SUPERGROUP, ChatType.GROUP]:
+        await msg.reply_text("**ʀᴇᴀᴄᴛɪᴏɴs ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴇɴᴀʙʟᴇᴅ ɪɴ ɢʀᴏᴜᴘs.**")
         return
 
-    REACTION_STATUS[chat_id] = True
-    await msg.reply_text("**✅ ʀᴇᴀᴄᴛɪᴏɴs ᴀʀᴇ ɴᴏᴡ ᴇɴᴀʙʟᴇᴅ ɪɴ ᴛʜɪs ᴄʜᴀᴛ.**")
+    REACTION_DB[chat_id] = True
+    save_reaction_db(REACTION_DB)
+    await msg.reply_text("**✅ ʀᴇᴀᴄᴛɪᴏɴs ᴇɴᴀʙʟᴇᴅ ɪɴ ᴛʜɪs ɢʀᴏᴜᴘ.**")
 
 
-# ---------------- REACTION OFF ---------------- #
-@app.on_message(filters.command("reactionoff", PREFIXES) & admin_filter)
-async def disable_reaction(app: app, msg: Message):
-    chat_id = msg.chat.id
+# ---------------- /REACTIONOFF COMMAND ---------------- #
 
-    if msg.chat.type != ChatType.SUPERGROUP:
-        await msg.reply_text("**ʀᴇᴀᴄᴛɪᴏɴs ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴅɪsᴀʙʟᴇᴅ ɪɴ sᴜᴘᴇʀɢʀᴏᴜᴘs.**")
+@app.on_message(filters.command("reactionoff", ["/", "!", "%", ".", ",", "@", "#", ""]) & (admin_filter | filters.user(SUDOERS)))
+async def reaction_off(app: app, msg: Message):
+    chat_id = str(msg.chat.id)
+
+    if msg.chat.type not in [ChatType.SUPERGROUP, ChatType.GROUP]:
+        await msg.reply_text("**ʀᴇᴀᴄᴛɪᴏɴs ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴅɪsᴀʙʟᴇᴅ ɪɴ ɢʀᴏᴜᴘs.**")
         return
 
-    REACTION_STATUS[chat_id] = False
-    await msg.reply_text("**🚫 ʀᴇᴀᴄᴛɪᴏɴs ʜᴀᴠᴇ ʙᴇᴇɴ ᴅɪsᴀʙʟᴇᴅ ɪɴ ᴛʜɪs ᴄʜᴀᴛ.**")
+    REACTION_DB[chat_id] = False
+    save_reaction_db(REACTION_DB)
+    await msg.reply_text("**🚫 ʀᴇᴀᴄᴛɪᴏɴs ᴅɪsᴀʙʟᴇᴅ ɪɴ ᴛʜɪs ɢʀᴏᴜᴘ.**")
 
 
-# ---------------- MANUAL REACTION ---------------- #
-@app.on_message(filters.command("reaction", PREFIXES) & admin_filter)
-async def manual_reaction(app: app, msg: Message):
-    if not msg.reply_to_message:
-        await msg.reply_text("**ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴛᴏ ʀᴇᴀᴄᴛ.**")
+# ---------------- /REACTION (BUTTON CONTROL) ---------------- #
+
+@app.on_message(filters.command("reaction", ["/", "!", "%", ".", ",", "@", "#", ""]) & (admin_filter | filters.user(SUDOERS)))
+async def reaction_settings(app: app, msg: Message):
+    chat_id = str(msg.chat.id)
+    status = REACTION_DB.get(chat_id, False)
+
+    text = (
+        f"**📢 ʀᴇᴀᴄᴛɪᴏɴ sᴇᴛᴛɪɴɢs ғᴏʀ ᴛʜɪs ɢʀᴏᴜᴘ**\n\n"
+        f"**🆔 ɢʀᴏᴜᴘ ɪᴅ:** `{chat_id}`\n"
+        f"**⚙️ sᴛᴀᴛᴜs:** {'✅ ᴇɴᴀʙʟᴇᴅ' if status else '🚫 ᴅɪsᴀʙʟᴇᴅ'}"
+    )
+
+    buttons = [
+        [
+            InlineKeyboardButton("✅ Enable", callback_data=f"reaction_enable:{chat_id}"),
+            InlineKeyboardButton("🚫 Disable", callback_data=f"reaction_disable:{chat_id}")
+        ]
+    ]
+
+    await msg.reply_text(text, reply_markup=InlineKeyboardMarkup(buttons))
+
+
+# ---------------- CALLBACK HANDLER ---------------- #
+
+@app.on_callback_query(filters.regex(r"^reaction_(enable|disable):"))
+async def reaction_callback(app, query):
+    user_id = query.from_user.id
+    if not (await admin_filter(app, query.message) or user_id in SUDOERS):
+        await query.answer("🚫 You are not authorized to change this setting.", show_alert=True)
         return
 
-    chat_id = msg.chat.id
-    reaction_list = get_reactions()
-    emoji = random.choice(reaction_list)
+    action, chat_id = query.data.split(":")
+    chat_id = str(chat_id)
 
-    try:
-        await msg.reply_to_message.react(emoji)
-        await msg.reply_text(f"**ʀᴇᴀᴄᴛᴇᴅ ᴡɪᴛʜ {emoji}**")
-    except RPCError as e:
-        await msg.reply_text(f"**❌ ᴇʀʀᴏʀ:** `{e}`")
+    if action == "enable":
+        REACTION_DB[chat_id] = True
+        text = "**✅ ʀᴇᴀᴄᴛɪᴏɴs ᴀʀᴇ ɴᴏᴡ ᴇɴᴀʙʟᴇᴅ.**"
+    else:
+        REACTION_DB[chat_id] = False
+        text = "**🚫 ʀᴇᴀᴄᴛɪᴏɴs ᴀʀᴇ ɴᴏᴡ ᴅɪsᴀʙʟᴇᴅ.**"
+
+    save_reaction_db(REACTION_DB)
+    await query.message.edit_text(text)
+    await query.answer("Updated successfully ✅")
 
 
 # ---------------- AUTO REACTION ---------------- #
-@app.on_message(filters.text & filters.group)
-async def auto_reaction(app: app, msg: Message):
-    chat_id = msg.chat.id
 
-    # Only react if reactions are enabled
-    if not REACTION_STATUS.get(chat_id, False):
+@app.on_message(filters.text & filters.group)
+async def auto_reaction_handler(app: app, msg: Message):
+    chat_id = str(msg.chat.id)
+    if not REACTION_DB.get(chat_id, False):
         return
 
-    # Avoid reacting to bot/system messages
-    if msg.from_user is None or msg.from_user.is_bot:
+    if not msg.from_user or msg.from_user.is_bot:
         return
 
     reaction_list = get_reactions()
     emoji = random.choice(reaction_list)
 
     try:
-        # Add random delay to look natural
-        await asyncio.sleep(random.uniform(0.8, 2.0))
+        await asyncio.sleep(random.uniform(0.6, 1.8))
         await msg.react(emoji)
     except RPCError:
-        pass  # Silently ignore any Telegram reaction errors
+        pass  # Ignore if Telegram restricts reaction
