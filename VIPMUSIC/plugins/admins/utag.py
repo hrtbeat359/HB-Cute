@@ -8,6 +8,8 @@ from pyrogram.types import ChatPermissions
 from VIPMUSIC import app
 from VIPMUSIC.utils.vip_ban import admin_filter
 
+print("[utag] utag")
+
 SPAM_CHATS = {}
 
 @app.on_message(filters.command(["utag", "uall"], prefixes=["/", "@", ".", "#"]) & admin_filter)
