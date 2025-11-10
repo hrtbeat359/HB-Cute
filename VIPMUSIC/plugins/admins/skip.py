@@ -12,6 +12,7 @@ from VIPMUSIC.utils.stream.autoclear import auto_clean
 from VIPMUSIC.utils.thumbnails import get_thumb
 from config import BANNED_USERS
 
+print("[skip] skip, cskip")
 
 @app.on_message(
     filters.command(["skip", "cskip", "next", "cnext"], prefixes=["skip", "/", "!", "%", ",",  ".", "@", "#"]) & filters.group & ~BANNED_USERS
