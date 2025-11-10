@@ -9,7 +9,7 @@ import pyrogram
 from uuid import uuid4
 from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
 
-
+print("[sticker] st, packkang, stid")
 ######### sticker id
 
 @app.on_message(filters.command("st"))
