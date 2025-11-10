@@ -7,6 +7,7 @@ from pyrogram.types import ChatPermissions
 from VIPMUSIC import app
 from VIPMUSIC.utils.vip_ban import admin_filter
 
+print("[all_tag] all & mention")
 
 SPAM_CHATS = []
 
