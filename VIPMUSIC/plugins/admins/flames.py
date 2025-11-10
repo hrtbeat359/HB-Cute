@@ -316,7 +316,7 @@ async def match_command(client, message):
 
         # --- Choose random image safely ---
         all_images = [
-            img for res in RESULTS.values() for img in res["images"] if img
+            img for res in RESULTS.values() for img in res["images_url"] if img
         ]
         image_url = random.choice(all_images)
 
