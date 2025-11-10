@@ -13,6 +13,7 @@ from VIPMUSIC.utils.decorators import AdminActual, language
 from VIPMUSIC.utils.inline import close_markup
 from config import BANNED_USERS, adminlist
 
+print("[auth] auth, unauth, authusers")
 
 @app.on_message(filters.command("auth") & filters.group & ~BANNED_USERS)
 @AdminActual
