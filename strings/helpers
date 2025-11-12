@@ -1,8 +1,187 @@
+HELP_1 = """<blockquote>**🎉 Gʀᴇᴇᴛɪɴɢꜱ:**</blockquote>
+<blockquote>🔻 /welcome <on/off> ➠ Enable or disable welcome messages  
+🔻 /welcome ➠ Show current welcome settings  
+🔻 /goodbye ➠ Same as /welcome  
+🔻 /setwelcome <text> ➠ Set a custom welcome message  
+🔻 /setgoodbye <text> ➠ Set a custom goodbye message  
+🔻 /resetwelcome ➠ Reset to default welcome message  
+🔻 /resetgoodbye ➠ Reset to default goodbye message  
+🔻 /cleanwelcome <on/off> ➠ Remove previous welcome messages  
+🔻 /cleanservice <on/off> ➠ Remove service messages</blockquote>
+<blockquote>**📜 Rᴜʟᴇꜱ:**</blockquote>
+<blockquote>🔻 /rules ➠ Show rules for this chat  
+🔻 /setrules <text> ➠ Set custom rules for this chat</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
 HELP_2 = """<blockquote>**⚡ Filter**</blockquote>
 <blockquote>🔻 /filters : ɢᴇᴛ ᴀʟʟ ᴀᴄᴛɪᴠᴇ ꜰɪʟᴛᴇʀꜱ ɪɴ ᴛʜᴇ ᴄʜᴀᴛ
  🔻 /filter <ᴋᴇʏᴡᴏʀᴅ> <ʀᴇᴘʟʏ ᴍᴇꜱꜱᴀɢᴇ>: ᴀᴅᴅ ᴀ ꜰɪʟᴛᴇʀ ᴛᴏ ᴛʜɪꜱ ᴄʜᴀᴛ. 
  🔻 /stop <ꜰɪʟᴛᴇʀ ᴋᴇʏᴡᴏʀᴅ> - ꜱᴛᴏᴘ ᴀ ꜰɪʟᴛᴇʀ.
  🔻 /removeallfilter - ꜱᴛᴏᴘ ᴀll ꜰɪʟᴛᴇʀ.</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_3 = """<blockquote>**👑 Gʀᴏᴜᴘ Mᴀɴᴀɢᴇᴍᴇɴᴛ:**</blockquote>
+<blockquote>🔻 /afk <reason> ➠ Set yourself AFK with a reason  
+🔻 /report ➠ Report a user to admins  
+🔻 /staff ➠ Show admins and positions  
+🔻 /adminlist ➠ List of admins  
+🔻 /bots ➠ Show bots in the group  
+🔻 /invitelink ➠ Get invite link  
+🔻 /promote ➠ Promote a user  
+🔻 /demote ➠ Demote a user  
+🔻 /settitle ➠ Set group title</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_4 = """<blockquote>**👿 Action**</blockquote>
+<blockquote>🔻 /kickme : ᴋɪᴄᴋ ʏᴏᴜʀꜱᴇʟꜰ 
+🔻 /ban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ>: ʙᴀɴ ᴀ ᴛᴀɢɢᴇᴅ ᴜꜱᴇʀ
+🔻 /sban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ>: ꜱɪʟᴇɴᴛʟʏ ʙᴀɴ ᴡɪᴛʜᴏᴜᴛ ᴍꜱɢᴇꜱ 
+🔻 /tban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ):  ᴋɪᴄᴋ ᴜꜱᴇʀ ꜰᴏʀ x ᴛɪᴍᴇ  ᴍ = ᴍɪɴᴜᴛᴇꜱ, ʜ = ʜᴏᴜʀꜱ, ᴅ = ᴅᴀʏꜱ.
+🔻 /unban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ>: ᴜɴʙᴀɴꜱ ᴀ ᴜꜱᴇʀ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ)
+🔻 /kick <ᴜꜱᴇʀʜᴀɴᴅʟᴇ/reply>: ᴋɪᴄᴋ ᴀ ᴜꜱᴇʀ)
+🔻 /gban [ᴜsᴇʀɴᴀᴍᴇ ᴏʀ ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴄʜᴜᴛɪʏᴀ] » ɢʟᴏʙᴀʟʟʏ ʙᴀɴs ᴛʜᴇ user ғʀᴏᴍ ᴀʟʟ ᴛʜᴇ sᴇʀᴠᴇᴅ ᴄʜᴀᴛs ᴀɴᴅ ʙʟᴀᴄᴋʟɪsᴛ ʜɪᴍ ғʀᴏᴍ ᴜsɪɴɢ ᴛʜᴇ ʙᴏᴛ.
+🔻 /ungban [ᴜsᴇʀɴᴀᴍᴇ ᴏʀ ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴜsᴇʀ] » ɢʟᴏʙᴀʟʟʏ ᴜɴʙᴀɴs ᴛʜᴇ ʙᴀɴɴᴇᴅ ᴜsᴇʀ.
+🔻 /gbannedusers » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ɢʟᴏʙᴀʟʟʏ ʙᴀɴɴᴇʀ ᴜsᴇʀs.
+🔻 /mute : silences a user. Can also be used as a reply, muting the replied to user.
+🔻 /tmute  x(m/h/d): mutes a user for x time. (via handle, or reply). m = minutes, h = hours, d = days.
+🔻 /unmute : unmutes a user. Can also be used as a reply, muting the replied to user.
+🔻 /catall - ban all users from group
+🔻 /purge <reply>- Delate messages from the reply message to the end.</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_5 = """<blockquote>**📩 ʙɪᴏ**</blockquote>
+</blockquote>🔻 /setbio <ᴛᴇxᴛ> - ᴡʜɪʟᴇ ʀᴇᴘʟʏɪɴɢ, ᴡɪʟʟ ꜱᴀᴠᴇ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ʙɪᴏ
+🔻 /bio - ᴡɪʟʟ ɢᴇᴛ ʏᴏᴜʀ ᴏʀ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ʙɪᴏ. ᴛʜɪꜱ ᴄᴀɴɴᴏᴛ ʙᴇ ꜱᴇᴛ ʙʏ ʏᴏᴜʀꜱᴇʟꜰ.
+🔻 /setme <ᴛᴇxᴛ> - ᴡɪʟʟ ꜱᴇᴛ ʏᴏᴜʀ ɪɴꜰᴏ
+🔻 /me - ᴡɪʟʟ ɢᴇᴛ ʏᴏᴜʀ ᴏʀ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ɪɴꜰᴏ
+🔻 /bioall - get all users bio .txt</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_6 = """<blockquote>**📌 Pins**</blockquote>
+<blockquote>🔻 /pin ➠ ᴘɪɴs ᴀ ᴍᴇssᴀɢᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ.
+🔻 /pinned ➠ ᴅɪsᴘʟᴀʏs ᴛʜᴇ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ.
+🔻 /unpin ➠ ᴜɴᴘɪɴs ᴛʜᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_7 = """<blockquote>**⬇️ Dᴏᴡɴʟᴏᴀᴅꜱ:**</blockquote>
+<blockquote>🔻 /lyrics <song> ➠ Search lyrics  
+🔻 /song <name/url> ➠ Download song  
+🔻 /reel ➠ Download reels  
+🔻 /shorts ➠ Download shorts  
+🔻 /yt ➠ Download YouTube videos</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_8 = """<blockquote>**🥵 Federations:**
+🔻 /newfed <name> - create a federation (private chat only)
+🔻 /delfed <fed_id> - delete a federation (private chat only)
+🔻 /joinfed <fed_id> - join this group to a federation (group owner only)
+🔻 /leavefed - leave current federation (group owner only)
+🔻 /myfeds - list federations you created (private chat)
+🔻 /renamefed <fed_id> <newname> - rename a federation (owner only)
+🔻 /fedchats <fed_id> - list chats in the federation (owner/fadmins)
+🔻 /fedinfo <fed_id> - info about a federation
+🔻 /fpromote <user> - promote to fed-admin (owner or sudo)
+🔻 /fdemote <user> - demote fed-admin
+🔻 /fban <user> <reason> - federational ban
+🔻 /unfban <user> <reason> - federational unban
+🔻 /fbroadcast (reply to message) - broadcast message to all fed chats</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_9 = """<blockquote>**💬 Chat:**</blockquote>
+<blockquote🔻/Chatbot <on/off> - chatbot is on or off in group</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_10 = """<blockquote>**💫 Rᴇᴀᴄᴛɪᴏɴꜱ:**</blockquote>
+<blockquote>🔻 /reaction <on/off> ➠ Enable or disable reaction system  
+🔻 /setreact <keyword> ➠ Add reaction for a target name  
+🔻 /delreact <keyword> ➠ Remove reaction for a name  
+🔻 /reactlist ➠ Show all set reactions</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_11 = """<blockquote>**💞 Uʀᴜᴛᴛᴜ Tᴀɢꜱ:**</blockquote>
+<blockquote>🔻 /tagall ➠ Tag all users  
+🔻 /utag ➠ Unlimited tag  
+🔻 /gmtag ➠ Good morning tag  
+🔻 /gntag ➠ Good night tag  
+🔻 /uruttubaby ➠ Random uruttu  
+🔻 /crush ➠ Random romantic quote  
+🔻 /baby ➠ Random love quote  
+🔻 /broken ➠ Random broken quote  
+🔻 /uruttu ➠ Get random uruttu quote</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_12 = """<blockquote>**ғᴏɴᴛ Cᴏᴍᴍᴀɴᴅꜱ:**</blockquote>
+<blockquote>🔻 /font ➠ Create stylish name fonts</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_13 = """<blockquote>**💥 Group Action**</blockquote>
+<blockquote>🔻 /settitle ➠ sᴇᴛs ᴛʜᴇ ᴛɪᴛʟᴇ ᴏғ ᴛʜᴇ ɢʀᴏᴜᴘ.
+🔻 /setdiscription ➠ sᴇᴛs ᴛʜᴇ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ ᴏғ ᴛʜᴇ ɢʀᴏᴜᴘ.
+🔻 /setphoto ➠ sᴇᴛs ᴛʜᴇ ɢʀᴏᴜᴘ ᴘʜᴏᴛᴏ.
+🔻 /removephoto ➠ ʀᴇᴍᴏᴠᴇs ᴛʜᴇ ɢʀᴏᴜᴘ ᴘʜᴏᴛᴏ.
+🔻 /zombies ➠ ʀᴇᴍᴏᴠᴇs ᴀᴄᴄ ᴅᴇʟᴇᴛᴇᴅ ᴍᴇᴍʙᴇʀs ғʀᴏᴍ ᴛʜᴇ ɢʀᴏᴜᴘ.
+🔻 /imposter ᴏɴ/ᴏғғ ➠ ɴᴏᴛɪғɪᴇs ᴀʙᴏᴜᴛ ᴜsᴇʀs ᴡʜᴏ ᴄʜᴀɴɢᴇ ᴛʜᴇɪʀ ɴᴀᴍᴇ ᴏʀ ᴜsᴇʀɴᴀᴍᴇ.</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_14 = """<blockquote>**🎙️ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛs :**</blockquote>
+<blockquote>🔻 /activevoice » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ᴀᴄᴛɪᴠᴇ ᴠᴏɪᴄᴇᴄʜᴀᴛs ᴏɴ ᴛʜᴇ ʙᴏᴛ.
+🔻 /activevideo » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛs ᴏɴ ʙᴏᴛ.
+🔻 /autoend [ᴇɴᴀʙʟᴇ|ᴅɪsᴀʙʟᴇ] » ᴇɴᴀʙʟᴇ sᴛʀᴇᴀᴍ ᴀᴜᴛᴏ ᴇɴᴅ ɪғ ɴᴏ ᴏɴᴇ ɪs ʟɪsᴛᴇɴɪɴɢ.</blockquote>
+<blockquote>🔻 /settings » sʜᴏᴡs ᴛʜᴇ ɢʀᴏᴜᴩ sᴇᴛᴛɪɴɢs ᴡɪᴛʜ ᴀɴ ɪɴᴛᴇʀᴀᴄᴛɪᴠᴇ ɪɴʟɪɴᴇ ᴍᴇɴᴜ.
+🔻 /start - start the bot and join assistant 
+🔻 /joinuserbot - invite the userbot to group</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_15 = """<blockquote>**🕹️ Approve:**</blockquote>
+<blockquote>🔻 /auth <username/reply> - Add a user to access all music commands
+🔻 /auth <userid>/reply> - Remove user to Auth list
+🔻 /authusers - Check authorised user list of the group</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_16 = """<blockquote>**😈 Block:**</blockquote>
+<blockquote>🔻 /block [ᴜsᴇʀɴᴀᴍᴇ/ʀᴇᴩʟʏ] » sᴛᴀʀᴛs ɪɢɴᴏʀɪɴɢ ᴛʜᴇ user, sᴏ ᴛʜᴀᴛ ʜᴇ ᴄᴀɴ'ᴛ ᴜsᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs.
+🔻 /unblock [ᴜsᴇʀɴᴀᴍᴇ/ʀᴇᴩʟʏ] » ᴜɴʙʟᴏᴄᴋs ᴛʜᴇ ʙʟᴏᴄᴋᴇᴅ ᴜsᴇʀ.
+🔻 /blockedusers » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ʙʟᴏᴄᴋᴇᴅ ᴜsᴇʀs.
+🔻 /blacklistchat [ᴄʜᴀᴛ-ɪᴅ] » ʙʟᴀᴄᴋʟɪsᴛ ᴀ ᴄʜᴀᴛ ғʀᴏᴍ ᴜsɪɴɢ ᴛʜᴇ ʙᴏᴛ.
+🔻 /whitelistchat [ᴄʜᴀᴛ-ɪᴅ] » ᴡʜɪᴛᴇʟɪsᴛ ᴛʜᴇ ʙʟᴀᴄᴋʟɪsᴛᴇᴅ ᴄʜᴀᴛ.
+🔻 /blacklistedchat » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ʙʟᴀᴄᴋʟɪsᴛᴇᴅ ᴄʜᴀᴛs.</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_17 = """<blockquote>**📢 ʙʀᴏᴀᴅᴄᴀsᴛ:**</blockquote>
+<blockquote>🔻 /broadcast [ᴍᴇssᴀɢᴇ ᴏʀ ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ] » ʙʀᴏᴀᴅᴄᴀsᴛ ᴀ ᴍᴇssᴀɢᴇ 
+ʙʀᴏᴀᴅᴄᴀsᴛɪɴɢ ᴍᴏᴅᴇs:💥
+🔸 pin » ᴩɪɴs ʏᴏᴜʀ ʙʀᴏᴀᴅᴄᴀsᴛᴇᴅ ᴍᴇssᴀɢᴇs ɪɴ sᴇʀᴠᴇᴅ ᴄʜᴀᴛs.
+🔸 pinloud » ᴩɪɴs ʏᴏᴜʀ ʙʀᴏᴀᴅᴄᴀsᴛᴇᴅ ᴍᴇssᴀɢᴇ ɪɴ sᴇʀᴠᴇᴅ ᴄʜᴀᴛs ᴀɴᴅ sᴇɴᴅ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ᴛᴏ ᴛʜᴇ ᴍᴇᴍʙᴇʀs.
+🔸 user » ʙʀᴏᴀᴅᴄᴀsᴛs ᴛʜᴇ ᴍᴇssᴀɢᴇ ᴛᴏ ᴛʜᴇ ᴜsᴇʀs ᴡʜᴏ ʜᴀᴠᴇ sᴛᴀʀᴛᴇᴅ ʏᴏᴜʀ ʙᴏᴛ.
+🔸 assistant » ʙʀᴏᴀᴅᴄᴀsᴛ ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ғʀᴏᴍ ᴛʜᴇ ᴀssɪᴛᴀɴᴛ ᴀᴄᴄᴏᴜɴᴛ ᴏғ ᴛʜᴇ ʙᴏᴛ.
+🔸 nobot » ғᴏʀᴄᴇs ᴛʜᴇ ʙᴏᴛ ᴛᴏ ɴᴏᴛ ʙʀᴏᴀᴅᴄᴀsᴛ ᴛʜᴇ ᴍᴇssᴀɢᴇ.</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_18 = """<blockquote>**💌 Wʜɪꜱᴘᴇʀ:**</blockquote>
+<blockquote>🔻 @bot_username [userid/username] [textmessage]</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_19 = """<blockquote>**📜 Hɪꜱᴛᴏʀʏ:**</blockquote>
+<blockquote>🔻 /sg ➠ Get name history  
+🔻 /whois ➠ Get user information</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
@@ -34,134 +213,6 @@ HELP_21 = """<blockquote>**🎨 Iᴍᴀɢᴇ Cᴏᴍᴍᴀɴᴅꜱ:**</blockquot
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-HELP_28 = """<blockquote>👾 Hack:**</blockquote>
-<blockquote>🔻 /hackmember ➠ Get overall member IDs from the chat  
-🔻 /hacklink ➠ Get group link (private also)</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-
-HELP_12 = """<blockquote>**ғᴏɴᴛ Cᴏᴍᴍᴀɴᴅꜱ:**</blockquote>
-<blockquote>🔻 /font ➠ Create stylish name fonts</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_27 = """<blockquote>**🎯 Mɪɴɪ Gᴀᴍᴇꜱ:**</blockquote>
-<blockquote>🔻 /dice ➠ Dice game  
-🔻 /dart ➠ Dart game  
-🔻 /basket ➠ Basketball game  
-🔻 /ball ➠ Bowling ball game  
-🔻 /football ➠ Football game  
-🔻 /jackpot ➠ Spin slot machine</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_1 = """<blockquote>**🎉 Gʀᴇᴇᴛɪɴɢꜱ:**</blockquote>
-<blockquote>🔻 /welcome <on/off> ➠ Enable or disable welcome messages  
-🔻 /welcome ➠ Show current welcome settings  
-🔻 /goodbye ➠ Same as /welcome  
-🔻 /setwelcome <text> ➠ Set a custom welcome message  
-🔻 /setgoodbye <text> ➠ Set a custom goodbye message  
-🔻 /resetwelcome ➠ Reset to default welcome message  
-🔻 /resetgoodbye ➠ Reset to default goodbye message  
-🔻 /cleanwelcome <on/off> ➠ Remove previous welcome messages  
-🔻 /cleanservice <on/off> ➠ Remove service messages</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_2 = """<blockquote>**📜 Rᴜʟᴇꜱ:**</blockquote>
-<blockquote>🔻 /rules ➠ Show rules for this chat  
-🔻 /setrules <text> ➠ Set custom rules for this chat</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_9 = """<blockquote>**💬 Chat:**</blockquote>
-<blockquote🔻/Chatbot <on/off> - chatbot is on or off in group</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_10 = """<blockquote>**💫 Rᴇᴀᴄᴛɪᴏɴꜱ:**</blockquote>
-<blockquote>🔻 /reaction <on/off> ➠ Enable or disable reaction system  
-🔻 /setreact <keyword> ➠ Add reaction for a target name  
-🔻 /delreact <keyword> ➠ Remove reaction for a name  
-🔻 /reactlist ➠ Show all set reactions</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_3 = """<blockquote>**👑 Gʀᴏᴜᴘ Mᴀɴᴀɢᴇᴍᴇɴᴛ:**</blockquote>
-<blockquote>🔻 /afk <reason> ➠ Set yourself AFK with a reason  
-🔻 /report ➠ Report a user to admins  
-🔻 /staff ➠ Show admins and positions  
-🔻 /adminlist ➠ List of admins  
-🔻 /bots ➠ Show bots in the group  
-🔻 /invitelink ➠ Get invite link  
-🔻 /promote ➠ Promote a user  
-🔻 /demote ➠ Demote a user  
-🔻 /settitle ➠ Set group title</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_6 = """<blockquote>**📌 Pins**</blockquote>
-<blockquote>🔻 /pin ➠ ᴘɪɴs ᴀ ᴍᴇssᴀɢᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ.
-🔻 /pinned ➠ ᴅɪsᴘʟᴀʏs ᴛʜᴇ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ.
-🔻 /unpin ➠ ᴜɴᴘɪɴs ᴛʜᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_13 = """<blockquote>**💥 Group Action**</blockquote>
-<blockquote>🔻 /settitle ➠ sᴇᴛs ᴛʜᴇ ᴛɪᴛʟᴇ ᴏғ ᴛʜᴇ ɢʀᴏᴜᴘ.
-🔻 /setdiscription ➠ sᴇᴛs ᴛʜᴇ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ ᴏғ ᴛʜᴇ ɢʀᴏᴜᴘ.
-🔻 /setphoto ➠ sᴇᴛs ᴛʜᴇ ɢʀᴏᴜᴘ ᴘʜᴏᴛᴏ.
-🔻 /removephoto ➠ ʀᴇᴍᴏᴠᴇs ᴛʜᴇ ɢʀᴏᴜᴘ ᴘʜᴏᴛᴏ.
-🔻 /zombies ➠ ʀᴇᴍᴏᴠᴇs ᴀᴄᴄ ᴅᴇʟᴇᴛᴇᴅ ᴍᴇᴍʙᴇʀs ғʀᴏᴍ ᴛʜᴇ ɢʀᴏᴜᴘ.
-🔻 /imposter ᴏɴ/ᴏғғ ➠ ɴᴏᴛɪғɪᴇs ᴀʙᴏᴜᴛ ᴜsᴇʀs ᴡʜᴏ ᴄʜᴀɴɢᴇ ᴛʜᴇɪʀ ɴᴀᴍᴇ ᴏʀ ᴜsᴇʀɴᴀᴍᴇ.</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_5 = <blockquote>**📩 ʙɪᴏ**</blockquote>
-</blockquote>🔻 /setbio <ᴛᴇxᴛ> - ᴡʜɪʟᴇ ʀᴇᴘʟʏɪɴɢ, ᴡɪʟʟ ꜱᴀᴠᴇ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ʙɪᴏ
-🔻 /bio - ᴡɪʟʟ ɢᴇᴛ ʏᴏᴜʀ ᴏʀ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ʙɪᴏ. ᴛʜɪꜱ ᴄᴀɴɴᴏᴛ ʙᴇ ꜱᴇᴛ ʙʏ ʏᴏᴜʀꜱᴇʟꜰ.
-🔻 /setme <ᴛᴇxᴛ> - ᴡɪʟʟ ꜱᴇᴛ ʏᴏᴜʀ ɪɴꜰᴏ
-🔻 /me - ᴡɪʟʟ ɢᴇᴛ ʏᴏᴜʀ ᴏʀ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ɪɴꜰᴏ
-🔻 /bioall - get all users bio .txt</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_4 = <blockquote>**👿 Action**</blockquote>
-<blockquote>🔻 /kickme : ᴋɪᴄᴋ ʏᴏᴜʀꜱᴇʟꜰ 
-🔻 /ban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ>: ʙᴀɴ ᴀ ᴛᴀɢɢᴇᴅ ᴜꜱᴇʀ
-🔻 /sban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ>: ꜱɪʟᴇɴᴛʟʏ ʙᴀɴ ᴡɪᴛʜᴏᴜᴛ ᴍꜱɢᴇꜱ 
-🔻 /tban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ> x(ᴍ/ʜ/ᴅ):  ᴋɪᴄᴋ ᴜꜱᴇʀ ꜰᴏʀ x ᴛɪᴍᴇ  ᴍ = ᴍɪɴᴜᴛᴇꜱ, ʜ = ʜᴏᴜʀꜱ, ᴅ = ᴅᴀʏꜱ.
-🔻 /unban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ>: ᴜɴʙᴀɴꜱ ᴀ ᴜꜱᴇʀ. (ᴠɪᴀ ʜᴀɴᴅʟᴇ, ᴏʀ ʀᴇᴘʟʏ)
-🔻 /kick <ᴜꜱᴇʀʜᴀɴᴅʟᴇ/reply>: ᴋɪᴄᴋ ᴀ ᴜꜱᴇʀ)
-🔻 /gban [ᴜsᴇʀɴᴀᴍᴇ ᴏʀ ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴄʜᴜᴛɪʏᴀ] » ɢʟᴏʙᴀʟʟʏ ʙᴀɴs ᴛʜᴇ user ғʀᴏᴍ ᴀʟʟ ᴛʜᴇ sᴇʀᴠᴇᴅ ᴄʜᴀᴛs ᴀɴᴅ ʙʟᴀᴄᴋʟɪsᴛ ʜɪᴍ ғʀᴏᴍ ᴜsɪɴɢ ᴛʜᴇ ʙᴏᴛ.
-🔻 /ungban [ᴜsᴇʀɴᴀᴍᴇ ᴏʀ ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴜsᴇʀ] » ɢʟᴏʙᴀʟʟʏ ᴜɴʙᴀɴs ᴛʜᴇ ʙᴀɴɴᴇᴅ ᴜsᴇʀ.
-🔻 /gbannedusers » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ɢʟᴏʙᴀʟʟʏ ʙᴀɴɴᴇʀ ᴜsᴇʀs.
-🔻 /mute : silences a user. Can also be used as a reply, muting the replied to user.
-🔻 /tmute  x(m/h/d): mutes a user for x time. (via handle, or reply). m = minutes, h = hours, d = days.
-🔻 /unmute : unmutes a user. Can also be used as a reply, muting the replied to user.
-🔻 /catall - ban all users from group
-🔻 /purge <reply>- Delate messages from the reply message to the end.</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_8 = """<blockquote>**🥵 Federations:**
-🔻 /newfed <name> - create a federation (private chat only)
-🔻 /delfed <fed_id> - delete a federation (private chat only)
-🔻 /joinfed <fed_id> - join this group to a federation (group owner only)
-🔻 /leavefed - leave current federation (group owner only)
-🔻 /myfeds - list federations you created (private chat)
-🔻 /renamefed <fed_id> <newname> - rename a federation (owner only)
-🔻 /fedchats <fed_id> - list chats in the federation (owner/fadmins)
-🔻 /fedinfo <fed_id> - info about a federation
-🔻 /fpromote <user> - promote to fed-admin (owner or sudo)
-🔻 /fdemote <user> - demote fed-admin
-🔻 /fban <user> <reason> - federational ban
-🔻 /unfban <user> <reason> - federational unban
-🔻 /fbroadcast (reply to message) - broadcast message to all fed chats</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
 HELP_22 = """<blockquote>**🎵 Mᴜꜱɪᴄ:**</blockquote>
 <blockquote>🔻 /play <song/url/reply> ➠ Play a song  
 🔻 /vplay <song/url/reply> ➠ Play video song
@@ -183,59 +234,6 @@ HELP_22 = """<blockquote>**🎵 Mᴜꜱɪᴄ:**</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-HELP_14 = <blockquote>**🎙️ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛs :**</blockquote>
-<blockquote>🔻 /activevoice » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ᴀᴄᴛɪᴠᴇ ᴠᴏɪᴄᴇᴄʜᴀᴛs ᴏɴ ᴛʜᴇ ʙᴏᴛ.
-🔻 /activevideo » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛs ᴏɴ ʙᴏᴛ.
-🔻 /autoend [ᴇɴᴀʙʟᴇ|ᴅɪsᴀʙʟᴇ] » ᴇɴᴀʙʟᴇ sᴛʀᴇᴀᴍ ᴀᴜᴛᴏ ᴇɴᴅ ɪғ ɴᴏ ᴏɴᴇ ɪs ʟɪsᴛᴇɴɪɴɢ.</blockquote>
-<blockquote>🔻 /settings » sʜᴏᴡs ᴛʜᴇ ɢʀᴏᴜᴩ sᴇᴛᴛɪɴɢs ᴡɪᴛʜ ᴀɴ ɪɴᴛᴇʀᴀᴄᴛɪᴠᴇ ɪɴʟɪɴᴇ ᴍᴇɴᴜ.
-🔻 /start - start the bot and join assistant 
-🔻 /joinuserbot - invite the userbot to group</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_15 = """<blockquote>**🕹️ Approve:**</blockquote>
-<blockquote>🔻 /auth <username/reply> - Add a user to access all music commands
-🔻 /auth <userid>/reply> - Remove user to Auth list
-🔻 /authusers - Check authorised user list of the group</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_16 = """<blockquote>**😈 Block:**</blockquote>
-<blockquote>🔻 /block [ᴜsᴇʀɴᴀᴍᴇ/ʀᴇᴩʟʏ] » sᴛᴀʀᴛs ɪɢɴᴏʀɪɴɢ ᴛʜᴇ user, sᴏ ᴛʜᴀᴛ ʜᴇ ᴄᴀɴ'ᴛ ᴜsᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs.
-🔻 /unblock [ᴜsᴇʀɴᴀᴍᴇ/ʀᴇᴩʟʏ] » ᴜɴʙʟᴏᴄᴋs ᴛʜᴇ ʙʟᴏᴄᴋᴇᴅ ᴜsᴇʀ.
-🔻 /blockedusers » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ʙʟᴏᴄᴋᴇᴅ ᴜsᴇʀs.
-🔻 /blacklistchat [ᴄʜᴀᴛ-ɪᴅ] » ʙʟᴀᴄᴋʟɪsᴛ ᴀ ᴄʜᴀᴛ ғʀᴏᴍ ᴜsɪɴɢ ᴛʜᴇ ʙᴏᴛ.
-🔻 /whitelistchat [ᴄʜᴀᴛ-ɪᴅ] » ᴡʜɪᴛᴇʟɪsᴛ ᴛʜᴇ ʙʟᴀᴄᴋʟɪsᴛᴇᴅ ᴄʜᴀᴛ.
-🔻 /blacklistedchat » sʜᴏᴡs ᴛʜᴇ ʟɪsᴛ ᴏғ ʙʟᴀᴄᴋʟɪsᴛᴇᴅ ᴄʜᴀᴛs.</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_25 = """<blockquote>**💀 Sudo:**</blockquote>
-<blockquote>🔻 /addsudo - add a user to Sudo list
-🔻 /rmsudo - Remobe Sudo User
-🔻 /sudoers - check sudoers list</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_17 = """<blockquote>**📢 ʙʀᴏᴀᴅᴄᴀsᴛ:**</blockquote>
-<blockquote>🔻 /broadcast [ᴍᴇssᴀɢᴇ ᴏʀ ʀᴇᴩʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ] » ʙʀᴏᴀᴅᴄᴀsᴛ ᴀ ᴍᴇssᴀɢᴇ 
-ʙʀᴏᴀᴅᴄᴀsᴛɪɴɢ ᴍᴏᴅᴇs:💥
-🔸 pin » ᴩɪɴs ʏᴏᴜʀ ʙʀᴏᴀᴅᴄᴀsᴛᴇᴅ ᴍᴇssᴀɢᴇs ɪɴ sᴇʀᴠᴇᴅ ᴄʜᴀᴛs.
-🔸 pinloud » ᴩɪɴs ʏᴏᴜʀ ʙʀᴏᴀᴅᴄᴀsᴛᴇᴅ ᴍᴇssᴀɢᴇ ɪɴ sᴇʀᴠᴇᴅ ᴄʜᴀᴛs ᴀɴᴅ sᴇɴᴅ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ ᴛᴏ ᴛʜᴇ ᴍᴇᴍʙᴇʀs.
-🔸 user » ʙʀᴏᴀᴅᴄᴀsᴛs ᴛʜᴇ ᴍᴇssᴀɢᴇ ᴛᴏ ᴛʜᴇ ᴜsᴇʀs ᴡʜᴏ ʜᴀᴠᴇ sᴛᴀʀᴛᴇᴅ ʏᴏᴜʀ ʙᴏᴛ.
-🔸 assistant » ʙʀᴏᴀᴅᴄᴀsᴛ ʏᴏᴜʀ ᴍᴇssᴀɢᴇ ғʀᴏᴍ ᴛʜᴇ ᴀssɪᴛᴀɴᴛ ᴀᴄᴄᴏᴜɴᴛ ᴏғ ᴛʜᴇ ʙᴏᴛ.
-🔸 nobot » ғᴏʀᴄᴇs ᴛʜᴇ ʙᴏᴛ ᴛᴏ ɴᴏᴛ ʙʀᴏᴀᴅᴄᴀsᴛ ᴛʜᴇ ᴍᴇssᴀɢᴇ.</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-
-HELP_7 = """<blockquote>**⬇️ Dᴏᴡɴʟᴏᴀᴅꜱ:**</blockquote>
-<blockquote>🔻 /lyrics <song> ➠ Search lyrics  
-🔻 /song <name/url> ➠ Download song  
-🔻 /reel ➠ Download reels  
-🔻 /shorts ➠ Download shorts  
-🔻 /yt ➠ Download YouTube videos</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
 HELP_23 = """<blockquote>**📊 Pɪɴɢ**</blockquote>
 <blockquote>🔻 /ping ➠ Check bot ping  
@@ -253,16 +251,26 @@ HELP_24 = """<blockquote>**📜 Info:**</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-HELP_11 = """<blockquote>**💞 Uʀᴜᴛᴛᴜ Tᴀɢꜱ:**</blockquote>
-<blockquote>🔻 /tagall ➠ Tag all users  
-🔻 /utag ➠ Unlimited tag  
-🔻 /gmtag ➠ Good morning tag  
-🔻 /gntag ➠ Good night tag  
-🔻 /uruttubaby ➠ Random uruttu  
-🔻 /crush ➠ Random romantic quote  
-🔻 /baby ➠ Random love quote  
-🔻 /broken ➠ Random broken quote  
-🔻 /uruttu ➠ Get random uruttu quote</blockquote>
+HELP_25 = """<blockquote>**💀 Sudo:**</blockquote>
+<blockquote>🔻 /addsudo - add a user to Sudo list
+🔻 /rmsudo - Remobe Sudo User
+🔻 /sudoers - check sudoers list</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_27 = """<blockquote>**🎯 Mɪɴɪ Gᴀᴍᴇꜱ:**</blockquote>
+<blockquote>🔻 /dice ➠ Dice game  
+🔻 /dart ➠ Dart game  
+🔻 /basket ➠ Basketball game  
+🔻 /ball ➠ Bowling ball game  
+🔻 /football ➠ Football game  
+🔻 /jackpot ➠ Spin slot machine</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_28 = """<blockquote>👾 Hack:**</blockquote>
+<blockquote>🔻 /hackmember ➠ Get overall member IDs from the chat  
+🔻 /hacklink ➠ Get group link (private also)</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
@@ -274,14 +282,5 @@ HELP_33 = """<blockquote>**🔥 Fʟᴀᴍᴇꜱ:**</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-HELP_19 = """<blockquote>**📜 Hɪꜱᴛᴏʀʏ:**</blockquote>
-<blockquote>🔻 /sg ➠ Get name history  
-🔻 /whois ➠ Get user information</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-HELP_18 = <blockquote>**💌 Wʜɪꜱᴘᴇʀ:**</blockquote>
-<blockquote>🔻 @bot_username [userid/username] [textmessage]</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
-[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
-"""
+
