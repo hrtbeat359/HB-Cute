@@ -89,20 +89,6 @@ async def helper_cb(client, CallbackQuery, _):
     callback_data = CallbackQuery.data.strip()
     cb = callback_data.split(None, 1)[1]
     keyboard = help_back_markup(_)
-    if cb == "hb9":
-        if CallbackQuery.from_user.id not in SUDOERS:
-            return await CallbackQuery.answer(
-                   "𝑉𝑒𝑙𝑖𝑦𝑎 𝑝𝑜𝑑𝑎 🤌🏻 𝐵𝑢𝑡𝑡𝑒𝑟 𝑀𝑎𝑔𝑎𝑛𝑒𝑎", show_alert=True
-            )
-        else:
-            await CallbackQuery.edit_message_text(
-                helpers.HELP_9, reply_markup=keyboard
-            )
-            return await CallbackQuery.answer()
-    try:
-        await CallbackQuery.answer()
-    except:
-        pass
     if cb == "hb1":
         await CallbackQuery.edit_message_text(
             helpers.HELP_1, reply_markup=keyboard
@@ -205,8 +191,10 @@ async def helper_cb(client, CallbackQuery, _):
             helpers.HELP_25, reply_markup=keyboard
         )
     elif cb == "hb26":
-        await CallbackQuery.edit_message_text(
-            helpers.HELP_26, reply_markup=keyboard
+        #await CallbackQuery.edit_message_text(
+            #helpers.HELP_26, reply_markup=keyboard
+        return await CallbackQuery.answer(
+            helpers.HELP_50, show_alert=True
         )
     elif cb == "hb27":
         await CallbackQuery.edit_message_text(
@@ -217,20 +205,28 @@ async def helper_cb(client, CallbackQuery, _):
             helpers.HELP_28, reply_markup=keyboard
         )
     elif cb == "hb29":
-        await CallbackQuery.edit_message_text(
-            helpers.HELP_29, reply_markup=keyboard
+        #await CallbackQuery.edit_message_text(
+            #helpers.HELP_29, reply_markup=keyboard
+        return await CallbackQuery.answer(
+            helpers.HELP_50, show_alert=True
         )
     elif cb == "hb30":
-        await CallbackQuery.edit_message_text(
-            helpers.HELP_30, reply_markup=keyboard
+        #await CallbackQuery.edit_message_text(
+            #helpers.HELP_30, reply_markup=keyboard
+        return await CallbackQuery.answer(
+            helpers.HELP_50, show_alert=True
         )
     elif cb == "hb31":
-        await CallbackQuery.edit_message_text(
-            helpers.HELP_31, reply_markup=keyboard
+        #await CallbackQuery.edit_message_text(
+            #helpers.HELP_31, reply_markup=keyboard
+        return await CallbackQuery.answer(
+            helpers.HELP_50, show_alert=True
         )
     elif cb == "hb32":
-        await CallbackQuery.edit_message_text(
-            helpers.HELP_32, reply_markup=keyboard
+        #await CallbackQuery.edit_message_text(
+            #helpers.HELP_32, reply_markup=keyboard
+        return await CallbackQuery.answer(
+            helpers.HELP_50, show_alert=True
         )
     elif cb == "hb33":
         await CallbackQuery.edit_message_text(
