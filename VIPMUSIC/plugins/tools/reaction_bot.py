@@ -24,25 +24,6 @@ SAFE_REACTIONS = [e for e in START_REACTIONS if e in VALID_REACTIONS]
 if not SAFE_REACTIONS:
     SAFE_REACTIONS = list(VALID_REACTIONS)
 
-# ---------------- PER-CHAT EMOJI ROTATION ----------------
-chat_used_reactions: Dict[int, set] = {}
-
-def next_emoji(chat_id: int) -> str:
-    """Return a random, non-repeating emoji per chat."""
-    if chat_id not in chat_used_reactions:
-        chat_used_reactions[chat_id] = set()
-
-    used = chat_used_reactions[chat_id]
-
-    # Reset once all are used
-    if len(used) >= len(SAFE_REACTIONS):
-        used.clear()
-
-    remaining = [e for e in SAFE_REACTIONS if e not in used]
-    emoji = random.choice(remaining)
-    used.add(emoji)
-    return emoji
-
 # ---------------- ADMIN CHECK ----------------
 async def is_admin_or_sudo(client, message: Message) -> bool:
     user_id = getattr(message.from_user, "id", None)
@@ -105,7 +86,7 @@ async def reaction_on_command(client, message: Message):
 
     chat_id = message.chat.id
     await set_reaction_status(chat_id, True)
-    await message.reply_text("✅ **Reaction mode enabled!**\n\nNow I will react to all messages in this chat.")
+    await message.reply_text("✅ **Reaction mode enabled!**\n\nI will now respond to messages with emoji replies.")
 
 # ---------------- /reactionoff ----------------
 @app.on_message(filters.command("reactionoff") & ~BANNED_USERS)
@@ -115,7 +96,7 @@ async def reaction_off_command(client, message: Message):
 
     chat_id = message.chat.id
     await set_reaction_status(chat_id, False)
-    await message.reply_text("❌ **Reaction mode disabled!**\n\nI will stop reacting to messages in this chat.")
+    await message.reply_text("❌ **Reaction mode disabled!**\n\nI will stop responding to messages with emoji replies.")
 
 # ---------------- /reaction ----------------
 @app.on_message(filters.command("reaction") & ~BANNED_USERS)
@@ -168,22 +149,24 @@ async def reaction_callback_handler(client, callback_query):
     if action == "enable":
         await set_reaction_status(chat_id, True)
         await callback_query.message.edit_text(
-            "✅ **Reaction mode enabled!**\n\nNow I will react to all messages in this chat."
+            "✅ **Reaction mode enabled!**\n\nI will now respond to messages with emoji replies."
         )
     else:
         await set_reaction_status(chat_id, False)
         await callback_query.message.edit_text(
-            "❌ **Reaction mode disabled!**\n\nI will stop reacting to messages in this chat."
+            "❌ **Reaction mode disabled!**\n\nI will stop responding to messages with emoji replies."
         )
     
     await callback_query.answer()
 
-# ---------------- REACT ON ALL MESSAGES ----------------
-@app.on_message((filters.text | filters.caption) & ~BANNED_USERS)
-async def react_on_all_messages(client, message: Message):
+# ---------------- ALTERNATIVE: REPLY WITH EMOJI MESSAGES ----------------
+@app.on_message((filters.text | filters.caption) & ~BANNED_USERS & ~filters.command)
+async def reply_with_emoji(client, message: Message):
     try:
-        # Skip bot commands
+        # Skip bot commands and replies to avoid loops
         if message.text and message.text.startswith("/"):
+            return
+        if message.reply_to_message:
             return
 
         chat_id = message.chat.id
@@ -197,16 +180,35 @@ async def react_on_all_messages(client, message: Message):
         if message.chat.type not in (ChatType.GROUP, ChatType.SUPERGROUP):
             return
 
-        # React to ALL messages
-        emoji = next_emoji(chat_id)
-        try:
-            await message.react(emoji)
-            print(f"[Reaction Bot] Chat {chat_id} → {emoji} for all message")
-        except Exception as e:
-            print(f"[Reaction Bot] Error reacting to message: {e}")
+        # Random chance to reply with emoji (20% chance)
+        if random.random() < 0.2:
+            emoji = random.choice(SAFE_REACTIONS)
+            try:
+                await message.reply(emoji)
+                print(f"[Reaction Bot] Chat {chat_id} → Replied with {emoji}")
+            except Exception as e:
+                print(f"[Reaction Bot] Error replying with emoji: {e}")
 
     except Exception as e:
-        print(f"[react_on_all_messages] error: {e}")
+        print(f"[reply_with_emoji] error: {e}")
+
+# ---------------- ALTERNATIVE 2: ADD EMOJI TO MESSAGE TEXT ----------------
+@app.on_message(filters.command("react") & ~BANNED_USERS)
+async def add_emoji_command(client, message: Message):
+    """Add random emoji to a replied message"""
+    if not message.reply_to_message:
+        return await message.reply_text("❌ Please reply to a message to add an emoji!")
+    
+    emoji = random.choice(SAFE_REACTIONS)
+    original_text = message.reply_to_message.text or message.reply_to_message.caption or ""
+    
+    new_text = f"{original_text} {emoji}"
+    
+    try:
+        await message.reply_to_message.reply(new_text)
+        await message.delete()
+    except Exception as e:
+        await message.reply_text(f"❌ Error: {e}")
 
 # ---------------- LOAD REACTION STATUS ON STARTUP ----------------
 async def load_reaction_status():
