@@ -43,7 +43,7 @@
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-"""<blockquote>**🎉 Gʀᴇᴇᴛɪɴɢꜱ:**</blockquote>
+HELP_1 = """<blockquote>**🎉 Gʀᴇᴇᴛɪɴɢꜱ:**</blockquote>
 <blockquote>🔻 /welcome <on/off> ➠ Enable or disable welcome messages  
 🔻 /welcome ➠ Show current welcome settings  
 🔻 /goodbye ➠ Same as /welcome  
@@ -56,7 +56,7 @@
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-"""<blockquote>**📜 Rᴜʟᴇꜱ:**</blockquote>
+HELP_2 = """<blockquote>**📜 Rᴜʟᴇꜱ:**</blockquote>
 <blockquote>🔻 /rules ➠ Show rules for this chat  
 🔻 /setrules <text> ➠ Set custom rules for this chat</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
@@ -75,7 +75,7 @@
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-"""<blockquote>**👑 Gʀᴏᴜᴘ Mᴀɴᴀɢᴇᴍᴇɴᴛ:**</blockquote>
+HELP_3 = """<blockquote>**👑 Gʀᴏᴜᴘ Mᴀɴᴀɢᴇᴍᴇɴᴛ:**</blockquote>
 <blockquote>🔻 /afk <reason> ➠ Set yourself AFK with a reason  
 🔻 /report ➠ Report a user to admins  
 🔻 /staff ➠ Show admins and positions  
@@ -88,7 +88,7 @@
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-"""<blockquote>**📌 Pins**</blockquote>
+HELP_7 = """<blockquote>**📌 Pins**</blockquote>
 <blockquote>🔻 /pin ➠ ᴘɪɴs ᴀ ᴍᴇssᴀɢᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ.
 🔻 /pinned ➠ ᴅɪsᴘʟᴀʏs ᴛʜᴇ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ.
 🔻 /unpin ➠ ᴜɴᴘɪɴs ᴛʜᴇ ᴄᴜʀʀᴇɴᴛʟʏ ᴘɪɴɴᴇᴅ ᴍᴇssᴀɢᴇ.</blockquote>
@@ -114,7 +114,7 @@
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-<blockquote>**👿 Action**</blockquote>
+HELP_4 = <blockquote>**👿 Action**</blockquote>
 <blockquote>🔻 /kickme : ᴋɪᴄᴋ ʏᴏᴜʀꜱᴇʟꜰ 
 🔻 /ban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ>: ʙᴀɴ ᴀ ᴛᴀɢɢᴇᴅ ᴜꜱᴇʀ
 🔻 /sban <ᴜꜱᴇʀʜᴀɴᴅʟᴇ>: ꜱɪʟᴇɴᴛʟʏ ʙᴀɴ ᴡɪᴛʜᴏᴜᴛ ᴍꜱɢᴇꜱ 
@@ -132,6 +132,22 @@
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
+HELP_5 = """<blockquote>**🥵 Federations:**
+🔻 /newfed <name> - create a federation (private chat only)
+🔻 /delfed <fed_id> - delete a federation (private chat only)
+🔻 /joinfed <fed_id> - join this group to a federation (group owner only)
+🔻 /leavefed - leave current federation (group owner only)
+🔻 /myfeds - list federations you created (private chat)
+🔻 /renamefed <fed_id> <newname> - rename a federation (owner only)
+🔻 /fedchats <fed_id> - list chats in the federation (owner/fadmins)
+🔻 /fedinfo <fed_id> - info about a federation
+🔻 /fpromote <user> - promote to fed-admin (owner or sudo)
+🔻 /fdemote <user> - demote fed-admin
+🔻 /fban <user> <reason> - federational ban
+🔻 /unfban <user> <reason> - federational unban
+🔻 /fbroadcast (reply to message) - broadcast message to all fed chats</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
 """<blockquote>**🎵 Mᴜꜱɪᴄ:**</blockquote>
 <blockquote>🔻 /play <song/url/reply> ➠ Play a song  
@@ -199,7 +215,7 @@
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
-"""<blockquote>**⬇️ Dᴏᴡɴʟᴏᴀᴅꜱ:**</blockquote>
+HELP_6 = """<blockquote>**⬇️ Dᴏᴡɴʟᴏᴀᴅꜱ:**</blockquote>
 <blockquote>🔻 /lyrics <song> ➠ Search lyrics  
 🔻 /song <name/url> ➠ Download song  
 🔻 /reel ➠ Download reels  
