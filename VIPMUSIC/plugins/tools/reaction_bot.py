@@ -160,12 +160,18 @@ async def reaction_callback_handler(client, callback_query):
     await callback_query.answer()
 
 # ---------------- ALTERNATIVE: REPLY WITH EMOJI MESSAGES ----------------
-@app.on_message((filters.text | filters.caption) & ~BANNED_USERS & ~filters.command)
+def is_command(text: str) -> bool:
+    """Check if message is a command"""
+    return text and text.startswith("/")
+
+@app.on_message((filters.text | filters.caption) & ~BANNED_USERS)
 async def reply_with_emoji(client, message: Message):
     try:
-        # Skip bot commands and replies to avoid loops
-        if message.text and message.text.startswith("/"):
+        # Skip bot commands
+        if message.text and is_command(message.text):
             return
+        
+        # Skip replies to avoid loops
         if message.reply_to_message:
             return
 
