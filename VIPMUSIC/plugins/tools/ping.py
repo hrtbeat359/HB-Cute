@@ -69,29 +69,29 @@ async def ping_com(client, message: Message, _):
         user_last_message_time[user_id] = current_time
 
     #PING_IMG_URL = "https://graph.org/file/ffdb1be822436121cf5fd.png"
-    captionss = "**𝑊𝑎𝑖𝑡 𝑃𝑎𝑛𝑛𝑟𝑎 🥹 𝑃𝑖𝑛𝑔 𝐴𝑔𝑎𝑛𝑢𝑚 🤌🏻💙✨**"
+    captionss = "**ᴅιиg ᴅσиg ꨄ︎...**"
     response = await message.reply_photo(PING_IMG_URL, caption=(captionss))
     await asyncio.sleep(1)
-    await response.edit_caption("**𝑊𝑎𝑖𝑡 𝑃𝑎𝑛𝑛𝑟𝑎 🥹 𝑃𝑖𝑛𝑔 𝐴𝑔𝑎𝑛𝑢𝑚 🤌🏻💙✨...**")
+    await response.edit_caption("**ᴅιиg ᴅσиg ꨄ︎.....**")
     await asyncio.sleep(1)
-    await response.edit_caption("**𝑊𝑎𝑖𝑡 𝑃𝑎𝑛𝑛𝑟𝑎 🥹 𝑃𝑖𝑛𝑔 𝐴𝑔𝑎𝑛𝑢𝑚 🤌🏻💙✨.**")
+    await response.edit_caption("**⚡ѕт**")
     await asyncio.sleep(1)
-    await response.edit_caption("**𝑊𝑎𝑖𝑡 𝑃𝑎𝑛𝑛𝑟𝑎 🥹 𝑃𝑖𝑛𝑔 𝐴𝑔𝑎𝑛𝑢𝑚 🤌🏻💙✨..**")
+    await response.edit_caption("**⚡ѕтα**")
     await asyncio.sleep(1.5)
-    await response.edit_caption("**𝑊𝑎𝑖𝑡 𝑃𝑎𝑛𝑛𝑟𝑎 🥹 𝑃𝑖𝑛𝑔 𝐴𝑔𝑎𝑛𝑢𝑚 🤌🏻💙✨...**")
+    await response.edit_caption("**⚡ѕтαя**")
     await asyncio.sleep(2)
-    await response.edit_caption("**𝑊𝑎𝑖𝑡 𝑃𝑎𝑛𝑛𝑟𝑎 🥹 𝑃𝑖𝑛𝑔 𝐴𝑔𝑎𝑛𝑢𝑚 🤌🏻💙✨....**")
+    await response.edit_caption("⚡ѕтαят")
     await asyncio.sleep(2)
-    await response.edit_caption("**𝐼𝑟𝑢 𝑅𝑎𝑠𝑎 𝐴𝑛𝑢𝑝𝑎𝑟𝑒𝑎𝑛 🤌🏻🫀**")
+    await response.edit_caption("**⚡ѕтαятιиg..**")
     await asyncio.sleep(3)
-    await response.edit_caption("**𝐽𝑜𝑙𝑖 𝑀𝑢𝑑𝑢𝑛𝑗𝑢𝑡ℎ𝑢 🥹✨")
+    await response.edit_caption("**⚡ѕтαятιиg.....**")
     start = datetime.now()
     pytgping = await VIP.ping()
     UP, CPU, RAM, DISK = await bot_sys_stats()
     resp = (datetime.now() - start).microseconds / 1000
     text =  _["ping_2"].format(resp, app.name, UP, RAM, CPU, DISK, pytgping)
     carbon = await make_carbon(text)
-    captions = "** 𝐼𝑡ℎ𝑜𝑜𝑜 𝑉𝑎𝑛𝑡ℎ𝑢𝑡𝑒𝑎𝑛.....\n 𝐼𝑡ℎ𝑜𝑜𝑜 𝑉𝑎𝑛𝑡ℎ𝑢𝑡𝑒𝑎𝑛.....**"
+    captions = "**𝐏ιиɢιиɢ...**"
     await message.reply_photo((carbon), caption=captions,
     reply_markup=InlineKeyboardMarkup(
             [
