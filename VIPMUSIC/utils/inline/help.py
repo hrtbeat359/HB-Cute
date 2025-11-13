@@ -154,7 +154,7 @@ def help_back_markup(_):
 def private_help_panel(_):
     buttons = [
         [
-            InlineKeyboardButton(text="💕 𝐇𖾔𖾘𖽳 🦋",callback_data="settings_back_helper"),
+            InlineKeyboardButton(text=_["S_B_12"], callback_data="settings_back_helper"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
