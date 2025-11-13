@@ -38,7 +38,17 @@ async def init():
     except:
         pass
     await app.start()
-    await biolink()  # ✅ Start BioLink . disable biolink. remove this line only
+    
+    # ✅ Start BioLink only if enabled-- BioLink Start
+    
+    if getattr(config, "BIO_LINK_ENABLED", False):
+        await biolink()
+        LOGGER("VIPMUSIC").info("✅ BioLink module started.")
+    else:
+        LOGGER("VIPMUSIC").info("🚫 BioLink module disabled by config.")
+
+    #------Bio Lknn End----------
+    
     for all_module in ALL_MODULES:
         importlib.import_module("VIPMUSIC.plugins" + all_module)
     LOGGER("VIPMUSIC.plugins").info("𝐀𝐥𝐥 𝐅𝐞𝐚𝐭𝐮𝐫𝐞𝐬 𝐋𝐨𝐚𝐝𝐞𝐝 𝐁𝐚𝐛𝐲🥳...")
