@@ -65,3 +65,9 @@ git+https://github.com/THE-VIP-BOY-OP/yt-dlp-youtube-oauth2
 pymongo #fed
 kurigram
 async_pymongo #federation
+
+# === BioLink additional requirements ===
+regex
+coloredlogs
+aiosqlite
+SQLAlchemy
