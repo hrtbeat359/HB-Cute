@@ -153,6 +153,6 @@ async def check_bio(client: Client, message):
         await reset_warnings(chat_id, user_id)
 
 # =================== RUN BOT ===================
-def biolink():
+async def biolink():
     await app.start()
     print("✅ BioLink Bot started successfully.")
