@@ -6,6 +6,7 @@ import os
 import re
 import asyncio
 import time
+import config
 from VIPMUSIC import app
 from time import time
 import asyncio
@@ -70,7 +71,7 @@ async def shayri_group(client: Client, message: Message, _):
             [
                 [
                     InlineKeyboardButton(text=_["CHT"], url="https://t.me/{SUPPORT_CHAT})"),
-                    InlineKeyboardButton(text=_["NET"], url="https://t.me/HeartBeat_Fam"),
+                    InlineKeyboardButton(text=_["NET"], url="https://t.me/{UPDATE_CHANNEL})"),
                 ]
             ]
         ),
@@ -88,7 +89,7 @@ async def shayri_private(client: Client, message: Message, _):
             [
                 [
                     InlineKeyboardButton(text=_["CHT"], url="https://t.me/{SUPPORT_CHAT})"),
-                    InlineKeyboardButton(text=_["NET"], url="https://t.me/HeartBeat_Fam"),
+                    InlineKeyboardButton(text=_["NET"], url="https://t.me/{UPDATE_CHANNEL})"),
                 ]
             ]
         ),
