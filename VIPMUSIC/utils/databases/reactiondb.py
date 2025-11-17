@@ -3,7 +3,7 @@
 # and keep an in-memory cache for fast checks.
 
 from VIPMUSIC.core.mongo import mongodb
-"""
+
 # Collection name
 reaction_statusdb = mongodb["reactionstatus"]
 
@@ -13,10 +13,10 @@ reaction_statusdb = mongodb["reactionstatus"]
 reaction_enabled = {}
 
 async def load_all_statuses():
-    """
-    Load all stored OFF statuses into memory on startup.
-    NOTE: DB stores only OFF documents (missing doc => enabled).
-    """
+    
+    #Load all stored OFF statuses into memory on startup.
+    #NOTE: DB stores only OFF documents (missing doc => enabled).
+    
     cursor = reaction_statusdb.find({})
     docs = await cursor.to_list(length=None)
     # If a doc exists, it means reactions are OFF for that chat
@@ -26,10 +26,10 @@ async def load_all_statuses():
             reaction_enabled[int(chat_id)] = False
 
 async def is_reaction_on(chat_id: int) -> bool:
-    """
+    
    # Returns True if reactions are enabled for chat_id.
    # Missing DB doc means enabled (default ON).
-    """
+    
     if chat_id in reaction_enabled:
         return reaction_enabled[chat_id]
 
@@ -41,11 +41,11 @@ async def is_reaction_on(chat_id: int) -> bool:
 
     reaction_enabled[chat_id] = False
     return False
-"""
+
 async def reaction_on(chat_id: int):
-    """
-    Enable reactions for a chat: remove any OFF record and set cache True.
-    """
+    
+    #Enable reactions for a chat: remove any OFF record and set cache True.
+    
     reaction_enabled[chat_id] = True
     await reaction_statusdb.delete_one({"chat_id": chat_id})
 
