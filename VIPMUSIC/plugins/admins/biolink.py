@@ -3,6 +3,7 @@ import aiosqlite
 import asyncio
 from typing import List, Tuple
 
+from pyrogram import Client
 from pyrogram import filters, errors
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions, Message
 
