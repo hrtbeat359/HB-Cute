@@ -546,8 +546,9 @@ async def anti_flood_detect(client: Client, message: Message):
         # clear cache for that user to avoid repeated actions
         _spam_cache.pop(uid, None)
 
-
+"""
 # ------------------ Run bot (when executed directly) ------------------
 if __name__ == '__main__':
     print("Starting BioLinkRobot plugin...")
     app.run()
+"""
