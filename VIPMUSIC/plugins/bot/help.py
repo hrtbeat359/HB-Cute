@@ -15,7 +15,8 @@ from time import time
 import asyncio
 from VIPMUSIC.utils.extraction import extract_user
 
-# Anti-spam
+
+# Anti-spam system
 user_last_message_time = {}
 user_command_count = {}
 SPAM_THRESHOLD = 2
@@ -97,7 +98,7 @@ async def help_com_group(client, message: Message, _):
 
 
 # ───────────────────────────────────────────────────────────────
-# HELP CALLBACK
+# HELP CALLBACK (Handles hb1 – hb∞ Safely)
 # ───────────────────────────────────────────────────────────────
 @app.on_callback_query(filters.regex("help_callback") & ~BANNED_USERS)
 @languageCB
@@ -108,26 +109,28 @@ async def helper_cb(client, CallbackQuery, _):
 
     keyboard = help_back_markup(_)
 
-    # AUTO-MAP HELP PAGES SAFELY (no AttributeError)
+    # SAFELY LOAD ALL HELP_x EVEN IF NUMBERS ARE MISSING
     help_pages = {}
-    for i in range(1, 100):  # high limit, stops automatically
-        attr = f"HELP_{i}"
-        if hasattr(helpers, attr):
-            help_pages[f"hb{i}"] = getattr(helpers, attr)
-        else:
-            break
 
-    # ALERT-ONLY HELP PAGES
+    for name in dir(helpers):
+        if name.startswith("HELP_"):
+            try:
+                num = int(name.split("_")[1])
+                help_pages[f"hb{num}"] = getattr(helpers, name)
+            except:
+                pass
+
+    # Pages that should show alert instead of normal text
     alert_pages = ["hb26", "hb29", "hb30", "hb31", "hb32"]
 
-    # If callback is for an alert page
+    # If it's an alert page
     if cb in alert_pages:
         return await CallbackQuery.answer(
             helpers.HELP_50,
             show_alert=True
         )
 
-    # Normal help page
+    # If it's a normal help page
     if cb in help_pages:
         return await CallbackQuery.edit_message_text(
             help_pages[cb],
@@ -142,6 +145,7 @@ async def helper_cb(client, CallbackQuery, _):
 @languageCB
 async def first_pagexx(client, CallbackQuery, _):
     menu_next = second_page(_)
+
     try:
         await CallbackQuery.message.edit_text(
             _["help_1"], reply_markup=menu_next
@@ -154,6 +158,7 @@ async def first_pagexx(client, CallbackQuery, _):
 @languageCB
 async def second_pagexx(client, CallbackQuery, _):
     menu_next = third_page(_)
+
     try:
         await CallbackQuery.message.edit_text(
             _["help_1"], reply_markup=menu_next
