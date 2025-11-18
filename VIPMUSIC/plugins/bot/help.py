@@ -15,7 +15,7 @@ from time import time
 import asyncio
 from VIPMUSIC.utils.extraction import extract_user
 
-# Anti-spam system
+# Anti-spam
 user_last_message_time = {}
 user_command_count = {}
 SPAM_THRESHOLD = 2
@@ -32,19 +32,20 @@ async def helper_private(
 ):
 
     is_callback = isinstance(update, types.CallbackQuery)
+
     if is_callback:
         try:
             await update.answer()
         except:
             pass
+
         chat_id = update.message.chat.id
         language = await get_lang(chat_id)
         _ = get_string(language)
-        keyboard = first_page(_)
 
+        keyboard = first_page(_)
         await update.edit_message_text(
-            _["help_1"].format(SUPPORT_CHAT),
-            reply_markup=keyboard
+            _["help_1"].format(SUPPORT_CHAT), reply_markup=keyboard
         )
 
     else:
@@ -55,8 +56,8 @@ async def helper_private(
 
         language = await get_lang(update.chat.id)
         _ = get_string(language)
-        keyboard = first_page(_)
 
+        keyboard = first_page(_)
         await update.reply_photo(
             photo=START_IMG_URL,
             caption=_["help_1"].format(SUPPORT_CHAT),
@@ -70,6 +71,7 @@ async def helper_private(
 @app.on_message(filters.command(["help"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def help_com_group(client, message: Message, _):
+
     user_id = message.from_user.id
     current_time = time()
     last_message_time = user_last_message_time.get(user_id, 0)
@@ -90,12 +92,8 @@ async def help_com_group(client, message: Message, _):
         user_command_count[user_id] = 1
         user_last_message_time[user_id] = current_time
 
-    keyboard = private_help_panel(_)  # already InlineKeyboardMarkup
-
-    await message.reply_text(
-        _["help_2"],
-        reply_markup=keyboard
-    )
+    keyboard = private_help_panel(_)
+    await message.reply_text(_["help_2"], reply_markup=keyboard)
 
 
 # ───────────────────────────────────────────────────────────────
@@ -110,27 +108,35 @@ async def helper_cb(client, CallbackQuery, _):
 
     keyboard = help_back_markup(_)
 
-    # Auto-map pages EXACTLY AS YOU REQUESTED
-    help_pages = {f"hb{i}": getattr(helpers, f"HELP_{i}") for i in range(1, 34)}
+    # AUTO-MAP HELP PAGES SAFELY (no AttributeError)
+    help_pages = {}
+    for i in range(1, 100):  # high limit, stops automatically
+        attr = f"HELP_{i}"
+        if hasattr(helpers, attr):
+            help_pages[f"hb{i}"] = getattr(helpers, attr)
+        else:
+            break
 
-    # Pages that show alert instead of opening
+    # ALERT-ONLY HELP PAGES
     alert_pages = ["hb26", "hb29", "hb30", "hb31", "hb32"]
 
+    # If callback is for an alert page
     if cb in alert_pages:
         return await CallbackQuery.answer(
             helpers.HELP_50,
             show_alert=True
         )
 
+    # Normal help page
     if cb in help_pages:
         return await CallbackQuery.edit_message_text(
             help_pages[cb],
-            reply_markup=keyboard
+            reply_markup=keyboard,
         )
 
 
 # ───────────────────────────────────────────────────────────────
-# MULTI-PAGE HELP NAVIGATION
+# MULTI-PAGE NAVIGATION
 # ───────────────────────────────────────────────────────────────
 @app.on_callback_query(filters.regex("GhostPage1") & ~BANNED_USERS)
 @languageCB
@@ -138,8 +144,7 @@ async def first_pagexx(client, CallbackQuery, _):
     menu_next = second_page(_)
     try:
         await CallbackQuery.message.edit_text(
-            _["help_1"],
-            reply_markup=menu_next
+            _["help_1"], reply_markup=menu_next
         )
     except:
         return
@@ -151,8 +156,7 @@ async def second_pagexx(client, CallbackQuery, _):
     menu_next = third_page(_)
     try:
         await CallbackQuery.message.edit_text(
-            _["help_1"],
-            reply_markup=menu_next
+            _["help_1"], reply_markup=menu_next
         )
     except:
         return
