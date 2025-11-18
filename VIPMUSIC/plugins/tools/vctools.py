@@ -1,3 +1,4 @@
+from VIPMUSIC.utils.decorators.language import language
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from VIPMUSIC import app
@@ -6,18 +7,21 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 # vc on
 @app.on_message(filters.video_chat_started)
+@language
 async def brah(_, msg):
-    await msg.reply("**𝑉𝑎𝑛𝑡ℎ𝑢 𝐾𝑎𝑑ℎ𝑎𝑙 𝑃𝑎𝑛𝑛𝑢𝑛𝑔𝑎 𝑉𝑐 𝐿𝑎 𝐷𝑜𝑙𝑖 & 𝐷𝑜𝑙𝑎𝑛𝑠 🫶🏻🫴🏻🤍**")
+    await msg.reply(_["VC_START"])
 
 # vc off
 @app.on_message(filters.video_chat_ended)
+@language
 async def brah2(_, msg):
-    await msg.reply("**🤧💫 𝑉𝑐 𝐸𝑣𝑎𝑛𝑑𝑎 𝐸𝑛𝑑 𝑃𝑎𝑛𝑛𝑢𝑛𝑎𝑡ℎ𝑢 🥹🤌🏻**")
+    await msg.reply(_["VC_END"])
 
 # invite members on vc
 @app.on_message(filters.video_chat_members_invited)
+@language
 async def brah3(app: app, message: Message):
-    text = f"*💕 {message.from_user.mention}\n\n**𝑉𝑐 𝑉𝑎 𝑃𝑎𝑛𝑔𝑢𝑢𝑢 🫀🫂💙**\n\n**💕 **"
+    text = f"<blockquote>**нɛʏ,\n{message.from_user.mention}</blockquote>\n<blockquote> _[VC_INVITE]</blockquote>**"
     x = 0
     for user in message.video_chat_members_invited.users:
         try:
@@ -32,7 +36,7 @@ async def brah3(app: app, message: Message):
         reply_text = f"{text} 🤭🤭"
 
         await message.reply(reply_text, reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text= "🐣 𝑉𝑐 𝐿𝑎 𝐽𝑜𝑖𝑛 𝐴𝑔𝑢𝑑𝑎 𝑆𝑖𝑙𝑢𝑘𝑢 🦋", url=add_link)],
+            [InlineKeyboardButton(text=_["VC_BUTTON"], url=add_link)],
         ]))
     except Exception as e:
         print(f"Error: {e}")
