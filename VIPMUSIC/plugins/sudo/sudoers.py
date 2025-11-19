@@ -8,7 +8,7 @@ from VIPMUSIC.misc import SUDOERS
 from VIPMUSIC.utils.database import add_sudo, remove_sudo
 from VIPMUSIC.utils.decorators.language import language
 from VIPMUSIC.utils.extraction import extract_user
-from VUPMUSIC.utils.inline import close_markup
+from VIPMUSIC.utils.inline import close_markup
 from config import BANNED_USERS, OWNER_ID
 
 
