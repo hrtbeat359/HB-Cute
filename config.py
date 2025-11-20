@@ -142,6 +142,7 @@ START_IMG_URL = getenv(
 PING_IMG_URL = getenv(
     "PING_IMG_URL", "https://graph.org/file/ffdb1be822436121cf5fd.png"
 )
+RANKING_PIC = "https://graph.org/file/ffdb1be822436121cf5fd.png"
 PLAYLIST_IMG_URL = "https://graph.org/file/f21bcb4b8b9c421409b64.png"
 STATS_IMG_URL = "https://graph.org/file/f21bcb4b8b9c421409b64.png"
 TELEGRAM_AUDIO_URL = "https://graph.org/file/f21bcb4b8b9c421409b64.png"
