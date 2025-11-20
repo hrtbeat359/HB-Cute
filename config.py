@@ -162,8 +162,8 @@ START_REACTIONS = [
 #       \  /   _| |_| |       | |  | | |__| |____) |_| || |____   | |_) | |__| | | |   
 #        \/   |_____|_|       |_|  |_|\____/|_____/|_____\_____|  |____/ \____/  |_|   
 
-#BANNED_USERS = filters.user()
-BANNED_USERS = filters.user([])
+BANNED_USERS = filters.user()
+#BANNED_USERS = filters.user([])
 adminlist = {}
 lyrical = {}
 votemode = {}
