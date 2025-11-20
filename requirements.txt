@@ -16,8 +16,7 @@ pydub
 pycountry
 heroku3
 apscheduler
-#motor==3.3.2
-motor #fed
+motor
 opencv-python-headless==4.9.0.80
 pillow==9.5.0
 psutil
@@ -31,7 +30,6 @@ py-tgcalls==0.9.7
 pykeyboard
 pyshorteners
 pyrogram==2.0.106
-#https://github.com/KurimuzonAkuma/pyrogram/archive/v2.1.23.zip
 python-dotenv
 pyyaml==6.0.1
 requests
@@ -43,12 +41,9 @@ telethon==1.33.1
 telegraph==2.2.0
 unidecode
 yt-dlp
-#git+https://github.com/joetats/youtube_search@master
-#git+https://github.com/alexmercerind/youtube-search-python@main
 youtube_search
 youtube-search-python
 gtts
-git+https://github.com/AsmSafone/SafoneAPI
 lexica-api==1.4.7
 httpx==0.25.2
 gpytranslate
@@ -56,18 +51,11 @@ openai==0.28.0
 mpv
 moviepy
 lyricsgenius
-git+https://github.com/KurimuzonAkuma/pyrogram@dev
-git+https://github.com/yt-dlp/yt-dlp
-git+https://github.com/alexmercerind/youtube-search-python@main
-git+https://github.com/joetats/youtube_search@master
-git+https://github.com/THE-VIP-BOY-OP/yt-dlp-youtube-oauth2
-#pymongo==4.6.3
-pymongo #fed
 kurigram
-async_pymongo #federation
-deep-translator # chatbot
-
-# === BioLink additional requirements ===
+async_pymongo
+deep-translator #chatbot
+git+https://github.com/AsmSafone/SafoneAPI
+# BioLink additional requirements
 regex
 coloredlogs
 aiosqlite
