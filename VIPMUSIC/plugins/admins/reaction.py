@@ -32,6 +32,14 @@ SAFE_REACTIONS = list(VALID_REACTIONS)
 chat_used_reactions: Dict[int, Set[str]] = {}
 
 
+def is_command_msg(msg: Message) -> bool:
+    if not msg.entities:
+        return False
+    for e in msg.entities:
+        if e.type == "bot_command":
+            return True
+    return False
+    
 def next_emoji(chat_id: int) -> str:
     if chat_id not in chat_used_reactions:
         chat_used_reactions[chat_id] = set()
@@ -203,58 +211,46 @@ async def clear_reactions(client, message: Message):
 
 
 # ---------------- REACT TO MENTIONS (NO COMMANDS) ----------------
-@app.on_message(
-    (filters.text | filters.caption)
-    & ~filters.regex(r"^/")        # IMPORTANT: Ignore ALL commands (Pyrogram v1 safe)
-    & ~BANNED_USERS
-)
+@app.on_message((filters.text | filters.caption) & ~BANNED_USERS)
 async def react_on_mentions(client, message: Message):
+
+    # ❗ STOP REACTING TO COMMANDS
+    if is_command_msg(message):
+        return
+
     try:
         raw = message.text or message.caption or ""
         if not raw:
             return
 
         text = raw.lower()
-
-        # Extra safeguard to ignore command-like prefixes
-        if text.startswith(("/", "!", "$", ".", "#")):
-            return
-
         chat_id = message.chat.id
 
-        # Word splitting
         words = set(text.replace("@", " @").split())
 
-        # Collect entities
         entities = (message.entities or []) + (message.caption_entities or [])
         mentioned_usernames = set()
         mentioned_ids = set()
 
         for ent in entities:
-            try:
-                if ent.type == "mention":
-                    src = message.text or message.caption
-                    username = src[ent.offset:ent.offset + ent.length]
-                    mentioned_usernames.add(username.lstrip("@").lower())
+            if ent.type == "mention":
+                src = message.text or message.caption
+                uname = src[ent.offset:ent.offset + ent.length].lstrip("@").lower()
+                mentioned_usernames.add(uname)
 
-                elif ent.type == "text_mention" and ent.user:
-                    mentioned_ids.add(ent.user.id)
-                    if ent.user.username:
-                        mentioned_usernames.add(ent.user.username.lower())
-            except:
-                continue
+            elif ent.type == "text_mention" and ent.user:
+                mentioned_ids.add(ent.user.id)
+                if ent.user.username:
+                    mentioned_usernames.add(ent.user.username.lower())
 
-        # Username triggers
         for uname in mentioned_usernames:
             if uname in custom_mentions:
                 return await message.react(next_emoji(chat_id))
 
-        # ID triggers
         for uid in mentioned_ids:
             if f"id:{uid}" in custom_mentions:
                 return await message.react(next_emoji(chat_id))
 
-        # Keyword triggers
         for trig in custom_mentions:
             if trig.startswith("id:"):
                 continue
