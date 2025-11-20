@@ -66,6 +66,7 @@ kurigram
 git+https://github.com/AsmSafone/SafoneAPI
 SafoneAPI
 async_pymongo #fed
+deep_translator #chatbot
 
 # BioLink / extras
 regex
