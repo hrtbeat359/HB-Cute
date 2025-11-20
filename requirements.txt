@@ -1,4 +1,3 @@
-# Core libraries
 aiofiles
 aiohttp==3.9.3         # CUTE old and new
 asyncio==3.4.3         # CUTE old and  new
@@ -23,7 +22,7 @@ wget
 pyfiglet
 qrcode
 pytz
-future==1.0.0        # SHUKLA, Cute is 0.18.3
+future=>0.18.3        # CUTE, SHUKLA 1.0.0, 
 search_engine_parser
 py-tgcalls==0.9.7
 pykeyboard
@@ -43,7 +42,7 @@ youtube_search
 youtube-search-python
 gtts
 lexica-api==1.4.7
-httpx>=0.28.1           # SHUKLA, CUTE is 0.27.0
+httpx==0.27.0           # CUTE, SHUKLA =>0.28.1
 gpytranslate
 openai==0.28.0
 mpv
@@ -56,7 +55,7 @@ youtube_dl==2021.12.17  # from SHUKLA
 bing_image_downloader
 bs4
 cloudscraper
-flask==2.2.2            # CUTE
+flask==2.2.2   #keep_alive         # CUTE
 pymongo[srv]==3.12.3
 kurigram
 git+https://github.com/AsmSafone/SafoneAPI
