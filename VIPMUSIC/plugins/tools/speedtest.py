@@ -1,5 +1,4 @@
 import asyncio
-
 import speedtest
 from pyrogram import filters
 from pyrogram.types import Message
@@ -9,28 +8,32 @@ from VIPMUSIC.misc import SUDOERS
 from VIPMUSIC.utils.decorators.language import language
 
 
-def testspeed(m, _):
+def testspeed():
+    """Run speedtest in a blocking function."""
     try:
         test = speedtest.Speedtest()
         test.get_best_server()
-        m = m.edit_text(_["server_12"])
         test.download()
-        m = m.edit_text(_["server_13"])
         test.upload()
         test.results.share()
-        result = test.results.dict()
-        m = m.edit_text(_["server_14"])
+        return test.results.dict()
     except Exception as e:
-        return m.edit_text(f"<code>{e}</code>")
-    return result
+        return {"error": str(e)}
 
 
 @app.on_message(filters.command(["speedtest", "spt"], prefixes=["/", "!", "%", ",", "", ".", "@", "#"]) & SUDOERS)
-@language 
+@language
 async def speedtest_function(client, message: Message, _):
-    m = await message.reply_text(_["server_11"])
+    # Send initial message once
+    status_msg = await message.reply_text(_["server_11"])
+
     loop = asyncio.get_event_loop()
-    result = await loop.run_in_executor(None, testspeed, m, _)
+    result = await loop.run_in_executor(None, testspeed)
+
+    if "error" in result:
+        await status_msg.edit_text(f"<code>{result['error']}</code>")
+        return
+
     output = _["server_15"].format(
         result["client"]["isp"],
         result["client"]["country"],
@@ -41,5 +44,8 @@ async def speedtest_function(client, message: Message, _):
         result["server"]["latency"],
         result["ping"],
     )
-    msg = await message.reply_photo(photo=result["share"], caption=output)
-    await m.delete()
+
+    # Send final result
+    await message.reply_photo(photo=result["share"], caption=output)
+    # Delete initial status message
+    await status_msg.delete()
