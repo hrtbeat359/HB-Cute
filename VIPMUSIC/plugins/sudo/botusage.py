@@ -1,220 +1,171 @@
+import asyncio
 from datetime import datetime
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from VIPMUSIC import app
 from VIPMUSIC.misc import SUDOERS
-from VIPMUSIC.utils.database import (
-    get_served_users,
-    get_served_chats,
-    mongodb,
-)
-
-# Mongo collection for monthly users
-monthly_db = mongodb.monthly_users
-config_db = mongodb.monthly_config   # store last reset date
+from VIPMUSIC.utils.database import mongodb
 
 
-# =====================================================
-# AUTO RESET MONTHLY USERS ON 1st OF EVERY MONTH
-# =====================================================
+# ====== Mongo Collections ======
+users_col = mongodb.users
+chats_col = mongodb.chats
+channels_col = mongodb.channels
+monthly_col = mongodb.monthly_users
 
+
+# =============== AUTO RESET EVERY 1ST OF MONTH ===================
 async def auto_reset_monthly():
-    """Run once when bot starts, resets if needed."""
-    today = datetime.now()
-    today_month_key = today.strftime("%Y-%m")
+    while True:
+        now = datetime.utcnow()
 
-    config = await config_db.find_one({"config": "monthly_reset"})
-    last_reset = None if not config else config.get("last")
+        # Reset only on 1st day at 00:00 UTC
+        if now.day == 1 and now.hour == 0:
+            await monthly_col.drop()
+            print("[AUTO-RESET] Monthly Users count reset.")
 
-    # If never reset OR month changed → reset
-    if last_reset != today_month_key:
-        await monthly_db.delete_many({})
-        await config_db.update_one(
-            {"config": "monthly_reset"},
-            {"$set": {"last": today_month_key}},
-            upsert=True
-        )
-        print(f"[Monthly Reset] Reset monthly users for {today_month_key}")
+            # Wait 1 hour before checking again to avoid multiple resets
+            await asyncio.sleep(3600)
+
+        await asyncio.sleep(300)  # check every 5 minutes
 
 
-# Call once on startup
-app.startup_tasks.append(auto_reset_monthly)
+# Run background task
+asyncio.create_task(auto_reset_monthly())
 
 
-# =====================================================
-# Helper: Add monthly user
-# =====================================================
+# =============== FUNCTIONS =====================
+async def get_stats():
+    total_users = await users_col.count_documents({})
+    total_chats = await chats_col.count_documents({})
+    total_channels = await channels_col.count_documents({})
+    monthly_users = await monthly_col.count_documents({})
 
-async def add_monthly_user(user_id: int):
-    month_key = datetime.now().strftime("%Y-%m")
-    await monthly_db.update_one(
-        {"month": month_key},
-        {"$addToSet": {"users": user_id}},
-        upsert=True
-    )
+    return total_users, total_chats, total_channels, monthly_users
 
 
-async def get_monthly_users():
-    month_key = datetime.now().strftime("%Y-%m")
-    data = await monthly_db.find_one({"month": month_key})
-    if not data:
-        return 0
-    return len(data.get("users", []))
-
-
-# =====================================================
-# /totalusers
-# =====================================================
-
+# =============== HANDLER: /totalusers =====================
 @app.on_message(filters.command("totalusers") & filters.user(SUDOERS))
-async def total_users(_, message):
-    users = len(await get_served_users())
-    chats = len(await get_served_chats())
-    monthly = await get_monthly_users()
+async def total_users_handler(client, message):
+    total_users, total_chats, total_channels, monthly_users = await get_stats()
 
     keyboard = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("Total Chats", callback_data="stats_chats"),
-                InlineKeyboardButton("Total Channels", callback_data="stats_channels"),
+                InlineKeyboardButton("Total Chats", callback_data="show_chats"),
+                InlineKeyboardButton("Total Channels", callback_data="show_channels"),
             ],
-            [
-                InlineKeyboardButton("Monthly Users", callback_data="stats_monthly")
-            ]
+            [InlineKeyboardButton("Monthly Users", callback_data="show_monthly")],
         ]
     )
 
     text = (
-        f"👤 **Total Users:** `{users}`\n"
-        f"💬 **Total Chats:** `{chats}`\n"
-        f"📡 **Total Channels:** `{chats}`\n"
-        f"📅 **Monthly Users:** `{monthly}`"
+        f"👥 **Total Users:** `{total_users}`\n"
+        f"💬 **Total Chats:** `{total_chats}`\n"
+        f"📢 **Total Channels:** `{total_channels}`\n"
+        f"📅 **Monthly Users:** `{monthly_users}`"
     )
 
     await message.reply_text(text, reply_markup=keyboard)
 
 
-# =====================================================
-# /totalchats
-# =====================================================
-
+# =============== HANDLER: /totalchats =====================
 @app.on_message(filters.command("totalchats") & filters.user(SUDOERS))
-async def total_chats(_, message):
-    chats = len(await get_served_chats())
-    users = len(await get_served_users())
-    monthly = await get_monthly_users()
+async def total_chats_handler(client, message):
+    _, total_chats, total_channels, monthly_users = await get_stats()
 
     keyboard = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("Total Users", callback_data="stats_users"),
-                InlineKeyboardButton("Total Channels", callback_data="stats_channels"),
+                InlineKeyboardButton("Total Users", callback_data="show_users"),
+                InlineKeyboardButton("Total Channels", callback_data="show_channels"),
             ],
-            [
-                InlineKeyboardButton("Monthly Users", callback_data="stats_monthly")
-            ]
+            [InlineKeyboardButton("Monthly Users", callback_data="show_monthly")],
         ]
     )
 
     text = (
-        f"💬 **Total Chats:** `{chats}`\n"
-        f"👤 **Total Users:** `{users}`\n"
-        f"📅 **Monthly Users:** `{monthly}`"
+        f"💬 **Total Chats:** `{total_chats}`\n"
+        f"📢 **Total Channels:** `{total_channels}`\n"
+        f"👥 **Total Users:** `{_}`\n"
+        f"📅 **Monthly Users:** `{monthly_users}`"
     )
 
     await message.reply_text(text, reply_markup=keyboard)
 
 
-# =====================================================
-# /totalchannels
-# =====================================================
-
+# =============== HANDLER: /totalchannels =====================
 @app.on_message(filters.command("totalchannels") & filters.user(SUDOERS))
-async def total_channels(_, message):
-    chats = len(await get_served_chats())
-    users = len(await get_served_users())
-    monthly = await get_monthly_users()
+async def total_channels_handler(client, message):
+    total_users, total_chats, total_channels, monthly_users = await get_stats()
 
     keyboard = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("Total Users", callback_data="stats_users"),
-                InlineKeyboardButton("Total Chats", callback_data="stats_chats"),
+                InlineKeyboardButton("Total Users", callback_data="show_users"),
+                InlineKeyboardButton("Total Chats", callback_data="show_chats"),
             ],
-            [
-                InlineKeyboardButton("Monthly Users", callback_data="stats_monthly")
-            ]
+            [InlineKeyboardButton("Monthly Users", callback_data="show_monthly")],
         ]
     )
 
     text = (
-        f"📡 **Total Channels:** `{chats}`\n"
-        f"👤 **Total Users:** `{users}`\n"
-        f"📅 **Monthly Users:** `{monthly}`"
+        f"📢 **Total Channels:** `{total_channels}`\n"
+        f"👥 **Total Users:** `{total_users}`\n"
+        f"💬 **Total Chats:** `{total_chats}`\n"
+        f"📅 **Monthly Users:** `{monthly_users}`"
     )
 
     await message.reply_text(text, reply_markup=keyboard)
 
 
-# =====================================================
-# /monthlyusers
-# =====================================================
-
+# =============== HANDLER: /monthlyusers =====================
 @app.on_message(filters.command("monthlyusers") & filters.user(SUDOERS))
-async def monthly_users_cmd(_, message):
-    monthly = await get_monthly_users()
-    users = len(await get_served_users())
-    chats = len(await get_served_chats())
+async def monthly_handler(client, message):
+    monthly_users = await monthly_col.count_documents({})
 
     keyboard = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("Total Users", callback_data="stats_users"),
-                InlineKeyboardButton("Total Chats", callback_data="stats_chats"),
+                InlineKeyboardButton("Total Users", callback_data="show_users"),
+                InlineKeyboardButton("Total Chats", callback_data="show_chats"),
             ],
-            [
-                InlineKeyboardButton("Total Channels", callback_data="stats_channels"),
-            ]
+            [InlineKeyboardButton("Total Channels", callback_data="show_channels")],
         ]
     )
 
-    text = (
-        f"📅 **Monthly Active Users:** `{monthly}`\n"
-        f"👤 **Total Users:** `{users}`\n"
-        f"💬 **Total Chats:** `{chats}`"
-    )
+    text = f"📅 **Monthly Users:** `{monthly_users}`"
 
     await message.reply_text(text, reply_markup=keyboard)
 
 
-# =====================================================
-# Callback Query Handler
-# =====================================================
-
+# =============== INLINE BUTTON CALLBACKS =====================
 @app.on_callback_query()
-async def stats_callback(_, cb):
-    data = cb.data
+async def callback_handler(client, callback):
 
-    if not data.startswith("stats_"):
-        return
+    if callback.data == "show_users":
+        total_users, total_chats, total_channels, monthly_users = await get_stats()
+        await callback.message.edit_text(
+            f"👥 Total Users: `{total_users}`",
+        )
 
-    users = len(await get_served_users())
-    chats = len(await get_served_chats())
-    monthly = await get_monthly_users()
+    elif callback.data == "show_chats":
+        total_users, total_chats, total_channels, monthly_users = await get_stats()
+        await callback.message.edit_text(
+            f"💬 Total Chats: `{total_chats}`",
+        )
 
-    if data == "stats_users":
-        txt = f"👤 **Total Users:** `{users}`"
-    elif data == "stats_chats":
-        txt = f"💬 **Total Chats:** `{chats}`"
-    elif data == "stats_channels":
-        txt = f"📡 **Total Channels:** `{chats}`"
-    elif data == "stats_monthly":
-        txt = f"📅 **Monthly Active Users:** `{monthly}`"
-    else:
-        return
+    elif callback.data == "show_channels":
+        total_users, total_chats, total_channels, monthly_users = await get_stats()
+        await callback.message.edit_text(
+            f"📢 Total Channels: `{total_channels}`",
+        )
 
-    await cb.message.edit_text(
-        txt, reply_markup=cb.message.reply_markup
-    )
-    await cb.answer()
+    elif callback.data == "show_monthly":
+        monthly_users = await monthly_col.count_documents({})
+        await callback.message.edit_text(
+            f"📅 Monthly Users: `{monthly_users}`",
+        )
+
+    await callback.answer()
