@@ -22,8 +22,8 @@ import config
 import traceback
 from VIPMUSIC import LOGGER
 
-API_URL = "https://teaminflex.xyz"
-API_KEY = "INFLEX93454428D"
+API_URL = "" #"https://teaminflex.xyz"
+API_KEY = "" #"INFLEX93454428D"
 
 def cookie_txt_file():
     cookie_dir = f"{os.getcwd()}/cookies"
