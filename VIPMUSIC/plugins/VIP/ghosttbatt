@@ -1,0 +1,82 @@
+import re
+import random
+import asyncio
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from VIPMUSIC import app
+
+
+###### GOOD MORNING 
+@app.on_message(filters.command(["bat", "ghosttbatt", "Bat", "here"], prefixes=["@", "Ghost ", "ghost ", "bat ", ]))
+async def goodmorning_handler(_, message):
+    sender = message.from_user.mention
+
+    # Step 1: Random emoji
+    emoji = get_random_emoji()
+    emoji_msg = await app.send_message(message.chat.id, emoji)
+
+    # Step 2: Delete emoji
+    await asyncio.sleep(1.2)
+    try:
+        await emoji_msg.delete()
+    except:
+        pass
+
+    # Step 3: Random video
+    video_url = get_random_video()
+
+    # Step 4: Random caption
+    caption = get_random_caption(sender)
+
+    # Step 5: Inline buttons
+    buttons = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("🦇 𝐏ᴍ", url="https://t.me/ghosttbatt"),
+                InlineKeyboardButton("✨ 𝐊ɪɴɢᴅᴏᴍ", url="https://t.me/HeartBeat_Fam") #callback_data="close_gm")
+            ]
+        ]
+    )
+
+    await app.send_video(
+        chat_id=message.chat.id,
+        video=video_url,
+        caption=caption,
+        reply_markup=buttons
+    )
+
+
+def get_random_video():
+    videos = [
+        "https://telegra.ph/file/2c63e594336bfab096835.mp4",
+        "https://telegra.ph/file/8e5a08a654079fef23659.mp4",
+        "https://telegra.ph/file/7dd498fb3c0ddd6c17e84.mp4",
+        "https://telegra.ph/file/941f1237d433974398b12.mp4",
+    ]
+    return random.choice(videos)
+
+
+def get_random_emoji():
+    emojis = ["🥰", "🥱", "🤗", "🌞", "✨", "💛"]
+    return random.choice(emojis)
+
+
+def get_random_caption(sender):
+    captions = [
+        f"**Hey, {sender}!** 🌞✨\nStart your day with a smile 😊",
+        f"**Rise & Shine {sender}!** ☀️🥰\nHave a bright and beautiful morning!",
+        f"**Wake up {sender}!** 🤗💛\nA new day, new blessings!",
+        f"**Good Morning {sender}!** 🌼💛\nWishing you a peaceful and happy day!",
+        f"**Hello sunshine {sender}!** 🌅✨\nMay your morning be as sweet as you!",
+    ]
+    return random.choice(captions)
+
+
+# Close Button Handler
+@app.on_callback_query(filters.regex("close_gm"))
+async def close_gm_btn(_, query):
+    try:
+        await query.message.delete()
+    except:
+        pass
+    await query.answer()
