@@ -16,6 +16,7 @@ from pyrogram.enums import ChatMemberStatus
 from pymongo import MongoClient
 from deep_translator import GoogleTranslator
 
+
 # -------------------- Application client -------------------- #
 try:
     from VIPMUSIC import app
@@ -24,6 +25,7 @@ except Exception:
         from main import app
     except Exception:
         raise RuntimeError("Could not import Pyrogram Client as 'app'.")
+
 
 # -------------------- MongoDB setup -------------------- #
 try:
@@ -47,6 +49,7 @@ translator = GoogleTranslator()
 replies_cache = []
 blocklist = {}
 message_counts = {}
+
 
 # -------------------- Helpers -------------------- #
 async def load_replies_cache():
@@ -156,8 +159,12 @@ def chatbot_keyboard(is_enabled: bool):
     )
 
 
+# ===================================================================
+# FIX: ALL COMMAND HANDLERS MUST BE group=90  (NO LOGIC CHANGED)
+# ===================================================================
+
 # -------------------- /chatbot -------------------- #
-@app.on_message(filters.command("chatbot") & filters.group)
+@app.on_message(filters.command("chatbot") & filters.group, group=90)
 async def chatbot_settings_group(client, message):
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -175,7 +182,7 @@ async def chatbot_settings_group(client, message):
     await message.reply_text(txt, reply_markup=chatbot_keyboard(enabled))
 
 
-@app.on_message(filters.command("chatbot") & filters.private)
+@app.on_message(filters.command("chatbot") & filters.private, group=90)
 async def chatbot_settings_private(client, message):
     chat_id = message.chat.id
     doc = status_coll.find_one({"chat_id": chat_id})
@@ -185,7 +192,7 @@ async def chatbot_settings_private(client, message):
 
 
 # -------------------- Callback -------------------- #
-@app.on_callback_query(filters.regex("^cb_(enable|disable)$"))
+@app.on_callback_query(filters.regex("^cb_(enable|disable)$"), group=90)
 async def chatbot_toggle_cb(client, cq: CallbackQuery):
     chat_id = cq.message.chat.id
     uid = cq.from_user.id
@@ -213,7 +220,7 @@ async def chatbot_toggle_cb(client, cq: CallbackQuery):
 
 
 # -------------------- /chatbot reset -------------------- #
-@app.on_message(filters.command("chatbot") & filters.regex("reset") & filters.group)
+@app.on_message(filters.command("chatbot") & filters.regex("reset") & filters.group, group=90)
 async def chatbot_reset_group(client, message):
     if not await is_user_admin(client, message.chat.id, message.from_user.id):
         return await message.reply_text("❌ Only admins can do this.")
@@ -222,7 +229,7 @@ async def chatbot_reset_group(client, message):
     await message.reply_text("✅ All replies cleared.")
 
 
-@app.on_message(filters.command("chatbot") & filters.regex("reset") & filters.private)
+@app.on_message(filters.command("chatbot") & filters.regex("reset") & filters.private, group=90)
 async def chatbot_reset_private(client, message):
     chatai_coll.delete_many({})
     replies_cache.clear()
@@ -230,7 +237,7 @@ async def chatbot_reset_private(client, message):
 
 
 # -------------------- /setlang -------------------- #
-@app.on_message(filters.command("setlang") & filters.group)
+@app.on_message(filters.command("setlang") & filters.group, group=90)
 async def setlang_group(client, message):
     if not await is_user_admin(client, message.chat.id, message.from_user.id):
         return await message.reply_text("❌ Only admins can do this.")
@@ -246,7 +253,7 @@ async def setlang_group(client, message):
     await message.reply_text(f"✅ Language set to `{lang}`")
 
 
-@app.on_message(filters.command("setlang") & filters.private)
+@app.on_message(filters.command("setlang") & filters.private, group=90)
 async def setlang_private(client, message):
     parts = message.text.split(maxsplit=1)
     if len(parts) < 2:
@@ -258,8 +265,8 @@ async def setlang_private(client, message):
     await message.reply_text(f"✅ Language set to `{lang}`")
 
 
-# -------------------- Learn Replies -------------------- #
-@app.on_message(filters.reply & filters.group)
+# -------------------- Learn Replies (must NOT block bot) -------------------- #
+@app.on_message(filters.reply & filters.group, group=90)
 async def learn_reply_group(client, message):
     if not message.reply_to_message:
         return
@@ -271,7 +278,7 @@ async def learn_reply_group(client, message):
         await save_reply(message.reply_to_message, message)
 
 
-@app.on_message(filters.reply & filters.private)
+@app.on_message(filters.reply & filters.private, group=90)
 async def learn_reply_private(client, message):
     if not message.reply_to_message:
         return
@@ -283,8 +290,9 @@ async def learn_reply_private(client, message):
         await save_reply(message.reply_to_message, message)
 
 
-# -------------------- MAIN CHATBOT HANDLER -------------------- #
-# IMPORTANT: group=99 fixes all command issues
+# ===================================================================
+# MAIN CHATBOT HANDLER (DO NOT CHANGE)
+# ===================================================================
 @app.on_message(filters.incoming & ~filters.me, group=99)
 async def chatbot_handler(client, message: Message):
     if message.edit_date:
@@ -324,7 +332,6 @@ async def chatbot_handler(client, message: Message):
     if s and s.get("status") == "disabled":
         return
 
-    # FIX: allow /play, /start, /help etc.
     if message.text and message.text.startswith("/"):
         return
 
