@@ -11,12 +11,12 @@ from pyrogram import filters, __version__ as pyrover
 from pyrogram.types import Message
 
 from VIPMUSIC import app
-import time
 from VIPMUSIC.misc import SUDOERS
 from config import MONGO_DB_URI
 from motor.motor_asyncio import AsyncIOMotorClient
 
-START_TIME = time.time()
+START_TIME = time.time()    # Bot start time
+
 
 # ---------- SUDO FILTER ----------
 def sudo_filter(_, __, message: Message):
@@ -94,7 +94,6 @@ def get_top_processes():
 @app.on_message(filters.command("botstats") & sudo_only)
 async def botstats_handler(client, message: Message):
 
-    # ---- MAIN SYSTEM INFO ----
     uptime = get_readable_time(int(time.time() - START_TIME))
     uname = platform.uname()
     cpu = psutil.cpu_percent(interval=1)
@@ -103,8 +102,9 @@ async def botstats_handler(client, message: Message):
     disk = psutil.disk_usage("/").percent
     load1, load5, load15 = psutil.getloadavg()
 
-    # ---- EXTRA ----
+    # CPU Temp (may be N/A on some VPS)
     temp = psutil.sensors_temperatures().get('coretemp', [{}])[0].get("current", "N/A")
+
     ipv4 = socket.gethostbyname(socket.gethostname())
     ipv6 = "N/A"
     try:
