@@ -1,11 +1,10 @@
+import aiohttp
+import asyncio
+from time import time
 from pyrogram import filters
 from pyrogram.types import Message
-from time import time
-import asyncio
 
 from VIPMUSIC import app
-from VIPMUSIC.utils.extraction import extract_user
-from VIPMUSIC.utils.api import api  # make sure your api file exports "api"
 
 print("[ccbin] Loaded ccbin.py")
 
@@ -17,16 +16,28 @@ SPAM_THRESHOLD = 2        # max 2 commands
 SPAM_WINDOW_SECONDS = 5   # within 5 seconds
 
 
+# --------------------------
+# BIN Lookup Function (API)
+# Using public API: https://lookup.binlist.net/ 
+# --------------------------
+async def fetch_bin_info(bin_code: str):
+    url = f"https://lookup.binlist.net/{bin_code}"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
+
+
 @app.on_message(filters.command(["bin", "ccbin", "bininfo"], [".", "!", "/"]))
 async def check_ccbin(client, message: Message):
     user_id = message.from_user.id
     current_time = time()
 
+    # ------- Anti-Spam -------
     last_time = user_last_message_time.get(user_id, 0)
 
-    # -------------------------
-    # ANTI-SPAM PROTECTION
-    # -------------------------
     if current_time - last_time < SPAM_WINDOW_SECONDS:
         user_last_message_time[user_id] = current_time
         user_command_count[user_id] = user_command_count.get(user_id, 0) + 1
@@ -42,12 +53,10 @@ async def check_ccbin(client, message: Message):
         user_command_count[user_id] = 1
         user_last_message_time[user_id] = current_time
 
-    # -------------------------
-    # BIN INPUT CHECK
-    # -------------------------
+    # ------- Input Check -------
     if len(message.command) < 2:
         return await message.reply_text(
-            "<b>Please enter a BIN number to check details.</b>"
+            "<b>Please enter a BIN number to get details.</b>"
         )
 
     try:
@@ -62,29 +71,35 @@ async def check_ccbin(client, message: Message):
     if not bin_code.isdigit() or len(bin_code) < 6:
         return await aux.edit("<b>❌ Invalid BIN. Must be 6+ digits.</b>")
 
-    # -------------------------
-    # API CALL
-    # -------------------------
+    # ------- Fetch BIN Data -------
     try:
-        resp = await api.bininfo(bin_code)
+        data = await fetch_bin_info(bin_code)
 
-        # If API returns None or error
-        if not resp:
+        if not data:
             return await aux.edit("🚫 BIN not recognized.")
+
+        bank = data.get("bank", {}).get("name", "Unknown")
+        country = data.get("country", {}).get("name", "Unknown")
+        flag = data.get("country", {}).get("emoji", "🏳️")
+        iso = data.get("country", {}).get("alpha2", "N/A")
+        level = data.get("brand", "N/A")
+        prepaid = "Yes" if data.get("prepaid") else "No"
+        ctype = data.get("type", "N/A")
+        vendor = data.get("scheme", "N/A")
 
         return await aux.edit(f"""
 <b>💠 BIN Details:</b>
 
-<b>🏦 Bank:</b> <tt>{resp.bank}</tt>
-<b>💳 BIN:</b> <tt>{resp.bin}</tt>
-<b>🏡 Country:</b> <tt>{resp.country}</tt>
-<b>🇮🇳 Flag:</b> <tt>{resp.flag}</tt>
-<b>🧿 ISO:</b> <tt>{resp.iso}</tt>
-<b>⏳ Level:</b> <tt>{resp.level}</tt>
-<b>🔴 Prepaid:</b> <tt>{resp.prepaid}</tt>
-<b>🆔 Type:</b> <tt>{resp.type}</tt>
-<b>ℹ️ Vendor:</b> <tt>{resp.vendor}</tt>
+<b>🏦 Bank:</b> <tt>{bank}</tt>
+<b>💳 BIN:</b> <tt>{bin_code}</tt>
+<b>🏡 Country:</b> <tt>{country}</tt>
+<b>{flag} Flag:</b> <tt>{flag}</tt>
+<b>🧿 ISO:</b> <tt>{iso}</tt>
+<b>⏳ Level:</b> <tt>{level}</tt>
+<b>🔴 Prepaid:</b> <tt>{prepaid}</tt>
+<b>🆔 Type:</b> <tt>{ctype}</tt>
+<b>ℹ️ Vendor:</b> <tt>{vendor}</tt>
 """)
 
     except Exception as e:
-        return await aux.edit("🚫 BIN not recognized. Please enter a valid BIN.")
+        return await aux.edit("🚫 Error fetching BIN info. Try again later.")
