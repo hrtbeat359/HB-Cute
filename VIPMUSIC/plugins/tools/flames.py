@@ -198,7 +198,7 @@ def make_poster(image_url, name1, name2, title_cap, percentage):
         draw_centered_text(150, f"{name1.title()} x {name2.title()}\n", font_small)
         draw_centered_text(310, f"{title_cap}", font_text)
         draw_centered_text(350, f"Compatibility: {percentage}%", font_text)
-        draw_centered_text(530, "Made By x @HeartBeat_Fam", font_fancy)
+        draw_centered_text(530, "Made By x @ H e a r t B e a t _ F a m", font_fancy)
 
         # --- Output image ---
         bio = io.BytesIO()
@@ -249,7 +249,8 @@ async def flames_command(client, message):
             f"🤞🏻 𝐅ᴜɴ𝐋ᴇᴠᴇʟ: **{fun}%**\n       {emoji_bar(fun)}\n"
             f"✨ 𝐂ᴏᴍᴍᴜɴɪᴄᴀᴛɪᴏɴ: **{communication}%**\n       {emoji_bar(communication)}\n"
             f"💯 𝐓ʀᴜsᴛ: **{trust}%**\n       {emoji_bar(trust)}</blockquote>\n"
-            f"<blockquote>🔥 {result['desc']}</blockquote>"
+            f"<blockquote>🔥 {result['desc']}</blockquote>\n"
+            f"<blockquote> 𝐁ᴇ𝗌ᴛ 𝐌ᴀᴛᴄʜᴇ𝗌 🚀 /match</blockquote>"
         )
 
         buttons = InlineKeyboardMarkup([
