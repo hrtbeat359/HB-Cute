@@ -10,11 +10,13 @@ from datetime import datetime
 from pyrogram import filters, __version__ as pyrover
 from pyrogram.types import Message
 
-from VIPMUSIC import app, START_TIME
+from VIPMUSIC import app
+import time
 from VIPMUSIC.misc import SUDOERS
 from config import MONGO_DB_URI
 from motor.motor_asyncio import AsyncIOMotorClient
 
+START_TIME = time.time()
 
 # ---------- SUDO FILTER ----------
 def sudo_filter(_, __, message: Message):
