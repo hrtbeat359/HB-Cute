@@ -115,8 +115,8 @@ HELP_11 = """<blockquote>**💞 ᴜʀᴜᴛᴛᴜ ᴛᴀɢꜱ:**</blockquote>
 🔻 /gntag ➠ ɢᴏᴏᴅ ɴɪɢʜᴛ ᴛᴀɢ  
 🔻 /uruttubaby ➠ ʀᴀɴᴅᴏᴍ ᴜʀᴜᴛᴛᴜ  
 🔻 /crush ➠ ʀᴀɴᴅᴏᴍ ʀᴏᴍᴀɴᴛɪᴄ ǫᴜᴏᴛᴇ  
-🔻 /baby ➠ ʀᴀɴᴅᴏᴍ ʟᴏᴠᴇ ǫᴜᴏᴛᴇ  
-🔻 /broken ➠ ʀᴀɴᴅᴏᴍ ʙʀᴏᴋᴇɴ ǫᴜᴏᴛᴇ  
+🔻 /soul ➠ ʀᴀɴᴅᴏᴍ ʟᴏᴠᴇ ǫᴜᴏᴛᴇ  
+🔻 /brokeme ➠ ʀᴀɴᴅᴏᴍ ʙʀᴏᴋᴇɴ ǫᴜᴏᴛᴇ  
 🔻 /uruttu ➠ ɢᴇᴛ ʀᴀɴᴅᴏᴍ ᴜʀᴜᴛᴛᴜ ǫᴜᴏᴛᴇ</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
