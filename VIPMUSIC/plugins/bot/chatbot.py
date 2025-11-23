@@ -27,7 +27,8 @@ except Exception:
 
 # -------------------- MongoDB setup -------------------- #
 try:
-    from config import MONGO_URL, SUDOERS
+    from config import MONGO_URL 
+    from VIPMUSIC.misc import SUDOERS
 except Exception:
     MONGO_URL = os.environ.get(
         "MONGO_URL",
