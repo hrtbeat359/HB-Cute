@@ -1,6 +1,6 @@
-# VIPMUSIC/plugins/bot/reactionbot.py
 import asyncio
 import random
+import re
 from typing import Set, Dict, Tuple, Optional
 
 from pyrogram import filters
@@ -76,7 +76,12 @@ async def load_custom_mentions():
         print(f"[Reaction Manager] DB load error: {e}")
 
 
-asyncio.get_event_loop().create_task(load_custom_mentions())
+# schedule startup tasks safely
+try:
+    asyncio.get_event_loop().create_task(load_custom_mentions())
+except RuntimeError:
+    # fallback for when there's no running loop (tests / import-time)
+    asyncio.ensure_future(load_custom_mentions())
 
 
 # ---------------- LOAD SWITCH STATE ----------------
@@ -84,21 +89,31 @@ async def load_reaction_state():
     global REACTION_ENABLED
     try:
         doc = await SETTINGS.find_one({"_id": "switch"})
-        if doc:
+        if doc is not None:
             REACTION_ENABLED = doc.get("enabled", True)
     except Exception as e:
         print(f"[Reaction Switch] DB read error: {e}")
     print(f"[Reaction Switch] Loaded => {REACTION_ENABLED}")
 
 
-asyncio.get_event_loop().create_task(load_reaction_state())
+try:
+    asyncio.get_event_loop().create_task(load_reaction_state())
+except RuntimeError:
+    asyncio.ensure_future(load_reaction_state())
 
 
 # ---------------- ADMIN CHECK ----------------
-async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str]]:
+async def is_admin_or_sudo(client, message_obj) -> Tuple[bool, Optional[str]]:
+    """Return (True, None) if user is OWNER or in SUDOERS or admin in group.
+
+    message_obj may be Message or CallbackQuery.message
+    """
+    # extract message and user
+    message = getattr(message_obj, "message", None) if hasattr(message_obj, "message") else message_obj
     user = getattr(message, "from_user", None)
     chat = getattr(message, "chat", None)
-    if not chat or not user:
+
+    if not message or not user or not chat:
         return False, "invalid message"
 
     user_id = user.id
@@ -109,9 +124,11 @@ async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str
     except Exception:
         sudoers = set()
 
+    # owner or sudo always allowed
     if user_id == OWNER_ID or user_id in sudoers:
         return True, None
 
+    # For non-group chats (private), only owner/sudo allowed to be considered admin
     chat_type = getattr(chat, "type", None)
     is_group_like = False
 
@@ -126,6 +143,7 @@ async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str
     if not is_group_like:
         return False, f"chat_type={chat_type}"
 
+    # check membership status in group
     try:
         member = await client.get_chat_member(chat_id, user_id)
         status = member.status
@@ -144,7 +162,7 @@ async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str
 
 
 # ---------------- /reaction COMMAND ----------------
-@app.on_message(filters.command("reaction", prefixes=["/"]), group=1)
+@app.on_message(filters.command("reaction", prefixes=["/"]))
 async def react_command(client, message: Message):
     global REACTION_ENABLED
 
@@ -179,6 +197,7 @@ async def react_command(client, message: Message):
 async def reaction_callback(client, query: CallbackQuery):
     global REACTION_ENABLED
 
+    # Use the message attached to callback for admin check
     ok, debug = await is_admin_or_sudo(client, query.message)
     if not ok:
         return await query.answer("Only admins/sudo users can do this.", show_alert=True)
@@ -203,7 +222,7 @@ async def reaction_callback(client, query: CallbackQuery):
 
 
 # ---------------- addreact / delreact / reactlist / clearreact ----------------
-@app.on_message(filters.command("addreact", prefixes=["/"]), group=1)
+@app.on_message(filters.command("addreact", prefixes=["/"]))
 async def add_reaction_name(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -247,7 +266,7 @@ async def add_reaction_name(client, message: Message):
     await message.reply_text(msg)
 
 
-@app.on_message(filters.command("delreact", prefixes=["/"]), group=1)
+@app.on_message(filters.command("delreact", prefixes=["/"]))
 async def delete_reaction_name(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -279,7 +298,7 @@ async def delete_reaction_name(client, message: Message):
     return await message.reply_text(f"❌ `{raw}` not found.")
 
 
-@app.on_message(filters.command("reactlist", prefixes=["/"]), group=1)
+@app.on_message(filters.command("reactlist", prefixes=["/"]))
 async def list_reactions(client, message: Message):
     if not custom_mentions:
         return await message.reply_text("No reaction triggers found.")
@@ -287,7 +306,7 @@ async def list_reactions(client, message: Message):
     await message.reply_text(f"**🧠 Reaction Triggers:**\n{text}")
 
 
-@app.on_message(filters.command("clearreact", prefixes=["/"]), group=1)
+@app.on_message(filters.command("clearreact", prefixes=["/"]))
 async def clear_reactions(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -300,12 +319,19 @@ async def clear_reactions(client, message: Message):
     await message.reply_text("🧹 Cleared all reaction triggers.")
 
 
+# ---------------- HELPERS FOR MATCHING ----------------
+WORD_RE = re.compile(r"\b([\w@:\-\.]+)\b", flags=re.UNICODE)
+
+
+def message_words(text: str):
+    return set(m.group(1).lower() for m in WORD_RE.finditer(text))
+
+
 # ---------------- MENTION / KEYWORD TRIGGERED REACTIONS ----------------
+# NOTE: Keyword and mention reactions MUST fire even if auto-reactions are OFF
 @app.on_message(
     (filters.text | filters.caption)
-    & ~filters.regex(r"^/")
-    ,
-    group=5
+    & ~filters.command()
 )
 async def react_on_mentions(client, message: Message):
     try:
@@ -313,11 +339,11 @@ async def react_on_mentions(client, message: Message):
         if not raw:
             return
 
-        text = raw.lower()
-
-        if text.startswith(("!", "$", ".", "#")):
+        # Ignore bot commands starting with common prefixes
+        if raw.strip().startswith(("/", "!", "$", ".", "#")):
             return
 
+        text = raw.lower()
         chat_id = message.chat.id
 
         entities = (message.entities or []) + (message.caption_entities or [])
@@ -338,6 +364,7 @@ async def react_on_mentions(client, message: Message):
             except Exception:
                 continue
 
+        # React for explicit mentions if matched
         for uname in mentioned_usernames:
             if uname in custom_mentions:
                 try:
@@ -358,7 +385,8 @@ async def react_on_mentions(client, message: Message):
                     except Exception:
                         return
 
-        words = set(text.replace("@", " @").split())
+        # Keyword detection (must work in private and group chats)
+        words = message_words(text)
         for trig in custom_mentions:
             if trig.startswith("id:"):
                 continue
@@ -378,16 +406,21 @@ async def react_on_mentions(client, message: Message):
 # ---------------- GLOBAL AUTO-REACTION ----------------
 @app.on_message(
     (filters.text | filters.caption)
-    & ~filters.command([])
-    ,
-    group=50
+    & ~filters.command()
 )
 async def auto_react(client, message: Message):
+    # Auto reactions follow the REACTION_ENABLED flag. They must not run on commands.
+    global REACTION_ENABLED
     if not REACTION_ENABLED:
         return
 
     try:
-        if message.text and message.text.startswith("/"):
+        raw = message.text or message.caption or ""
+        if not raw:
+            return
+
+        # Ignore bot commands and common prefixes
+        if raw.strip().startswith(("/", "!", "$", ".", "#")):
             return
 
         chat_id = message.chat.id
