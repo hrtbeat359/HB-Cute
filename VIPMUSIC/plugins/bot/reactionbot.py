@@ -16,7 +16,7 @@ from VIPMUSIC import app
 from config import MENTION_USERNAMES, START_REACTIONS, OWNER_ID
 from VIPMUSIC import utils
 from VIPMUSIC.utils.database import mongodb
-# Use SUDOERS directly from misc (as requested)
+
 try:
     from VIPMUSIC.misc import SUDOERS
 except Exception:
@@ -25,16 +25,13 @@ except Exception:
 print("[reactionbot] loaded — merged reaction system")
 
 # ---------------- DATABASE ----------------
-COLLECTION = mongodb["reaction_mentions"]         # stores mention triggers (name/id:)
-SETTINGS = mongodb["reaction_settings"]          # stores {"_id":"switch","enabled":bool}
+COLLECTION = mongodb["reaction_mentions"]
+SETTINGS = mongodb["reaction_settings"]
 
 # ---------------- STATE ----------------
-# Controls ONLY the global auto-react that reacts to every message.
-# Mention-based reactions ignore this flag and always work.
-REACTION_ENABLED = True  # default ON
+REACTION_ENABLED = True
 
 # ---------------- CACHE ----------------
-# Preload mention username list from config + DB
 custom_mentions: Set[str] = set(x.lower().lstrip("@") for x in (MENTION_USERNAMES or []))
 
 # ---------------- VALID REACTIONS ----------------
@@ -48,12 +45,10 @@ SAFE_REACTIONS = [e for e in (START_REACTIONS or []) if e in VALID_REACTIONS]
 if not SAFE_REACTIONS:
     SAFE_REACTIONS = list(VALID_REACTIONS)
 
-# ---------------- ROTATION STORAGE ----------------
 chat_used_reactions: Dict[int, Set[str]] = {}
 
 
 def next_emoji(chat_id: int) -> str:
-    """Return a per-chat non-repeating emoji; cycles when exhausted."""
     if chat_id not in chat_used_reactions:
         chat_used_reactions[chat_id] = set()
 
@@ -101,11 +96,6 @@ asyncio.get_event_loop().create_task(load_reaction_state())
 
 # ---------------- ADMIN CHECK ----------------
 async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str]]:
-    """
-    Return (True, None) if sender is OWNER, in SUDOERS or chat admin (for groups).
-    Returns (False, debug_reason) otherwise.
-    Robust to Pyrogram returning enums or strings for chat.type and member.status.
-    """
     user = getattr(message, "from_user", None)
     chat = getattr(message, "chat", None)
     if not chat or not user:
@@ -114,7 +104,6 @@ async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str
     user_id = user.id
     chat_id = chat.id
 
-    # Owner / Sudoers (SUDOERS may be list/set)
     try:
         sudoers = set(SUDOERS or [])
     except Exception:
@@ -123,9 +112,9 @@ async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str
     if user_id == OWNER_ID or user_id in sudoers:
         return True, None
 
-    # Accept both enum ChatType and string chat.type
     chat_type = getattr(chat, "type", None)
     is_group_like = False
+
     try:
         if isinstance(chat_type, ChatType):
             is_group_like = chat_type in (ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL)
@@ -134,28 +123,28 @@ async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str
     except Exception:
         is_group_like = False
 
-    # If not group/supergroup/channel, return false
     if not is_group_like:
         return False, f"chat_type={chat_type}"
 
-    # Normal admin check
     try:
         member = await client.get_chat_member(chat_id, user_id)
         status = member.status
-        # Accept both enum and string statuses
+
         if isinstance(status, ChatMemberStatus):
             if status in (ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR):
                 return True, None
         elif isinstance(status, str):
             if status.lower() in ("creator", "owner", "administrator", "admin"):
                 return True, None
+
         return False, f"user_status={status}"
+
     except Exception as e:
         return False, f"get_chat_member_error={e}"
 
 
-# ---------------- /reaction COMMAND (controls ONLY auto-react) ----------------
-@app.on_message(filters.command("reaction"), group=1)
+# ---------------- /reaction COMMAND ----------------
+@app.on_message(filters.command("reaction", prefixes=["/"]), group=1)
 async def react_command(client, message: Message):
     global REACTION_ENABLED
 
@@ -185,12 +174,11 @@ async def react_command(client, message: Message):
     )
 
 
-# ---------------- CALLBACK HANDLER ----------------
+# ---------------- CALLBACK ----------------
 @app.on_callback_query(filters.regex("^react_"))
 async def reaction_callback(client, query: CallbackQuery):
     global REACTION_ENABLED
 
-    # Only admins/sudo can change the switch
     ok, debug = await is_admin_or_sudo(client, query.message)
     if not ok:
         return await query.answer("Only admins/sudo users can do this.", show_alert=True)
@@ -215,7 +203,7 @@ async def reaction_callback(client, query: CallbackQuery):
 
 
 # ---------------- addreact / delreact / reactlist / clearreact ----------------
-@app.on_message(filters.command("addreact"), group=1)
+@app.on_message(filters.command("addreact", prefixes=["/"]), group=1)
 async def add_reaction_name(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -259,7 +247,7 @@ async def add_reaction_name(client, message: Message):
     await message.reply_text(msg)
 
 
-@app.on_message(filters.command("delreact"), group=1)
+@app.on_message(filters.command("delreact", prefixes=["/"]), group=1)
 async def delete_reaction_name(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -276,7 +264,6 @@ async def delete_reaction_name(client, message: Message):
         await COLLECTION.delete_one({"name": raw})
         removed = True
 
-    # Also try resolving username → id and remove id:...
     try:
         user = await client.get_users(raw)
         id_key = f"id:{user.id}"
@@ -292,7 +279,7 @@ async def delete_reaction_name(client, message: Message):
     return await message.reply_text(f"❌ `{raw}` not found.")
 
 
-@app.on_message(filters.command("reactlist"), group=1)
+@app.on_message(filters.command("reactlist", prefixes=["/"]), group=1)
 async def list_reactions(client, message: Message):
     if not custom_mentions:
         return await message.reply_text("No reaction triggers found.")
@@ -300,7 +287,7 @@ async def list_reactions(client, message: Message):
     await message.reply_text(f"**🧠 Reaction Triggers:**\n{text}")
 
 
-@app.on_message(filters.command("clearreact"), group=1)
+@app.on_message(filters.command("clearreact", prefixes=["/"]), group=1)
 async def clear_reactions(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -308,18 +295,15 @@ async def clear_reactions(client, message: Message):
 
     await COLLECTION.delete_many({})
     custom_mentions.clear()
-    # reload MENTION_USERNAMES from config as baseline
     for n in (MENTION_USERNAMES or []):
         custom_mentions.add(n.lower().lstrip("@"))
     await message.reply_text("🧹 Cleared all reaction triggers.")
 
 
-# ---------------- MENTION / KEYWORD TRIGGERED REACTIONS (ALWAYS ACTIVE) ----------------
-# This handler reacts when custom_mentions match mention entities or keywords.
-# It must remain active even if REACTION_ENABLED == False.
+# ---------------- MENTION / KEYWORD TRIGGERED REACTIONS ----------------
 @app.on_message(
     (filters.text | filters.caption)
-    & ~filters.regex(r"^/")  # ignore messages starting with slash (commands)
+    & ~filters.regex(r"^/")
     ,
     group=5
 )
@@ -331,20 +315,15 @@ async def react_on_mentions(client, message: Message):
 
         text = raw.lower()
 
-        # quick guard against other command-like prefixes
         if text.startswith(("!", "$", ".", "#")):
-            # NOTE: We purposely DO NOT ignore "/" here because we already excluded it.
-            # These extra checks avoid reacting to bot command-like content.
             return
 
         chat_id = message.chat.id
 
-        # Collect entities
         entities = (message.entities or []) + (message.caption_entities or [])
         mentioned_usernames = set()
         mentioned_ids = set()
 
-        # Extract mentions and text_mentions
         for ent in entities:
             try:
                 if ent.type == "mention":
@@ -359,7 +338,6 @@ async def react_on_mentions(client, message: Message):
             except Exception:
                 continue
 
-        # 1) Username entity triggers
         for uname in mentioned_usernames:
             if uname in custom_mentions:
                 try:
@@ -370,7 +348,6 @@ async def react_on_mentions(client, message: Message):
                     except Exception:
                         return
 
-        # 2) ID entity triggers
         for uid in mentioned_ids:
             if f"id:{uid}" in custom_mentions:
                 try:
@@ -381,8 +358,6 @@ async def react_on_mentions(client, message: Message):
                     except Exception:
                         return
 
-        # 3) Keyword triggers (word boundary-ish)
-        # Split into words and also check @name included
         words = set(text.replace("@", " @").split())
         for trig in custom_mentions:
             if trig.startswith("id:"):
@@ -400,28 +375,22 @@ async def react_on_mentions(client, message: Message):
         print(f"[react_on_mentions] error: {e}")
 
 
-# ---------------- GLOBAL AUTO-REACTION (TOGGLED BY /reaction) ----------------
-# This reacts to most messages (non-command) when REACTION_ENABLED is True.
-# It is intentionally lower priority (runs later) to avoid stealing messages.
+# ---------------- GLOBAL AUTO-REACTION ----------------
 @app.on_message(
     (filters.text | filters.caption)
-    & ~filters.command([])  # matches everything except commands
+    & ~filters.command([])
     ,
     group=50
 )
 async def auto_react(client, message: Message):
-    # This global auto-react is controlled by the REACTION_ENABLED switch.
-    # Mention/keyword reactions are handled by react_on_mentions above and always work.
     if not REACTION_ENABLED:
         return
 
     try:
-        # ignore messages that look like commands
         if message.text and message.text.startswith("/"):
             return
 
         chat_id = message.chat.id
-        # produce emoji and react
         emoji = next_emoji(chat_id)
         try:
             await message.react(emoji)
