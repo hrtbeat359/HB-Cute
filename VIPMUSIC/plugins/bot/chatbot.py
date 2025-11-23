@@ -1,5 +1,6 @@
 import os
 import random
+import re
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -27,7 +28,7 @@ except Exception:
 
 # -------------------- MongoDB setup -------------------- #
 try:
-    from config import MONGO_URL 
+    from config import MONGO_URL
     from VIPMUSIC.misc import SUDOERS
 except Exception:
     MONGO_URL = os.environ.get(
@@ -42,7 +43,7 @@ db = mongo.get_database("vipmusic_db")
 chatai_coll = db.get_collection("chatai")
 status_coll = db.get_collection("chatbot_status")
 lang_coll = db.get_collection("chat_langs")
-BLOCK_COLL = db.get_collection("blocked_words")   # GLOBAL BLOCKLIST
+BLOCK_COLL = db.get_collection("blocked_words")  # GLOBAL BLOCKLIST
 
 translator = GoogleTranslator()
 
@@ -65,14 +66,11 @@ def get_blocklist():
 def add_block_word(word: str):
     word = word.lower().strip()
 
-    # Insert only if not already added
     if not BLOCK_COLL.find_one({"word": word}):
         BLOCK_COLL.insert_one({"word": word})
 
-    # DELETE from DB replies (important)
     chatai_coll.delete_many({"word": word})
 
-    # DELETE from RAM cache
     global replies_cache
     replies_cache = [x for x in replies_cache if x.get("word") != word]
 
@@ -92,7 +90,10 @@ def list_block_words():
 async def is_user_admin(client, chat_id: int, user_id: int) -> bool:
     try:
         member = await client.get_chat_member(chat_id, user_id)
-        return member.status in (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER)
+        return member.status in (
+            ChatMemberStatus.ADMINISTRATOR,
+            ChatMemberStatus.OWNER,
+        )
     except Exception:
         return False
 
@@ -141,7 +142,6 @@ async def save_reply(original: Message, reply: Message):
         if not original or not original.text:
             return
 
-        # blocklist safety: do NOT store blocked words
         bl = get_blocklist()
         if original.text.lower() in bl:
             return
@@ -195,7 +195,7 @@ async def get_chat_language(chat_id: int) -> Optional[str]:
 
 
 # ============================================================
-#                   BLOCKLIST SUDO COMMANDS
+#             BLOCKLIST SUDO COMMANDS (WITH REGEX)
 # ============================================================
 @app.on_message(filters.command("addblock"))
 async def addblock_cmd(client, message):
@@ -203,11 +203,11 @@ async def addblock_cmd(client, message):
     if uid not in SUDOERS:
         return await message.reply_text("❌ Only SUDO users can manage blocklist.")
 
-    parts = message.text.split(maxsplit=1)
-    if len(parts) < 2:
-        return await message.reply_text("Usage: /addblock <word>")
+    text = message.text[len("/addblock"):].strip()
+    if not text:
+        return await message.reply_text("Usage: /addblock <word or regex>")
 
-    word = parts[1].strip().lower()
+    word = text.lower()
     add_block_word(word)
 
     await message.reply_text(
@@ -221,11 +221,11 @@ async def rmblock_cmd(client, message):
     if uid not in SUDOERS:
         return await message.reply_text("❌ Only SUDO users can manage blocklist.")
 
-    parts = message.text.split(maxsplit=1)
-    if len(parts) < 2:
-        return await message.reply_text("Usage: /rmblock <word>")
+    text = message.text[len("/rmblock"):].strip()
+    if not text:
+        return await message.reply_text("Usage: /rmblock <word or regex>")
 
-    word = parts[1].strip().lower()
+    word = text.lower()
     remove_block_word(word)
 
     await message.reply_text(f"🧹 Removed from blocklist: **{word}**")
@@ -299,7 +299,9 @@ async def chatbot_toggle_cb(client, cq: CallbackQuery):
 
     if cq.data == "cb_enable":
         status_coll.update_one(
-            {"chat_id": chat_id}, {"$set": {"status": "enabled"}}, upsert=True
+            {"chat_id": chat_id},
+            {"$set": {"status": "enabled"}},
+            upsert=True,
         )
         await cq.message.edit_text(
             "**🤖 Chatbot Enabled!**", reply_markup=chatbot_keyboard(True)
@@ -307,7 +309,9 @@ async def chatbot_toggle_cb(client, cq: CallbackQuery):
         await cq.answer("Enabled")
     else:
         status_coll.update_one(
-            {"chat_id": chat_id}, {"$set": {"status": "disabled"}}, upsert=True
+            {"chat_id": chat_id},
+            {"$set": {"status": "disabled"}},
+            upsert=True,
         )
         await cq.message.edit_text(
             "**🤖 Chatbot Disabled!**", reply_markup=chatbot_keyboard(False)
@@ -341,7 +345,9 @@ async def chatbot_reset_private(client, message):
 async def learn_reply_group(client, message):
     if not message.reply_to_message:
         return
+
     bot = await client.get_me()
+
     if (
         message.reply_to_message.from_user
         and message.reply_to_message.from_user.id == bot.id
@@ -353,7 +359,9 @@ async def learn_reply_group(client, message):
 async def learn_reply_private(client, message):
     if not message.reply_to_message:
         return
+
     bot = await client.get_me()
+
     if (
         message.reply_to_message.from_user
         and message.reply_to_message.from_user.id == bot.id
@@ -377,7 +385,6 @@ async def chatbot_handler(client, message: Message):
 
     global blocklist_users, message_counts
 
-    # --------- temporary anti-spam block system ----------
     blocklist_users = {u: t for u, t in blocklist_users.items() if t > now}
 
     mc = message_counts.get(user_id)
@@ -400,26 +407,27 @@ async def chatbot_handler(client, message: Message):
     if user_id in blocklist_users:
         return
 
-    # --------- chatbot enabled? ----------
     s = status_coll.find_one({"chat_id": chat_id})
     if s and s.get("status") == "disabled":
         return
 
-    # ignore commands
     if message.text and message.text.startswith("/"):
         return
 
     # =====================================================
-    #         BLOCKLIST CHECK (BOT WILL NOT REPLY)
+    #         BLOCKLIST CHECK WITH REGEX SUPPORT
     # =====================================================
     blocked_words = get_blocklist()
     msg_lower = (message.text or "").lower()
 
     for w in blocked_words:
-        if w in msg_lower:
-            return    # ← bot stops reply but user msg allowed
+        try:
+            if re.search(w, msg_lower, flags=re.IGNORECASE):
+                return
+        except re.error:
+            if w in msg_lower:
+                return
 
-    # determine if bot should reply
     should = False
     if message.reply_to_message:
         bot = await client.get_me()
@@ -434,7 +442,6 @@ async def chatbot_handler(client, message: Message):
     if not should:
         return
 
-    # find reply
     r = get_reply_sync(message.text or "")
     if r:
         response = r.get("text", "")
