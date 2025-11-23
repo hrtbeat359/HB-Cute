@@ -1,4 +1,4 @@
-# VIPMUSIC/plugins/tools/reaction_merged.py
+# VIPMUSIC/plugins/bot/reactionbot.py
 import asyncio
 import random
 from typing import Set, Dict, Tuple, Optional
@@ -13,10 +13,16 @@ from pyrogram.types import (
 from pyrogram.enums import ChatMemberStatus, ChatType
 
 from VIPMUSIC import app
-from config import BANNED_USERS, MENTION_USERNAMES, START_REACTIONS, OWNER_ID
-from VIPMUSIC.utils.database import mongodb, get_sudoers
+from config import MENTION_USERNAMES, START_REACTIONS, OWNER_ID
+from VIPMUSIC import utils
+from VIPMUSIC.utils.database import mongodb
+# Use SUDOERS directly from misc (as requested)
+try:
+    from VIPMUSIC.misc import SUDOERS
+except Exception:
+    SUDOERS = set()
 
-print("[reaction_merged] loaded — merged reaction system")
+print("[reactionbot] loaded — merged reaction system")
 
 # ---------------- DATABASE ----------------
 COLLECTION = mongodb["reaction_mentions"]         # stores mention triggers (name/id:)
@@ -95,7 +101,11 @@ asyncio.get_event_loop().create_task(load_reaction_state())
 
 # ---------------- ADMIN CHECK ----------------
 async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str]]:
-    """Return (True, None) if sender is OWNER, sudoer or chat admin (for groups)."""
+    """
+    Return (True, None) if sender is OWNER, in SUDOERS or chat admin (for groups).
+    Returns (False, debug_reason) otherwise.
+    Robust to Pyrogram returning enums or strings for chat.type and member.status.
+    """
     user = getattr(message, "from_user", None)
     chat = getattr(message, "chat", None)
     if not chat or not user:
@@ -104,31 +114,48 @@ async def is_admin_or_sudo(client, message: Message) -> Tuple[bool, Optional[str
     user_id = user.id
     chat_id = chat.id
 
-    # Owner / Sudoers
+    # Owner / Sudoers (SUDOERS may be list/set)
     try:
-        sudoers = await get_sudoers()
+        sudoers = set(SUDOERS or [])
     except Exception:
         sudoers = set()
 
     if user_id == OWNER_ID or user_id in sudoers:
         return True, None
 
+    # Accept both enum ChatType and string chat.type
+    chat_type = getattr(chat, "type", None)
+    is_group_like = False
+    try:
+        if isinstance(chat_type, ChatType):
+            is_group_like = chat_type in (ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL)
+        elif isinstance(chat_type, str):
+            is_group_like = chat_type.lower() in ("group", "supergroup", "channel")
+    except Exception:
+        is_group_like = False
+
     # If not group/supergroup/channel, return false
-    if chat.type not in (ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL):
-        return False, f"chat_type={chat.type}"
+    if not is_group_like:
+        return False, f"chat_type={chat_type}"
 
     # Normal admin check
     try:
         member = await client.get_chat_member(chat_id, user_id)
-        if member.status in (ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR):
-            return True, None
-        return False, f"user_status={member.status}"
+        status = member.status
+        # Accept both enum and string statuses
+        if isinstance(status, ChatMemberStatus):
+            if status in (ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR):
+                return True, None
+        elif isinstance(status, str):
+            if status.lower() in ("creator", "owner", "administrator", "admin"):
+                return True, None
+        return False, f"user_status={status}"
     except Exception as e:
         return False, f"get_chat_member_error={e}"
 
 
 # ---------------- /reaction COMMAND (controls ONLY auto-react) ----------------
-@app.on_message(filters.command("reaction") & ~BANNED_USERS, group=1)
+@app.on_message(filters.command("reaction"), group=1)
 async def react_command(client, message: Message):
     global REACTION_ENABLED
 
@@ -188,7 +215,7 @@ async def reaction_callback(client, query: CallbackQuery):
 
 
 # ---------------- addreact / delreact / reactlist / clearreact ----------------
-@app.on_message(filters.command("addreact") & ~BANNED_USERS, group=1)
+@app.on_message(filters.command("addreact"), group=1)
 async def add_reaction_name(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -232,7 +259,7 @@ async def add_reaction_name(client, message: Message):
     await message.reply_text(msg)
 
 
-@app.on_message(filters.command("delreact") & ~BANNED_USERS, group=1)
+@app.on_message(filters.command("delreact"), group=1)
 async def delete_reaction_name(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -265,7 +292,7 @@ async def delete_reaction_name(client, message: Message):
     return await message.reply_text(f"❌ `{raw}` not found.")
 
 
-@app.on_message(filters.command("reactlist") & ~BANNED_USERS, group=1)
+@app.on_message(filters.command("reactlist"), group=1)
 async def list_reactions(client, message: Message):
     if not custom_mentions:
         return await message.reply_text("No reaction triggers found.")
@@ -273,7 +300,7 @@ async def list_reactions(client, message: Message):
     await message.reply_text(f"**🧠 Reaction Triggers:**\n{text}")
 
 
-@app.on_message(filters.command("clearreact") & ~BANNED_USERS, group=1)
+@app.on_message(filters.command("clearreact"), group=1)
 async def clear_reactions(client, message: Message):
     ok, reason = await is_admin_or_sudo(client, message)
     if not ok:
@@ -293,7 +320,7 @@ async def clear_reactions(client, message: Message):
 @app.on_message(
     (filters.text | filters.caption)
     & ~filters.regex(r"^/")  # ignore messages starting with slash (commands)
-    & ~BANNED_USERS,
+    ,
     group=5
 )
 async def react_on_mentions(client, message: Message):
@@ -379,7 +406,7 @@ async def react_on_mentions(client, message: Message):
 @app.on_message(
     (filters.text | filters.caption)
     & ~filters.command([])  # matches everything except commands
-    & ~BANNED_USERS,
+    ,
     group=50
 )
 async def auto_react(client, message: Message):
