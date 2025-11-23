@@ -331,7 +331,7 @@ def message_words(text: str):
 # NOTE: Keyword and mention reactions MUST fire even if auto-reactions are OFF
 @app.on_message(
     (filters.text | filters.caption)
-    & ~filters.command()
+    & ~filters.regex(r"^[\\/!.#].*")
 )
 async def react_on_mentions(client, message: Message):
     try:
