@@ -26,12 +26,12 @@ import motor.motor_asyncio
 from pymongo import ReturnDocument
 
 # Mongo setup
-MONGO_URL = os.getenv("MONGO_URL", None)
+MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://iamnobita1:nobitamusic1@cluster0.k08op.mongodb.net/?retryWrites=true&w=majority")
 if not MONGO_URL:
     raise RuntimeError("MONGO_URL env var is required by requestchat.py")
 
 mongo = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
-db = mongo.get_database("vipmusic")
+db = mongo.get_database("ghosttreq")
 settings_coll = db.get_collection("join_request_settings")  # documents keyed by chat_id
 
 # Schemas for collection documents:
