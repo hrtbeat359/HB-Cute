@@ -147,7 +147,7 @@ def make_owner_settings_kb(chat_id: int, enabled: bool, auto: bool, log_id: Opti
                 ),
             ],
             [
-                InlinInlineKeyboardButton("𝐒ᴇᴛ 𝐋ᴏɢ-𝐆ʀᴏᴜᴘ", callback_data=f"jr:set_log:{chat_id}"),
+                InlineKeyboardButton("𝐒ᴇᴛ 𝐋ᴏɢ-𝐆ʀᴏᴜᴘ", callback_data=f"jr:set_log:{chat_id}"),
                 InlineKeyboardButton("𝐂ʟᴇᴀʀ 𝐋ᴏɢ", callback_data=f"jr:clear_log:{chat_id}"),
             ],
             [
