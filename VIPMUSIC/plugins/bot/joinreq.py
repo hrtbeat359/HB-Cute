@@ -30,6 +30,8 @@ MONGO_URL = os.getenv(
 if not MONGO_URL:
     raise RuntimeError("MONGO_URL environment variable is required by requestchat.py")
 
+print("[joinreq] joinreq, approveall")
+
 mongo = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
 db = mongo.get_database("ghosttreq")
 settings_coll = db.get_collection("join_request_settings")
@@ -599,7 +601,7 @@ async def private_reason_handler(client, message: Message):
 # -------------------------
 # Optional admin command to approve all pending (shortcut)
 # -------------------------
-@app.on_message(filters.command("jr_approve_all") & filters.group)
+@app.on_message(filters.command("approveall") & filters.group)
 async def cmd_approve_all(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
