@@ -1,3 +1,4 @@
+# VIPMUSIC/plugins/bot/reactionbot.py
 import asyncio
 import random
 import re
@@ -29,7 +30,10 @@ COLLECTION = mongodb["reaction_mentions"]
 SETTINGS = mongodb["reaction_settings"]
 
 # ---------------- STATE ----------------
-REACTION_ENABLED = True
+REACTION_ENABLED = True  # global default flag
+
+# per-chat override cache (chat_id -> bool)
+CHAT_REACTION_OVERRIDES: Dict[int, bool] = {}
 
 # ---------------- CACHE ----------------
 custom_mentions: Set[str] = set(x.lower().lstrip("@") for x in (MENTION_USERNAMES or []))
@@ -84,22 +88,38 @@ except RuntimeError:
     asyncio.ensure_future(load_custom_mentions())
 
 
-# ---------------- LOAD SWITCH STATE ----------------
-async def load_reaction_state():
-    global REACTION_ENABLED
+# ---------------- LOAD SWITCH STATE + CHAT OVERRIDES ----------------
+async def load_reaction_state_and_chat_overrides():
+    global REACTION_ENABLED, CHAT_REACTION_OVERRIDES
     try:
         doc = await SETTINGS.find_one({"_id": "switch"})
         if doc is not None:
             REACTION_ENABLED = doc.get("enabled", True)
     except Exception as e:
         print(f"[Reaction Switch] DB read error: {e}")
-    print(f"[Reaction Switch] Loaded => {REACTION_ENABLED}")
+
+    # Load any chat-specific overrides (documents where _id starts with "chat:")
+    try:
+        cursor = SETTINGS.find({"_id": {"$regex": r"^chat:"}})
+        docs = await cursor.to_list(length=None)
+        for d in docs:
+            _id = d.get("_id")
+            try:
+                chat_id = int(_id.split(":", 1)[1])
+                enabled = bool(d.get("enabled", True))
+                CHAT_REACTION_OVERRIDES[chat_id] = enabled
+            except Exception:
+                continue
+    except Exception as e:
+        print(f"[Reaction Chat Overrides] DB load error: {e}")
+
+    print(f"[Reaction Switch] Loaded => global={REACTION_ENABLED}, chat_overrides={len(CHAT_REACTION_OVERRIDES)}")
 
 
 try:
-    asyncio.get_event_loop().create_task(load_reaction_state())
+    asyncio.get_event_loop().create_task(load_reaction_state_and_chat_overrides())
 except RuntimeError:
-    asyncio.ensure_future(load_reaction_state())
+    asyncio.ensure_future(load_reaction_state_and_chat_overrides())
 
 
 # ---------------- ADMIN CHECK ----------------
@@ -161,6 +181,34 @@ async def is_admin_or_sudo(client, message_obj) -> Tuple[bool, Optional[str]]:
         return False, f"get_chat_member_error={e}"
 
 
+# ---------------- HELPERS FOR DB OVERRIDES ----------------
+def chat_settings_key(chat_id: int) -> str:
+    return f"chat:{chat_id}"
+
+
+async def set_chat_reaction_enabled(chat_id: int, enabled: bool):
+    key = chat_settings_key(chat_id)
+    await SETTINGS.update_one({"_id": key}, {"$set": {"enabled": bool(enabled)}}, upsert=True)
+    CHAT_REACTION_OVERRIDES[chat_id] = bool(enabled)
+
+
+async def clear_chat_reaction_override(chat_id: int):
+    key = chat_settings_key(chat_id)
+    await SETTINGS.delete_one({"_id": key})
+    if chat_id in CHAT_REACTION_OVERRIDES:
+        del CHAT_REACTION_OVERRIDES[chat_id]
+
+
+def is_reaction_enabled_for_chat(chat_id: int) -> bool:
+    """Decide if reactions are enabled in the given chat.
+
+    Precedence:
+    - If chat override exists -> use it
+    - Else use global REACTION_ENABLED
+    """
+    return CHAT_REACTION_OVERRIDES.get(chat_id, REACTION_ENABLED)
+
+
 # ---------------- /reaction COMMAND ----------------
 @app.on_message(filters.command("reaction", prefixes=["/"]))
 async def react_command(client, message: Message):
@@ -173,13 +221,20 @@ async def react_command(client, message: Message):
             f"Debug: {debug}"
         )
 
+    chat_id = message.chat.id
+
     keyboard = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("✅ Enable", callback_data="react_on"),
-                InlineKeyboardButton("🛑 Disable", callback_data="react_off"),
+                InlineKeyboardButton("✅ Enable Global", callback_data="react_on"),
+                InlineKeyboardButton("🛑 Disable Global", callback_data="react_off"),
             ],
             [
+                InlineKeyboardButton("✅ Enable for this chat", callback_data=f"react_chat_on:{chat_id}"),
+                InlineKeyboardButton("🛑 Disable for this chat", callback_data=f"react_chat_off:{chat_id}"),
+            ],
+            [
+                InlineKeyboardButton("🧹 Clear chat override", callback_data=f"react_chat_clear:{chat_id}"),
                 InlineKeyboardButton("🔍 Status", callback_data="react_status")
             ]
         ]
@@ -187,7 +242,9 @@ async def react_command(client, message: Message):
 
     await message.reply_text(
         f"**Reaction System Control**\n\n"
-        f"Current state: {'🟢 ON' if REACTION_ENABLED else '🔴 OFF'}",
+        f"Global state: {'🟢 ON' if REACTION_ENABLED else '🔴 OFF'}\n"
+        f"This chat: {'🟢 ON' if is_reaction_enabled_for_chat(chat_id) else '🔴 OFF'}\n\n"
+        "Use the buttons below to change global or per-chat behavior.",
         reply_markup=keyboard
     )
 
@@ -204,21 +261,47 @@ async def reaction_callback(client, query: CallbackQuery):
 
     action = query.data
 
-    if action == "react_on":
-        REACTION_ENABLED = True
-        await SETTINGS.update_one({"_id": "switch"}, {"$set": {"enabled": True}}, upsert=True)
-        return await query.edit_message_text("✅ **Auto-reactions Enabled**")
+    try:
+        if action == "react_on":
+            REACTION_ENABLED = True
+            await SETTINGS.update_one({"_id": "switch"}, {"$set": {"enabled": True}}, upsert=True)
+            return await query.edit_message_text("✅ **Auto-reactions Enabled (GLOBAL)**")
 
-    elif action == "react_off":
-        REACTION_ENABLED = False
-        await SETTINGS.update_one({"_id": "switch"}, {"$set": {"enabled": False}}, upsert=True)
-        return await query.edit_message_text("🛑 **Auto-reactions Disabled**")
+        elif action == "react_off":
+            REACTION_ENABLED = False
+            await SETTINGS.update_one({"_id": "switch"}, {"$set": {"enabled": False}}, upsert=True)
+            return await query.edit_message_text("🛑 **Auto-reactions Disabled (GLOBAL)**")
 
-    elif action == "react_status":
-        return await query.answer(
-            f"Auto-reactions are {'ON' if REACTION_ENABLED else 'OFF'}",
-            show_alert=True
-        )
+        elif action == "react_status":
+            # show both global and chat state
+            chat_id = query.message.chat.id if query.message and query.message.chat else None
+            chat_state = "N/A"
+            if chat_id is not None:
+                chat_state = "🟢 ON" if is_reaction_enabled_for_chat(chat_id) else "🔴 OFF"
+            return await query.answer(
+                f"Global: {'ON' if REACTION_ENABLED else 'OFF'}\nChat: {chat_state}",
+                show_alert=True
+            )
+
+        # per-chat actions contain a colon with chat id
+        elif action.startswith("react_chat_on:"):
+            _chat = int(action.split(":", 1)[1])
+            await set_chat_reaction_enabled(_chat, True)
+            return await query.edit_message_text(f"✅ **Reactions enabled for chat {_chat}**")
+
+        elif action.startswith("react_chat_off:"):
+            _chat = int(action.split(":", 1)[1])
+            await set_chat_reaction_enabled(_chat, False)
+            return await query.edit_message_text(f"🛑 **Reactions disabled for chat {_chat}**")
+
+        elif action.startswith("react_chat_clear:"):
+            _chat = int(action.split(":", 1)[1])
+            await clear_chat_reaction_override(_chat)
+            return await query.edit_message_text(f"🧹 **Cleared reaction override for chat {_chat} (now uses global)**")
+
+    except Exception as e:
+        print(f"[reaction_callback] error: {e}")
+        return await query.answer("Operation failed.", show_alert=True)
 
 
 # ---------------- addreact / delreact / reactlist / clearreact ----------------
@@ -367,6 +450,7 @@ async def react_on_mentions(client, message: Message):
         # React for explicit mentions if matched
         for uname in mentioned_usernames:
             if uname in custom_mentions:
+                # For mention triggers we react regardless of chat/global auto-react flag
                 try:
                     return await message.react(next_emoji(chat_id))
                 except Exception:
@@ -404,16 +488,14 @@ async def react_on_mentions(client, message: Message):
 
 
 # ---------------- GLOBAL AUTO-REACTION ----------------
+# replaced ~filters.command() (which requires args) with a prefix-regex exclusion,
+# consistent with react_on_mentions, to avoid the TypeError.
 @app.on_message(
     (filters.text | filters.caption)
-    & ~filters.command()
+    & ~filters.regex(r"^[\\/!.#].*")
 )
 async def auto_react(client, message: Message):
-    # Auto reactions follow the REACTION_ENABLED flag. They must not run on commands.
-    global REACTION_ENABLED
-    if not REACTION_ENABLED:
-        return
-
+    # Auto reactions follow the REACTION_ENABLED flag and per-chat overrides.
     try:
         raw = message.text or message.caption or ""
         if not raw:
@@ -424,6 +506,11 @@ async def auto_react(client, message: Message):
             return
 
         chat_id = message.chat.id
+
+        # decide if reactions are enabled for this chat
+        if not is_reaction_enabled_for_chat(chat_id):
+            return
+
         emoji = next_emoji(chat_id)
         try:
             await message.react(emoji)
