@@ -149,7 +149,7 @@ async def cmd_jr_menu(client, message: Message):
     user_id = message.from_user.id
 
     if not await is_group_owner(client, chat_id, user_id):
-        await message.reply_text("⚠️ Only the group *owner* can open join-request settings.", parse_mode="html")
+        await message.reply_text("⚠️ Only the group *owner* can open join-request settings.")
         return
 
     s = await get_settings(chat_id)
@@ -161,7 +161,7 @@ async def cmd_jr_menu(client, message: Message):
         f"• Log chat: <code>{s.get('log_chat_id')}</code>\n\n"
         f"Use the buttons below to change options. Owner only."
     )
-    await message.reply_text(text, reply_markup=kb, parse_mode="html")
+    await message.reply_text(text, reply_markup=kb)
 
 # -------------------------
 # Settings callbacks (owner-only)
@@ -186,14 +186,14 @@ async def jr_owner_cb(client, cq: CallbackQuery):
         await set_settings(chat_id, {"enabled": new})
         await cq.answer("Toggled enabled.", show_alert=False)
         await cq.edit_message_text(
-            f"✅ Enabled set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /jr_menu to reopen.", parse_mode="html"
+            f"✅ Enabled set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /jr_menu to reopen."
         )
     elif action == "toggle_auto":
         new = not s.get("auto_approve", False)
         await set_settings(chat_id, {"auto_approve": new})
         await cq.answer("Toggled auto-approve.", show_alert=False)
         await cq.edit_message_text(
-            f"✅ Auto-approve set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /jr_menu to reopen.", parse_mode="html"
+            f"✅ Auto-approve set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /jr_menu to reopen."
         )
     elif action == "set_log":
         # ask owner to reply with chat id or @username in SAME CHAT privately -> we instruct them to DM the bot
@@ -201,15 +201,14 @@ async def jr_owner_cb(client, cq: CallbackQuery):
         try:
             await client.send_message(
                 caller.id,
-                f"Please reply to this message with the target log chat id (e.g. -1001234567890) or @username to set as log for chat <b>{chat_id}</b>.",
-                parse_mode="html",
+                f"Please reply to this message with the target log chat id (e.g. -1001234567890) or @username to set as log for chat <b>{chat_id}</b>."
             )
         except RPCError:
             await cq.answer("Could not send private message — please start a chat with the bot first.", show_alert=True)
     elif action == "clear_log":
         await set_settings(chat_id, {"log_chat_id": None})
         await cq.answer("Log cleared.", show_alert=False)
-        await cq.edit_message_text(f"✅ Cleared log chat for <b>{chat_id}</b>.", parse_mode="html")
+        await cq.edit_message_text(f"✅ Cleared log chat for <b>{chat_id}</b>.")
     elif action == "approve_all":
         # approve all pending join requests for that chat
         try:
@@ -217,7 +216,7 @@ async def jr_owner_cb(client, cq: CallbackQuery):
             if ok:
                 await cq.answer("All pending requests approved.", show_alert=True)
                 s = await get_settings(chat_id)
-                await send_log(client, s.get("log_chat_id"), f"{ts()} — ✅ Approve ALL executed by owner {caller.mention} for chat <code>{chat_id}</code>.", parse_mode="html")
+                await send_log(client, s.get("log_chat_id"), f"{ts()} — ✅ Approve ALL executed by owner {caller.mention} for chat <code>{chat_id}</code>.")
                 await cq.edit_message_text("✅ Approved all pending join requests.")
             else:
                 await cq.answer("Failed to approve all (no permission?).", show_alert=True)
@@ -238,21 +237,22 @@ async def jr_owner_cb(client, cq: CallbackQuery):
                 lines.append(f"{user.first_name or 'NoName'} {user.last_name or ''} {uname} — <code>{user.id}</code>")
             text = "Pending (preview up to 20):\n\n" + "\n".join(lines)
             await cq.answer("Fetched pending requests.", show_alert=False)
-            await cq.edit_message_text(text, parse_mode="html")
+            await cq.edit_message_text(text)
         except RPCError as e:
             await cq.answer(f"Error: {e}", show_alert=True)
+
 
 # Owner DM handler for setting log chat id
 @app.on_message(filters.private & ~filters.bot)
 async def owner_private_handler(client, message: Message):
-    # If the message is in reply to the bot's instruction to set_log, parse it
+    # If the message is in reply to the bot's instruction to set_log
     text = (message.text or "").strip()
     if not text:
         return
 
     # The bot will receive "set log" requests only from an owner that was instructed
     # We will try to find a chat for which owner (this user) is owner and hasn't yet got log set,
-    # but best approach — parse numbers or @username from input, and set them for any chats where owner==this user
+    # but best approach — prse numbers or @username from input, and set them for any chats where owner==this user
     # Simpler flow: require the user to provide "<chat_id> <target>" as "chat_id target" when sending DM.
     # We'll support formats:
     #  - "<target>" — if user has exactly one group where they are owner and have a pending "set_log" flow (not tracked),
@@ -262,8 +262,7 @@ async def owner_private_handler(client, message: Message):
         # ambiguous: can't know which chat the owner meant. Tell them the expected format.
         await message.reply_text(
             "To set a log chat for a group, reply with:\n\n"
-            "<code>&lt;group_chat_id&gt; &lt;log_chat_id_or_@username&gt;</code>\n\nExample:\n<code>-1001234567890 -1009876543210</code>",
-            parse_mode="html",
+            "<code>&lt;group_chat_id&gt; &lt;log_chat_id_or_@username&gt;</code>\n\nExample:\n<code>-1001234567890 -1009876543210</code>"
         )
         return
 
