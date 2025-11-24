@@ -548,7 +548,7 @@ async def reason_cleanup_task():
         await asyncio.sleep(30)
 
 # start cleanup background task when app starts
-@app.on_started()
+@app.on_start()
 async def _start_background_tasks(client):
     client.create_task(reason_cleanup_task())
 
