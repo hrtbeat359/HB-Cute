@@ -34,7 +34,7 @@ from VIPMUSIC import app
 USE_MONGO = False
 try:
     import motor.motor_asyncio as motor
-    MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://iamnobita1:nobitamusic1@cluster0.k08op.mongodb.net/?retryWrites=true&w=majority")
+    MONGO_URL = os.getenv("MONGO_URL")
     if MONGO_URL:
         mongo_client = motor.AsyncIOMotorClient(MONGO_URL)
         db = mongo_client.get_default_database()
@@ -153,9 +153,7 @@ async def nsfw_command(client, message: Message):
     if len(message.command) < 2:
         settings = await load_settings(chat_id)
         text = (
-            f"NSFW settings for this chat:
-Enabled: {settings['enabled']}
-"
+            f"NSFW settings for this chat:Enabled: {settings['enabled']}"
             f"Block types: {', '.join([t for t,v in settings['block_types'].items() if v])}"
         )
         await client.send_message(chat_id, text, reply_markup=settings_to_keyboard(settings))
