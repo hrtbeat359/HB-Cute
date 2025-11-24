@@ -1,9 +1,3 @@
-# requestchat.py
-# Join Request module for VIPMUSIC (HB-Cute)
-# Requirements: pyrogram (v2.x), motor (asyncio MongoDB client)
-# Place this module in plugins (or wherever VIPMUSIC loads handlers).
-# Ensure VIPMUSIC exports `app` (pyrogram Client) and MONGO_URL env var is set.
-
 import os
 import asyncio
 import datetime
@@ -37,7 +31,7 @@ if not MONGO_URL:
     raise RuntimeError("MONGO_URL environment variable is required by requestchat.py")
 
 mongo = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
-db = mongo.get_database("vipmusic")
+db = mongo.get_database("ghosttreq")
 settings_coll = db.get_collection("join_request_settings")
 
 # Temporary in-memory states (admin decline reason prompts)
@@ -119,20 +113,20 @@ def make_request_buttons(chat_id: int, user_id: int) -> InlineKeyboardMarkup:
         [
             [
                 InlineKeyboardButton(
-                    "✅ Approve", callback_data=f"jr:approve:{chat_id}:{user_id}"
+                    "🍏 𝐀ᴘᴘʀᴏᴠᴇ", callback_data=f"jr:approve:{chat_id}:{user_id}"
                 ),
                 InlineKeyboardButton(
-                    "❌ Decline", callback_data=f"jr:decline_prompt:{chat_id}:{user_id}"
+                    "🍎 𝐃ɪ𝗌ᴍɪ𝗌𝗌", callback_data=f"jr:decline_prompt:{chat_id}:{user_id}"
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    "📝 Decline w/ reason",
+                    "🔻 𝐃ɪ𝗌ᴍɪ𝗌𝗌 𝐖ɪᴛʜ 𝐑ᴇᴀsᴏɴ 🔻",
                     callback_data=f"jr:decline_reason:{chat_id}:{user_id}",
                 ),
-                InlineKeyboardButton(
-                    "ℹ️ View user", callback_data=f"jr:view:{chat_id}:{user_id}"
-                ),
+                #InlineKeyboardButton(
+                #    "ℹ️ View user", callback_data=f"jr:view:{chat_id}:{user_id}"
+                #),
             ],
         ]
     )
@@ -144,21 +138,21 @@ def make_owner_settings_kb(chat_id: int, enabled: bool, auto: bool, log_id: Opti
         [
             [
                 InlineKeyboardButton(
-                    "Enabled ✅" if enabled else "Enabled ❌",
+                    "🍎 𝐃ɪsᴀʙʟᴇ" if enabled else "🍏 𝐄ɴᴀʙʟᴇ",
                     callback_data=f"jr:toggle_enabled:{chat_id}",
                 ),
                 InlineKeyboardButton(
-                    "Auto ✅" if auto else "Auto ❌",
+                    "🍎 𝐀ᴜᴛᴏ" if auto else "🍏 𝐌ᴀɴᴜᴀʟ",
                     callback_data=f"jr:toggle_auto:{chat_id}",
                 ),
             ],
             [
-                InlineKeyboardButton("Set Log Chat", callback_data=f"jr:set_log:{chat_id}"),
-                InlineKeyboardButton("Clear Log", callback_data=f"jr:clear_log:{chat_id}"),
+                InlinInlineKeyboardButton("𝐒ᴇᴛ 𝐋ᴏɢ-𝐆ʀᴏᴜᴘ", callback_data=f"jr:set_log:{chat_id}"),
+                InlineKeyboardButton("𝐂ʟᴇᴀʀ 𝐋ᴏɢ", callback_data=f"jr:clear_log:{chat_id}"),
             ],
             [
-                InlineKeyboardButton("Approve All Pending", callback_data=f"jr:approve_all:{chat_id}"),
-                InlineKeyboardButton("View Pending", callback_data=f"jr:view_pending:{chat_id}"),
+                InlineKeyboardButton("🔻 𝐀ᴘᴘʀᴏᴠᴇ 𝐀ʟʟ 𝐏ᴇɴᴅɪɴɢ𝗌 🔻", callback_data=f"jr:approve_all:{chat_id}"),
+                #InlineKeyboardButton("View Pending", callback_data=f"jr:view_pending:{chat_id}"),
             ],
         ]
     )
@@ -177,7 +171,7 @@ def nice_user_details(user: User) -> str:
 # Commands (owner-only settings) & menu
 # -------------------------
 # Owner inline menu trigger: /jr_menu (must be used inside the target group by owner)
-@app.on_message(filters.command("jr_menu") & filters.group)
+@app.on_message(filters.command("/joinreq","/joinrequest") & filters.group)
 async def cmd_jr_menu(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -191,11 +185,11 @@ async def cmd_jr_menu(client, message: Message):
         chat_id, s.get("enabled", False), s.get("auto_approve", False), s.get("log_chat_id")
     )
     text = (
-        f"⚙️ Join Request Settings for <b>{_html.escape(message.chat.title or str(chat_id))}</b>\n\n"
-        f"• Enabled: <code>{s.get('enabled', False)}</code>\n"
-        f"• Auto-approve: <code>{s.get('auto_approve', False)}</code>\n"
-        f"• Log chat: <code>{s.get('log_chat_id')}</code>\n\n"
-        f"Use the buttons below to change options. Owner only."
+        f"<blockquote>🚀 𝐉ᴏɪɴ 𝐑ᴇǫᴜᴇ𝗌ᴛ 𝐌ᴇɴᴜ\n <b>{_html.escape(message.chat.title or str(chat_id))}</b></blockquote>\n"
+        f"<blockquote>▪️ 𝐑ᴇǫ 𝐓ᴏ 𝐉ᴏɪɴ: <code>{s.get('enabled', False)}</code>\n"
+        f"▪️ 𝐀ᴘᴘʀᴏᴠᴇ 𝐌ᴏᴅᴇ: <code>{s.get('auto_approve', False)}</code>\n"
+        f"▪️ 𝐋ᴏɢ 𝐆ʀᴏᴜᴘ: <code>{s.get('log_chat_id')}</code></blockquote>\n"
+        f"ᴏᴡɴᴇʀ𝗌 ᴜsᴇ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ᴄʜᴀɴɢᴇ ᴏᴘᴛɪᴏɴ𝗌"
     )
     await message.reply_text(text, reply_markup=kb)
 
@@ -294,13 +288,6 @@ async def owner_private_handler(client, message: Message):
     if not text:
         return
 
-    # The bot will receive "set log" requests only from an owner that was instructed
-    # We will try to find a chat for which owner (this user) is owner and hasn't yet got log set,
-    # but best approach — prse numbers or @username from input, and set them for any chats where owner==this user
-    # Simpler flow: require the user to provide "<chat_id> <target>" as "chat_id target" when sending DM.
-    # We'll support formats:
-    #  - "<target>" — if user has exactly one group where they are owner and have a pending "set_log" flow (not tracked),
-    #  - "<chat_id> <target>" — explicit.
     parts = text.split(maxsplit=1)
     if len(parts) == 1:
         # ambiguous: can't know which chat the owner meant. Tell them the expected format.
@@ -451,18 +438,18 @@ async def jr_admin_cb(client, cq: CallbackQuery):
             await client.approve_chat_join_request(chat_id, user_id)
             # edit the join-request message (admins see)
             await cq.edit_message_text(
-                f"✅ Approved by {mention_html(caller)}\nUser: <code>{user_id}</code>",
+                f"<blockquote>🍏 𝐀ᴘᴘʀᴏᴠᴇᴅ 𝐁ʏ \n{mention_html(caller)}</blockquote>\n<blockquote>✨ 𝐔𝗌ᴇʀ: <code>{user_id}</code></blockquote>",
             )
             await send_log(
                 client,
                 s.get("log_chat_id"),
-                f"{ts()} — ✅ Request approved in <b>{chat_id}</b>\nUser: <code>{user_id}</code>\nBy: {mention_html(caller)}",
+                f"<blockquote>{ts()} — 🚀 𝐑ᴇǫᴜᴇ𝗌ᴛ 𝐀ᴘᴘʀᴏᴠᴇᴅ 𝐈ɴ \n <b>{chat_id}</b>\n✨ 𝐔𝗌ᴇʀ: <code>{user_id}</code></blockquote>\n<blockquote>𝐁ʏ: {mention_html(caller)}</blockquote>",
             )
             # notify the requester (best-effort)
             try:
                 await client.send_message(
                     user_id,
-                    f"✅ Your join request to <b>{_html.escape(str(chat_id))}</b> was approved by {mention_html(caller)}.",
+                    f"💥 Your join request to <b>{_html.escape(str(chat_id))}</b> was approved by {mention_html(caller)}.",
                 )
             except RPCError:
                 pass
@@ -476,18 +463,18 @@ async def jr_admin_cb(client, cq: CallbackQuery):
         try:
             await client.decline_chat_join_request(chat_id, user_id)
             await cq.edit_message_text(
-                f"❌ Declined by {mention_html(caller)}\nUser: <code>{user_id}</code>",
+                f"🍎 𝐃ᴇᴄʟɪɴᴇᴅ 𝐁ʏ \n{mention_html(caller)}\nUser: <code>{user_id}</code>",
             )
             await send_log(
                 client,
                 s.get("log_chat_id"),
-                f"{ts()} — ❌ Request declined in <b>{chat_id}</b>\nUser: <code>{user_id}</code>\nBy: {mention_html(caller)}",
+                f"<blockquote>{ts()} — 🚀 𝐑ᴇǫᴜᴇ𝗌ᴛ 𝐃ᴇᴄʟɪɴᴇᴅ 𝐈ɴ <b>{chat_id}</b>\n✨ 𝐔𝗌ᴇʀ: <code>{user_id}</code></blockquote>\n<blockquote>𝐁ʏ: {mention_html(caller)}</blockquote>",
             )
             # notify the requester (best-effort)
             try:
                 await client.send_message(
                     user_id,
-                    f"❌ Your join request to <b>{_html.escape(str(chat_id))}</b> was declined by {mention_html(caller)}.",
+                    f"💥 Your join request to <b>{_html.escape(str(chat_id))}</b> was declined by {mention_html(caller)}.",
                 )
             except RPCError:
                 pass
@@ -643,4 +630,4 @@ async def reason_cleanup_task():
 async def _start_background_tasks(client):
     client.create_task(reason_cleanup_task())
 
-# End of requestchat.py
+
