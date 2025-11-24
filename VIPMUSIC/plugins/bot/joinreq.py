@@ -175,7 +175,7 @@ def nice_user_details(user: User) -> str:
 # Commands (owner-only settings) & menu
 # -------------------------
 # Owner inline menu trigger: /jr_menu (must be used inside the target group by owner)
-@app.on_message(filters.command("joinreq") & filters.group)
+@app.on_message(filters.command("joinreq","joinrequest") & filters.group)
 async def cmd_jr_menu(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
