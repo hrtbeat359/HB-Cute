@@ -200,10 +200,10 @@ async def cmd_jr_menu(client, message: Message):
     text = (
         f"<blockquote>🚀 𝐉ᴏɪɴ 𝐑ᴇǫᴜᴇ𝘀ᴛ 𝐌ᴇɴᴜ\n"
         f" <b>{_html.escape(message.chat.title or str(chat_id))}</b></blockquote>\n"
-        f"<blockquote>▪️ 𝐑ᴇǫ 𝐓ᴏ 𝐉ᴏɪɴ: <code>{enabled}</code>\n"
+        f"<blockquote>▪️ 𝐑ᴇǫ 𝐓ᴏ 𝐉ᴏɪɴ    : <code>{enabled}</code>\n"
         f"▪️ 𝐀ᴘᴘʀᴏᴠᴇ 𝐌ᴏᴅᴇ: <code>{auto_approve}</code>\n"
-        f"▪️ 𝐋ᴏɢ 𝐆ʀᴏᴜᴘ: <code>{log_chat}</code></blockquote>\n"
-        f"ᴏᴡɴᴇʀ𝘀 ᴜ𝘀𝗲 ʙᴇʟᴏ𝘄 ʙᴜᴛ𝘁𝗼𝗻 𝘁𝗼 ᴄʜ𝗮𝗻𝗴𝗲 ᴏ𝗽𝘁𝗶𝗼𝗻𝘀"
+        f"▪️ 𝐋ᴏɢ 𝐆ʀᴏᴜᴘ    : <code>{log_chat}</code></blockquote>\n"
+        #f"ᴏᴡɴᴇʀ𝘀 ᴜ𝘀𝗲 ʙᴇʟᴏ𝘄 ʙᴜᴛ𝘁𝗼𝗻 𝘁𝗼 ᴄʜ𝗮𝗻𝗴𝗲 ᴏ𝗽𝘁𝗶𝗼𝗻𝘀"
     )
 
     await message.reply_text(text, reply_markup=kb)
