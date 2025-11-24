@@ -23,7 +23,7 @@ try:
 except Exception:
     SUDOERS = set()
 
-print("[reactionbot] loaded — merged reaction system")
+print("[reactionbot] reaction, addreact, delreact, listreact")
 
 # ---------------- DATABASE ----------------
 COLLECTION = mongodb["reaction_mentions"]
@@ -210,7 +210,7 @@ def is_reaction_enabled_for_chat(chat_id: int) -> bool:
 
 
 # ---------------- /reaction COMMAND ----------------
-@app.on_message(filters.command("reaction", prefixes=["/"]))
+@app.on_message(filters.command(["reaction","react"], prefixes=["/","","!","#","@","."]))
 async def react_command(client, message: Message):
     global REACTION_ENABLED
 
@@ -218,33 +218,33 @@ async def react_command(client, message: Message):
     if not ok:
         return await message.reply_text(
             "⚠️ Only admins/sudo users may control reaction system.\n\n"
-            f"Debug: {debug}"
+            #f"Debug: {debug}"
         )
 
     chat_id = message.chat.id
 
     keyboard = InlineKeyboardMarkup(
         [
+            #[
+                #InlineKeyboardButton("✅ Enable Global", callback_data="react_on"),
+                #InlineKeyboardButton("🛑 Disable Global", callback_data="react_off"),
+            #],
             [
-                InlineKeyboardButton("✅ Enable Global", callback_data="react_on"),
-                InlineKeyboardButton("🛑 Disable Global", callback_data="react_off"),
+                InlineKeyboardButton("🍏 𝐄ɴᴀʙʟᴇ", callback_data=f"react_chat_on:{chat_id}"),
+                InlineKeyboardButton("🍎 𝐃ɪ𝗌ᴀʙʟᴇ", callback_data=f"react_chat_off:{chat_id}"),
             ],
-            [
-                InlineKeyboardButton("✅ Enable for this chat", callback_data=f"react_chat_on:{chat_id}"),
-                InlineKeyboardButton("🛑 Disable for this chat", callback_data=f"react_chat_off:{chat_id}"),
-            ],
-            [
-                InlineKeyboardButton("🧹 Clear chat override", callback_data=f"react_chat_clear:{chat_id}"),
-                InlineKeyboardButton("🔍 Status", callback_data="react_status")
-            ]
+            #[
+                #InlineKeyboardButton("🧹 Clear chat override", callback_data=f"react_chat_clear:{chat_id}"),
+                #InlineKeyboardButton("🔍 Status", callback_data="react_status")
+            #]
         ]
     )
 
     await message.reply_text(
-        f"**Reaction System Control**\n\n"
-        f"Global state: {'🟢 ON' if REACTION_ENABLED else '🔴 OFF'}\n"
-        f"This chat: {'🟢 ON' if is_reaction_enabled_for_chat(chat_id) else '🔴 OFF'}\n\n"
-        "Use the buttons below to change global or per-chat behavior.",
+        f"**<blockquote>𝐑ᴇᴀᴄᴛɪᴏɴ 𝐒ʏ𝗌ᴛᴇᴍ</blockquote>**\n"
+        #f"Global state: {'🟢 𝐎ɴ' if REACTION_ENABLED else '🔴 OFF'}\n"
+        f"<blockquote>𝐓ʜɪ𝗌 𝐂ʜᴀᴛ: {'🍏 𝐎ɴ' if is_reaction_enabled_for_chat(chat_id) else '🍎 𝐎ғғ'}</blockquote>",
+        #"Use the buttons below to change global or per-chat behavior.",
         reply_markup=keyboard
     )
 
@@ -287,12 +287,12 @@ async def reaction_callback(client, query: CallbackQuery):
         elif action.startswith("react_chat_on:"):
             _chat = int(action.split(":", 1)[1])
             await set_chat_reaction_enabled(_chat, True)
-            return await query.edit_message_text(f"✅ **Reactions enabled for chat {_chat}**")
+            return await query.edit_message_text(f"🍏 **Reactions enabled for chat {_chat}**")
 
         elif action.startswith("react_chat_off:"):
             _chat = int(action.split(":", 1)[1])
             await set_chat_reaction_enabled(_chat, False)
-            return await query.edit_message_text(f"🛑 **Reactions disabled for chat {_chat}**")
+            return await query.edit_message_text(f"🍎 **Reactions disabled for chat {_chat}**")
 
         elif action.startswith("react_chat_clear:"):
             _chat = int(action.split(":", 1)[1])
