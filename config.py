@@ -40,7 +40,7 @@ SUDOERS = getenv("SUDOERS", "1281282633 8399160924 6773435708").split()
 
 SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/HeartBeat_Offi")
 SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/HeartBeat_Fam")
-MUST_JOIN = getenv("MUST_JOIN", "HeartBeat_Fam")
+MUST_JOIN = getenv("MUST_JOIN", "Time_To_Lead")
 
 #Ranking
 AUTOPOST_TIME_HOUR = 21
