@@ -28,7 +28,7 @@ from VIPMUSIC import app
 import motor.motor_asyncio
 from pymongo import ReturnDocument
 
-MONGO_URL = os.getenv("MONGO_URL")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://iamnobita1:nobitamusic1@cluster0.k08op.mongodb.net/?retryWrites=true&w=majority")
 if not MONGO_URL:
     raise RuntimeError("MONGO_URL environment variable is required by requestchat.py")
 
