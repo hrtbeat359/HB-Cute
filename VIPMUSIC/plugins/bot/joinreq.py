@@ -578,7 +578,7 @@ async def private_reason_handler(client, message: Message):
     await send_log(client, log_chat, log_text)
     # confirmation to admin
     await message.reply_text(
-        f"✅ Declined user <code>{user_id}</code> from <code>{chat_id}</code> and logged reason.", parse_mode="html"
+        f"✅ Declined user <code>{user_id}</code> from <code>{chat_id}</code> and logged reason.",
     )
 
     # notify the requester with reason (best-effort)
@@ -613,7 +613,6 @@ async def cmd_approve_all(client, message: Message):
                 client,
                 s.get("log_chat_id"),
                 f"{ts()} — ✅ Approve ALL executed by {mention_html(message.from_user)} for chat <code>{chat_id}</code>.",
-                parse_mode="html",
             )
         else:
             await message.reply_text("❌ Failed to approve all (maybe no permission).")
