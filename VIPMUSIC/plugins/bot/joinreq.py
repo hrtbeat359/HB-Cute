@@ -197,7 +197,7 @@ async def cmd_jr_menu(client, message: Message):
         f"• Log chat: <code>{s.get('log_chat_id')}</code>\n\n"
         f"Use the buttons below to change options. Owner only."
     )
-    await message.reply_text(text, reply_markup=kb, parse_mode="html")
+    await message.reply_text(text, reply_markup=kb)
 
 
 # -------------------------
@@ -224,7 +224,6 @@ async def jr_owner_cb(client, cq: CallbackQuery):
         await cq.answer("Toggled enabled.", show_alert=False)
         await cq.edit_message_text(
             f"✅ Enabled set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /jr_menu to reopen.",
-            parse_mode="html",
         )
     elif action == "toggle_auto":
         new = not s.get("auto_approve", False)
@@ -232,7 +231,6 @@ async def jr_owner_cb(client, cq: CallbackQuery):
         await cq.answer("Toggled auto-approve.", show_alert=False)
         await cq.edit_message_text(
             f"✅ Auto-approve set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /jr_menu to reopen.",
-            parse_mode="html",
         )
     elif action == "set_log":
         # ask owner to reply with chat id or @username in SAME CHAT privately -> we instruct them to DM the bot
@@ -241,14 +239,13 @@ async def jr_owner_cb(client, cq: CallbackQuery):
             await client.send_message(
                 caller.id,
                 f"Please reply to this message with the target log chat id (e.g. -1001234567890) or @username to set as log for chat <b>{chat_id}</b>.",
-                parse_mode="html",
             )
         except RPCError:
             await cq.answer("Could not send private message — please start a chat with the bot first.", show_alert=True)
     elif action == "clear_log":
         await set_settings(chat_id, {"log_chat_id": None})
         await cq.answer("Log cleared.", show_alert=False)
-        await cq.edit_message_text(f"✅ Cleared log chat for <b>{chat_id}</b>.", parse_mode="html")
+        await cq.edit_message_text(f"✅ Cleared log chat for <b>{chat_id}</b>.")
     elif action == "approve_all":
         # approve all pending join requests for that chat
         try:
@@ -284,7 +281,7 @@ async def jr_owner_cb(client, cq: CallbackQuery):
                 lines.append(f"{_html.escape(user.first_name or 'NoName')} {_html.escape(user.last_name or '')} {uname} — <code>{user.id}</code>")
             text = "Pending (preview up to 20):\n\n" + "\n".join(lines)
             await cq.answer("Fetched pending requests.", show_alert=False)
-            await cq.edit_message_text(text, parse_mode="html")
+            await cq.edit_message_text(text)
         except RPCError as e:
             await cq.answer(f"Error: {e}", show_alert=True)
 
@@ -310,7 +307,6 @@ async def owner_private_handler(client, message: Message):
         await message.reply_text(
             "To set a log chat for a group, reply with:\n\n"
             "<code>&lt;group_chat_id&gt; &lt;log_chat_id_or_@username&gt;</code>\n\nExample:\n<code>-1001234567890 -1009876543210</code>",
-            parse_mode="html",
         )
         return
 
@@ -339,7 +335,7 @@ async def owner_private_handler(client, message: Message):
         return
 
     await set_settings(target_chat, {"log_chat_id": log_target_id})
-    await message.reply_text(f"✅ Log chat set for <code>{target_chat}</code> -> <code>{log_target_id}</code>", parse_mode="html")
+    await message.reply_text(f"✅ Log chat set for <code>{target_chat}</code> -> <code>{log_target_id}</code>")
     # notify the log chat
     await send_log(client, log_target_id, f"{ts()} — Log channel configured for group <code>{target_chat}</code> by {mention_html(message.from_user)}")
 
@@ -369,14 +365,12 @@ async def handle_chat_join_request(client, req: ChatJoinRequest):
                 s.get("log_chat_id"),
                 f"{ts()} — ✅ Auto-approved join request in <b>{_html.escape(chat.title or str(chat_id))}</b>\nUser: {nice_user_details(requester)}",
                 disable_web_page_preview=True,
-                parse_mode="html",
             )
             # notify user
             try:
                 await client.send_message(
                     user_id,
                     f"✅ Your join request to <b>{_html.escape(chat.title or str(chat_id))}</b> has been approved automatically.",
-                    parse_mode="html",
                 )
             except RPCError:
                 pass
@@ -385,7 +379,6 @@ async def handle_chat_join_request(client, req: ChatJoinRequest):
                 client,
                 s.get("log_chat_id"),
                 f"{ts()} — ❌ Failed to auto-approve for <b>{_html.escape(chat.title or str(chat_id))}</b>. Error: {e}",
-                parse_mode="html",
             )
         return
 
@@ -404,14 +397,13 @@ async def handle_chat_join_request(client, req: ChatJoinRequest):
 
     # try to attach user avatar (best-effort): get_user_profile_photos exists but we won't fetch full size here (avoid extra requests)
     try:
-        sent = await client.send_message(chat_id, text, reply_markup=kb, disable_web_page_preview=True, parse_mode="html")
+        sent = await client.send_message(chat_id, text, reply_markup=kb, disable_web_page_preview=True)
     except RPCError:
         # fallback: log to log chat instead
         await send_log(
             client,
             s.get("log_chat_id"),
             f"{ts()} — ⚠️ Could not post join request into group <code>{chat_id}</code>. Request by {nice_user_details(requester)}",
-            parse_mode="html",
         )
         return
 
@@ -420,7 +412,6 @@ async def handle_chat_join_request(client, req: ChatJoinRequest):
         client,
         s.get("log_chat_id"),
         f"{ts()} — ℹ️ Join request posted in <b>{_html.escape(chat.title or str(chat_id))}</b> for {nice_user_details(requester)}",
-        parse_mode="html",
     )
 
 
@@ -461,20 +452,17 @@ async def jr_admin_cb(client, cq: CallbackQuery):
             # edit the join-request message (admins see)
             await cq.edit_message_text(
                 f"✅ Approved by {mention_html(caller)}\nUser: <code>{user_id}</code>",
-                parse_mode="html",
             )
             await send_log(
                 client,
                 s.get("log_chat_id"),
                 f"{ts()} — ✅ Request approved in <b>{chat_id}</b>\nUser: <code>{user_id}</code>\nBy: {mention_html(caller)}",
-                parse_mode="html",
             )
             # notify the requester (best-effort)
             try:
                 await client.send_message(
                     user_id,
                     f"✅ Your join request to <b>{_html.escape(str(chat_id))}</b> was approved by {mention_html(caller)}.",
-                    parse_mode="html",
                 )
             except RPCError:
                 pass
@@ -489,20 +477,17 @@ async def jr_admin_cb(client, cq: CallbackQuery):
             await client.decline_chat_join_request(chat_id, user_id)
             await cq.edit_message_text(
                 f"❌ Declined by {mention_html(caller)}\nUser: <code>{user_id}</code>",
-                parse_mode="html",
             )
             await send_log(
                 client,
                 s.get("log_chat_id"),
                 f"{ts()} — ❌ Request declined in <b>{chat_id}</b>\nUser: <code>{user_id}</code>\nBy: {mention_html(caller)}",
-                parse_mode="html",
             )
             # notify the requester (best-effort)
             try:
                 await client.send_message(
                     user_id,
                     f"❌ Your join request to <b>{_html.escape(str(chat_id))}</b> was declined by {mention_html(caller)}.",
-                    parse_mode="html",
                 )
             except RPCError:
                 pass
@@ -530,7 +515,6 @@ async def jr_admin_cb(client, cq: CallbackQuery):
                 caller.id,
                 f"You chose to decline user <code>{user_id}</code> from group <code>{chat_id}</code>.\n\n"
                 "Please reply to this message with the reason for decline (within 5 minutes).",
-                parse_mode="html",
             )
         except RPCError:
             await cq.answer("Could not open private chat with you. Please start a chat with the bot first.", show_alert=True)
@@ -544,7 +528,7 @@ async def jr_admin_cb(client, cq: CallbackQuery):
                 f"<a href='tg://user?id={user.id}'>Open profile</a>"
             )
             await cq.answer("Showing user details.", show_alert=False)
-            await cq.edit_message_text(txt, parse_mode="html")
+            await cq.edit_message_text(txt)
         except RPCError as e:
             await cq.answer(f"Could not fetch user: {e}", show_alert=True)
 
@@ -591,7 +575,7 @@ async def private_reason_handler(client, message: Message):
         f"Declined by: {mention_html(caller)}\n"
         f"Reason: {_html.escape(reason)}"
     )
-    await send_log(client, log_chat, log_text, parse_mode="html")
+    await send_log(client, log_chat, log_text)
     # confirmation to admin
     await message.reply_text(
         f"✅ Declined user <code>{user_id}</code> from <code>{chat_id}</code> and logged reason.", parse_mode="html"
@@ -602,7 +586,6 @@ async def private_reason_handler(client, message: Message):
         await client.send_message(
             user_id,
             f"❌ Your join request to <b>{_html.escape(str(chat_id))}</b> was declined by {mention_html(caller)}.\n\nReason:\n{_html.escape(reason)}",
-            parse_mode="html",
         )
     except RPCError:
         pass
