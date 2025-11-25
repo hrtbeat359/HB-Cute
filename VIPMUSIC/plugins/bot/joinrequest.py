@@ -177,7 +177,7 @@ def nice_user_details(user: User) -> str:
 # Commands (owner-only settings) & menu
 # -------------------------
 # Owner inline menu trigger: /jr_menu (must be used inside the target group by owner)
-@app.on_message(filters.command("joinreq","joinrequest") & filters.group)
+@app.on_message(filters.command(["joinreq", "joinrequest"]) & filters.group)
 async def cmd_jr_menu(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -298,7 +298,7 @@ async def jr_owner_cb(client, cq: CallbackQuery):
 
 
 # Owner DM handler for setting log chat id
-@app.on_message(filters.private & ~filters.bot)
+@app.on_message(filters.private & filters.reply & ~filters.bot)
 async def owner_private_handler(client, message: Message):
     # If the message is in reply to the bot's instruction to set_log
     text = (message.text or "").strip()
@@ -540,7 +540,7 @@ async def jr_admin_cb(client, cq: CallbackQuery):
 # -------------------------
 # Private message handler for admin decline reason replies
 # -------------------------
-@app.on_message(filters.private & ~filters.me & ~filters.bot)
+@app.on_message(filters.private & filters.reply & ~filters.bot)
 async def private_reason_handler(client, message: Message):
     admin_id = message.from_user.id
     if admin_id not in PENDING_REASON_PROMPTS:
