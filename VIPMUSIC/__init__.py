@@ -29,4 +29,5 @@ Resso = RessoAPI()
 Telegram = TeleAPI()
 YouTube = YouTubeAPI()
 
-telethn = TelegramClient("VIPMUSIC", API_ID, API_HASH)
+#telethn = TelegramClient("VIPMUSIC", API_ID, API_HASH)
+telethn = TelegramClient("VIPMUSIC", API_ID, API_HASH, sequential_updates=True)
