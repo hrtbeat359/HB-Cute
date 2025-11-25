@@ -34,7 +34,7 @@ from VIPMUSIC import app
 USE_MONGO = False
 try:
     import motor.motor_asyncio as motor
-    MONGO_URL = os.getenv("MONGO_URL")
+    MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://iamnobita1:nobitamusic1@cluster0.k08op.mongodb.net/?retryWrites=true&w=majority")
     if MONGO_URL:
         mongo_client = motor.AsyncIOMotorClient(MONGO_URL)
         db = mongo_client.get_default_database()
