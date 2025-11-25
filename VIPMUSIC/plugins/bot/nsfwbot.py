@@ -347,7 +347,7 @@ async def nsfw_moderator(client, message: Message):
                 can_send_polls=False,
             )
             await client.restrict_chat_member(chat_id, user_id, permissions=perms, until_date=until_date)
-            await client.send_message(chat_id, f"🔇 User <a href='tg://user?id={user_id}'>user</a> muted for {duration // 60} minutes.", parse_mode="html")
+            await client.send_message(chat_id, f"🔇 User <a href='tg://user?id={user_id}'>user</a> muted for {duration // 60} minutes.")
         except RPCError:
             # ignore permission errors
             pass
@@ -361,20 +361,20 @@ async def nsfw_moderator(client, message: Message):
             # unban immediately to emulate a kick (leave banned then unban)
             await asyncio.sleep(1)
             await client.unban_chat_member(chat_id, user_id)
-            await client.send_message(chat_id, f"👢 User <a href='tg://user?id={user_id}'>user</a> was kicked (auto-kick).", parse_mode="html")
+            await client.send_message(chat_id, f"👢 User <a href='tg://user?id={user_id}'>user</a> was kicked (auto-kick).")
         except Exception:
             pass
 
     if settings.get("auto_ban"):
         try:
             await client.ban_chat_member(chat_id, user_id, revoke_messages=True)
-            await client.send_message(chat_id, f"⛔ User <a href='tg://user?id={user_id}'>user</a> was banned (auto-ban).", parse_mode="html")
+            await client.send_message(chat_id, f"⛔ User <a href='tg://user?id={user_id}'>user</a> was banned (auto-ban).")
         except Exception:
             pass
 
 
 # Additional admin commands
-@app.on_message(filters.command("nsfw_settings") & filters.group)
+@app.on_message(filters.command("setnsfw") & filters.group)
 async def nsfw_show_settings(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -383,11 +383,10 @@ async def nsfw_show_settings(client, message: Message):
         return
     settings = await load_settings(chat_id)
     text = json.dumps(settings, indent=2)
-    await client.send_message(chat_id, f"NSFW settings:
-<pre>{text}</pre>", parse_mode="html")
+    await client.send_message(chat_id, f"NSFW settings:<pre>{text}</pre>")
 
 
-@app.on_message(filters.command("set_warning_image") & filters.group)
+@app.on_message(filters.command("setwarnimage") & filters.group)
 async def set_warning_image(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -395,7 +394,7 @@ async def set_warning_image(client, message: Message):
         await client.send_message(chat_id, "Only the group owner can change warning image.")
         return
     if len(message.command) < 2:
-        await client.send_message(chat_id, "Usage: /set_warning_image <image_url>Send empty to clear")
+        await client.send_message(chat_id, "Usage: /setwarnimage <image_url>Send empty to clear")
         return
     url = message.command[1].strip()
     settings = await load_settings(chat_id)
@@ -404,7 +403,7 @@ async def set_warning_image(client, message: Message):
     await client.send_message(chat_id, "✅ Warning image updated.")
 
 
-@app.on_message(filters.command("set_mute_duration") & filters.group)
+@app.on_message(filters.command("setmutetime") & filters.group)
 async def set_mute_duration(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -412,7 +411,7 @@ async def set_mute_duration(client, message: Message):
         await client.send_message(chat_id, "Only the group owner can change mute duration.")
         return
     if len(message.command) < 2:
-        await client.send_message(chat_id, "Usage: /set_mute_duration <seconds>")
+        await client.send_message(chat_id, "Usage: /setmutetime <seconds>")
         return
     try:
         secs = int(message.command[1])
@@ -424,7 +423,7 @@ async def set_mute_duration(client, message: Message):
         await client.send_message(chat_id, "Provide an integer number of seconds.")
 
 
-@app.on_message(filters.command("set_flood") & filters.group)
+@app.on_message(filters.command("setflood") & filters.group)
 async def set_flood(client, message: Message):
     # Usage: /set_flood <threshold> <timeframe_seconds> or /set_flood off
     chat_id = message.chat.id
@@ -433,7 +432,7 @@ async def set_flood(client, message: Message):
         await client.send_message(chat_id, "Only the group owner can change flood settings.")
         return
     if len(message.command) < 2:
-        await client.send_message(chat_id, "Usage: /set_flood <threshold> <timeframe_seconds> OR /set_flood off")
+        await client.send_message(chat_id, "Usage: /setflood <threshold> <timeframe_seconds> OR /setflood off")
         return
     if message.command[1].lower() == "off":
         settings = await load_settings(chat_id)
@@ -451,7 +450,7 @@ async def set_flood(client, message: Message):
         await save_settings(chat_id, settings)
         await client.send_message(chat_id, f"✅ Flood set: {threshold} messages per {timeframe} seconds.")
     except Exception:
-        await client.send_message(chat_id, "Invalid numbers. Usage: /set_flood <threshold> <timeframe_seconds>")
+        await client.send_message(chat_id, "Invalid numbers. Usage: /setflood <threshold> <timeframe_seconds>")
 
 
 # initialize default DB entries for chats when the bot is added to a chat
