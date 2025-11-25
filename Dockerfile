@@ -7,7 +7,7 @@ RUN apt-get update \
 
 COPY . /app/
 WORKDIR /app/
-RUN pip install motor
+
 RUN pip3 install --no-cache-dir -U -r requirements.txt
 
 # Install Playwright browsers (Chromium only = lighter)
