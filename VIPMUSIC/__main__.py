@@ -61,6 +61,14 @@ async def init():
     LOGGER("VIPMUSIC").info("                 ╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝗩𝗜𝗣 𝗕𝗢𝗬♨️\n╚═════ஜ۩۞۩ஜ════╝")
     
 
+#if __name__ == "__main__":
+    #telethn.start(bot_token=config.BOT_TOKEN)
+    #asyncio.get_event_loop().run_until_complete(init())
+
 if __name__ == "__main__":
-    telethn.start(bot_token=config.BOT_TOKEN)
-    asyncio.get_event_loop().run_until_complete(init())
+    async def main():
+        await telethn.start(bot_token=config.BOT_TOKEN)
+        await init()
+
+    asyncio.get_event_loop().run_until_complete(main())
+    
