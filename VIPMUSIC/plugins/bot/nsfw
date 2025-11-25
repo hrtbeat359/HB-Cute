@@ -1,15 +1,3 @@
-"""
-NSFW moderation module for VIPMUSIC (Pyrogram v2.x) - FINAL FIXED
-- Owner/admin checks use ChatMemberStatus and RPCError handling
-- Uses ChatPermissions for mute/restrict calls
-- Avoids replying to deleted messages (uses client.send_message)
-- MongoDB (motor) optional; JSON fallback
-- Commands: /nsfw on|off, /nsfw_settings, /set_warning_image, /set_mute_duration, /set_flood
-- Inline buttons for toggles
-
-Place this file in your plugins directory and ensure `from VIPMUSIC import app` resolves to your Pyrogram client.
-"""
-
 import os
 import json
 import asyncio
