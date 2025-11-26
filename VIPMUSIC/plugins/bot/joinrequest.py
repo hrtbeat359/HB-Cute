@@ -234,14 +234,14 @@ async def jr_owner_cb(client, cq: CallbackQuery):
         await set_settings(chat_id, {"enabled": new})
         await cq.answer("Toggled enabled.", show_alert=False)
         await cq.edit_message_text(
-            f"✅ Enabled set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /jr_menu to reopen.",
+            f"✅ Enabled set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /joinreq to reopen.",
         )
     elif action == "toggle_auto":
         new = not s.get("auto_approve", False)
         await set_settings(chat_id, {"auto_approve": new})
         await cq.answer("Toggled auto-approve.", show_alert=False)
         await cq.edit_message_text(
-            f"✅ Auto-approve set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /jr_menu to reopen.",
+            f"✅ Auto-approve set to <code>{new}</code> for chat <b>{chat_id}</b>.\nUse /joinreq to reopen.",
         )
     elif action == "set_log":
         # ask owner to reply with chat id or @username in SAME CHAT privately -> we instruct them to DM the bot
