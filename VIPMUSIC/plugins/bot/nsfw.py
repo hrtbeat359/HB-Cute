@@ -15,13 +15,17 @@ from pyrogram.types import (
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import RPCError
 
+# `app` should be your Pyrogram client instance used in VIPMUSIC.
 from VIPMUSIC import app
 
-# Mongo or JSON fallback
+# Try to use motor (MongoDB); fallback to JSON file
 USE_MONGO = False
 try:
     import motor.motor_asyncio as motor
-    MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://iamnobita1:nobitamusic1@cluster0.k08op.mongodb.net/?retryWrites=true&w=majority")
+    MONGO_URL = os.getenv(
+        "MONGO_URL",
+        "mongodb+srv://iamnobita1:nobitamusic1@cluster0.k08op.mongodb.net/?retryWrites=true&w=majority",
+    )
     if MONGO_URL:
         mongo_client = motor.AsyncIOMotorClient(MONGO_URL)
         db = mongo_client.get_default_database()
@@ -43,7 +47,7 @@ _default_settings = {
         "audio": False,
     },
     "warning_image": "",
-    "time_mute": {"enabled": True, "duration_seconds": 3600},
+    "time_mute": {"enabled": True, "duration_seconds": 60 * 60},
     "auto_kick": False,
     "auto_ban": False,
     "flood": {"enabled": True, "threshold": 5, "timeframe_seconds": 10},
@@ -98,6 +102,8 @@ async def is_chat_owner(client, chat_id: int, user_id: int) -> bool:
     try:
         member = await client.get_chat_member(chat_id, user_id)
         return member.status == ChatMemberStatus.OWNER
+    except RPCError:
+        return False
     except Exception:
         return False
 
@@ -106,10 +112,8 @@ def settings_to_keyboard(settings: Dict[str, Any]) -> InlineKeyboardMarkup:
     kb = [
         [InlineKeyboardButton(f"NSFW: {'ON' if settings['enabled'] else 'OFF'}", callback_data="nsfw_toggle")],
         [InlineKeyboardButton(f"Time-mute: {'ON' if settings['time_mute']['enabled'] else 'OFF'}", callback_data="toggle_time_mute")],
-        [
-            InlineKeyboardButton(f"Auto-kick: {'ON' if settings['auto_kick'] else 'OFF'}", callback_data="toggle_auto_kick"),
-            InlineKeyboardButton(f"Auto-ban: {'ON' if settings['auto_ban'] else 'OFF'}", callback_data="toggle_auto_ban")
-        ],
+        [InlineKeyboardButton(f"Auto-kick: {'ON' if settings['auto_kick'] else 'OFF'}", callback_data="toggle_auto_kick"),
+         InlineKeyboardButton(f"Auto-ban: {'ON' if settings['auto_ban'] else 'OFF'}", callback_data="toggle_auto_ban")],
         [InlineKeyboardButton("Change warning image", callback_data="change_warning_image")],
         [InlineKeyboardButton("Toggle block types", callback_data="block_types")],
         [InlineKeyboardButton("Close", callback_data="nsfw_close")]
@@ -117,9 +121,6 @@ def settings_to_keyboard(settings: Dict[str, Any]) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(kb)
 
 
-# -------------------------------
-# NSFW command (owner only)
-# -------------------------------
 @app.on_message(filters.command("nsfw") & filters.group)
 async def nsfw_command(client, message: Message):
     chat_id = message.chat.id
@@ -129,16 +130,17 @@ async def nsfw_command(client, message: Message):
         await message.reply_text("⚠️ Only the group owner can change NSFW settings.")
         return
 
-    settings = await load_settings(chat_id)
     if len(message.command) < 2:
+        settings = await load_settings(chat_id)
         text = (
-            f"NSFW settings for this chat:\nEnabled: {settings['enabled']}\n"
-            f"Blocked types: {', '.join([t for t,v in settings['block_types'].items() if v])}"
+            f"NSFW settings for this chat:Enabled: {settings['enabled']}"
+            f" Block types: {', '.join([t for t,v in settings['block_types'].items() if v])}"
         )
         await client.send_message(chat_id, text, reply_markup=settings_to_keyboard(settings))
         return
 
     arg = message.command[1].lower()
+    settings = await load_settings(chat_id)
     if arg in ("on", "enable", "1", "true"):
         settings["enabled"] = True
         await save_settings(chat_id, settings)
@@ -151,17 +153,14 @@ async def nsfw_command(client, message: Message):
         await client.send_message(chat_id, "Usage: /nsfw on|off")
 
 
-# -------------------------------
-# Callback query handling
-# -------------------------------
 @app.on_callback_query(filters.regex(r"^nsfw_"))
-async def nsfw_callback(client, cq: CallbackQuery):
-    data = cq.data
-    chat_id = cq.message.chat.id
-    user_id = cq.from_user.id
+async def nsfw_callback(client, callback_query: CallbackQuery):
+    data = callback_query.data
+    chat_id = callback_query.message.chat.id
+    user_id = callback_query.from_user.id
 
     if not await is_chat_owner(client, chat_id, user_id):
-        await cq.answer("Only the group owner can change these.", show_alert=True)
+        await callback_query.answer("Only the group owner can change these.", show_alert=True)
         return
 
     settings = await load_settings(chat_id)
@@ -169,70 +168,78 @@ async def nsfw_callback(client, cq: CallbackQuery):
     if data == "nsfw_toggle":
         settings["enabled"] = not settings.get("enabled", False)
         await save_settings(chat_id, settings)
-        await cq.message.edit_reply_markup(settings_to_keyboard(settings))
-        await cq.answer("Toggled NSFW")
+        await callback_query.message.edit_reply_markup(settings_to_keyboard(settings))
+        await callback_query.answer("Toggled NSFW")
         return
 
     if data == "toggle_time_mute":
         settings["time_mute"]["enabled"] = not settings["time_mute"].get("enabled", True)
         await save_settings(chat_id, settings)
-        await cq.message.edit_reply_markup(settings_to_keyboard(settings))
-        await cq.answer("Toggled time-mute")
+        await callback_query.message.edit_reply_markup(settings_to_keyboard(settings))
+        await callback_query.answer("Toggled time-mute")
         return
 
     if data == "toggle_auto_kick":
         settings["auto_kick"] = not settings.get("auto_kick", False)
         await save_settings(chat_id, settings)
-        await cq.message.edit_reply_markup(settings_to_keyboard(settings))
-        await cq.answer("Toggled auto-kick")
+        await callback_query.message.edit_reply_markup(settings_to_keyboard(settings))
+        await callback_query.answer("Toggled auto-kick")
         return
 
     if data == "toggle_auto_ban":
         settings["auto_ban"] = not settings.get("auto_ban", False)
         await save_settings(chat_id, settings)
-        await cq.message.edit_reply_markup(settings_to_keyboard(settings))
-        await cq.answer("Toggled auto-ban")
+        await callback_query.message.edit_reply_markup(settings_to_keyboard(settings))
+        await callback_query.answer("Toggled auto-ban")
+        return
+
+    if data == "change_warning_image":
+        await callback_query.answer("Use /set_warning_image <image_url> to set warning image", show_alert=True)
         return
 
     if data == "block_types":
-        kb = [[InlineKeyboardButton(f"{t}: {'ON' if v else 'OFF'}", callback_data=f"toggle_block_{t}")] for t, v in settings["block_types"].items()]
+        kb = []
+        for t, val in settings["block_types"].items():
+            kb.append([InlineKeyboardButton(f"{t}: {'ON' if val else 'OFF'}", callback_data=f"toggle_block_{t}")])
         kb.append([InlineKeyboardButton("Back", callback_data="nsfw_toggle")])
-        await cq.message.edit_reply_markup(InlineKeyboardMarkup(kb))
-        await cq.answer()
+        await callback_query.message.edit_reply_markup(InlineKeyboardMarkup(kb))
+        await callback_query.answer()
         return
 
     if data.startswith("toggle_block_"):
-        t = data.replace("toggle_block_", "")
+        t = data.split("toggle_block_")[1]
         if t in settings["block_types"]:
             settings["block_types"][t] = not settings["block_types"][t]
             await save_settings(chat_id, settings)
-            kb = [[InlineKeyboardButton(f"{tt}: {'ON' if vv else 'OFF'}", callback_data=f"toggle_block_{tt}")] for tt, vv in settings["block_types"].items()]
+            kb = []
+            for tt, val in settings["block_types"].items():
+                kb.append([InlineKeyboardButton(f"{tt}: {'ON' if val else 'OFF'}", callback_data=f"toggle_block_{tt}")])
             kb.append([InlineKeyboardButton("Back", callback_data="nsfw_toggle")])
-            await cq.message.edit_reply_markup(InlineKeyboardMarkup(kb))
-            await cq.answer(f"Toggled {t}")
+            await callback_query.message.edit_reply_markup(InlineKeyboardMarkup(kb))
+            await callback_query.answer(f"Toggled {t}")
         else:
-            await cq.answer("Unknown type", show_alert=True)
+            await callback_query.answer("Unknown type", show_alert=True)
         return
 
     if data == "nsfw_close":
         try:
-            await cq.message.delete()
+            await callback_query.message.delete()
         except Exception:
             pass
-        await cq.answer()
+        await callback_query.answer()
+        return
 
 
-# -------------------------------
-# NSFW moderator: BLOCKS MEDIA & FLOOD
-# Ignores ALL bot commands
-# -------------------------------
-@app.on_message(filters.group & ~filters.command())
+# This is the fix: explicitly exclude admin NSFW commands from moderation
+@app.on_message(
+    filters.group
+    & ~filters.command(["nsfw", "setwarnimage", "setmutetime", "setflood", "setnsfw"])
+)
 async def nsfw_moderator(client, message: Message):
     if not message.from_user:
         return
 
     chat_id = message.chat.id
-    user_id = message.from_user.id
     settings = await load_settings(chat_id)
 
     if not settings.get("enabled", False):
@@ -241,86 +248,117 @@ async def nsfw_moderator(client, message: Message):
     blocked = False
     blocked_reason = None
 
-    # Media block
-    for t in settings["block_types"]:
-        if getattr(message, t) and settings["block_types"][t]:
-            blocked = True
-            blocked_reason = t
-            break
+    if message.sticker and settings["block_types"].get("sticker"):
+        blocked = True
+        blocked_reason = "sticker"
+    elif message.photo and settings["block_types"].get("photo"):
+        blocked = True
+        blocked_reason = "photo"
+    elif message.video and settings["block_types"].get("video"):
+        blocked = True
+        blocked_reason = "video"
+    elif message.animation and settings["block_types"].get("animation"):
+        blocked = True
+        blocked_reason = "animation"
+    elif message.document and settings["block_types"].get("document"):
+        blocked = True
+        blocked_reason = "document"
+    elif message.voice and settings["block_types"].get("voice"):
+        blocked = True
+        blocked_reason = "voice"
+    elif message.audio and settings["block_types"].get("audio"):
+        blocked = True
+        blocked_reason = "audio"
 
-    # Flood check
+    # Flood detection
+    user_id = message.from_user.id
+    now_ts = int(time.time())
     if settings.get("flood", {}).get("enabled"):
         timeframe = int(settings["flood"].get("timeframe_seconds", 10))
         threshold = int(settings["flood"].get("threshold", 5))
-        user_times = _flood_track.setdefault(chat_id, {}).setdefault(user_id, [])
-        now_ts = int(time.time())
+        chat_track = _flood_track.setdefault(chat_id, {})
+        user_times = chat_track.setdefault(user_id, [])
         user_times.append(now_ts)
         while user_times and user_times[0] < now_ts - timeframe:
             user_times.pop(0)
         if len(user_times) >= threshold:
             blocked = True
             blocked_reason = blocked_reason or "flood"
-            _flood_track[chat_id][user_id] = []
+            chat_track[user_id] = []
 
     if not blocked:
         return
 
-    # Delete
     try:
         await client.delete_messages(chat_id, message.message_id)
     except Exception:
         pass
 
-    # Warn
     warning_img = settings.get("warning_image")
-    warn_text = f"⚠️ Your message was removed ({blocked_reason})."
-    try:
-        if warning_img:
-            await client.send_photo(chat_id, warning_img, caption=warn_text)
-        else:
-            await client.send_message(chat_id, warn_text)
-    except Exception:
-        pass
+    reply_text = f"⚠️ Your message was removed ({blocked_reason}). This group does not allow that media while NSFW filter is active."
 
-    # Mute
+    if warning_img:
+        try:
+            await client.send_photo(chat_id, warning_img, caption=reply_text)
+        except Exception:
+            await client.send_message(chat_id, reply_text)
+    else:
+        await client.send_message(chat_id, reply_text)
+
     if settings.get("time_mute", {}).get("enabled"):
         duration = int(settings["time_mute"].get("duration_seconds", 3600))
         until_date = int(time.time()) + duration
         try:
-            perms = ChatPermissions(can_send_messages=False)
+            perms = ChatPermissions(
+                can_send_messages=False,
+                can_send_media_messages=False,
+                can_send_other_messages=False,
+                can_send_polls=False,
+            )
             await client.restrict_chat_member(chat_id, user_id, permissions=perms, until_date=until_date)
+            await client.send_message(chat_id, f"🔇 User <a href='tg://user?id={user_id}'>user</a> muted for {duration // 60} minutes.")
         except Exception:
             pass
 
-    # Kick
     if settings.get("auto_kick"):
         try:
             await client.ban_chat_member(chat_id, user_id, revoke_messages=True)
             await asyncio.sleep(1)
             await client.unban_chat_member(chat_id, user_id)
+            await client.send_message(chat_id, f"👢 User <a href='tg://user?id={user_id}'>user</a> was kicked (auto-kick).")
         except Exception:
             pass
 
-    # Ban
     if settings.get("auto_ban"):
         try:
             await client.ban_chat_member(chat_id, user_id, revoke_messages=True)
+            await client.send_message(chat_id, f"⛔ User <a href='tg://user?id={user_id}'>user</a> was banned (auto-ban).")
         except Exception:
             pass
 
 
-# -------------------------------
-# Admin commands for settings
-# -------------------------------
+# Admin commands
+@app.on_message(filters.command("setnsfw") & filters.group)
+async def nsfw_show_settings(client, message: Message):
+    chat_id = message.chat.id
+    user_id = message.from_user.id
+    if not await is_chat_owner(client, chat_id, user_id):
+        await client.send_message(chat_id, "Only the group owner can view NSFW settings.")
+        return
+    settings = await load_settings(chat_id)
+    text = json.dumps(settings, indent=2)
+    await client.send_message(chat_id, f"NSFW settings:<pre>{text}</pre>")
+
+
 @app.on_message(filters.command("setwarnimage") & filters.group)
 async def set_warning_image(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
     if not await is_chat_owner(client, chat_id, user_id):
-        await client.send_message(chat_id, "Only owner can change warning image.")
+        await client.send_message(chat_id, "Only the group owner can change warning image.")
         return
     if len(message.command) < 2:
-        await client.send_message(chat_id, "Usage: /setwarnimage <image_url> or empty to clear")
+        await client.send_message(chat_id, "Usage: /setwarnimage <image_url>Send empty to clear")
         return
     url = message.command[1].strip()
     settings = await load_settings(chat_id)
@@ -334,7 +372,7 @@ async def set_mute_duration(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
     if not await is_chat_owner(client, chat_id, user_id):
-        await client.send_message(chat_id, "Only owner can change mute duration.")
+        await client.send_message(chat_id, "Only the group owner can change mute duration.")
         return
     if len(message.command) < 2:
         await client.send_message(chat_id, "Usage: /setmutetime <seconds>")
@@ -354,13 +392,13 @@ async def set_flood(client, message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
     if not await is_chat_owner(client, chat_id, user_id):
-        await client.send_message(chat_id, "Only owner can change flood settings.")
+        await client.send_message(chat_id, "Only the group owner can change flood settings.")
         return
     if len(message.command) < 2:
         await client.send_message(chat_id, "Usage: /setflood <threshold> <timeframe_seconds> OR /setflood off")
         return
-    settings = await load_settings(chat_id)
     if message.command[1].lower() == "off":
+        settings = await load_settings(chat_id)
         settings["flood"]["enabled"] = False
         await save_settings(chat_id, settings)
         await client.send_message(chat_id, "✅ Flood protection disabled.")
@@ -368,6 +406,7 @@ async def set_flood(client, message: Message):
     try:
         threshold = int(message.command[1])
         timeframe = int(message.command[2]) if len(message.command) > 2 else 10
+        settings = await load_settings(chat_id)
         settings["flood"]["enabled"] = True
         settings["flood"]["threshold"] = threshold
         settings["flood"]["timeframe_seconds"] = timeframe
