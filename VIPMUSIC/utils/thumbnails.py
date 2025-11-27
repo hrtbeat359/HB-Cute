@@ -1,12 +1,22 @@
+# -----------------------------------------------
+# 🔸 StrangerMusic Project
+# 🔹 Developed & Maintained by: Shashank Shukla (https://github.com/itzshukla)
+# 📅 Copyright © 2022 – All Rights Reserved
+#
+# 📖 License:
+# This source code is open for educational and non-commercial use ONLY.
+# You are required to retain this credit in all copies or substantial portions of this file.
+# Commercial use, redistribution, or removal of this notice is strictly prohibited
+# without prior written permission from the author.
+#
+# ❤️ Made with dedication and love by ItzShukla
+# -----------------------------------------------
 import os
 import re
-import random
-import aiohttp
 import aiofiles
-import traceback
-
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps
-from youtubesearchpython.future import VideosSearch
+import aiohttp
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
+from youtubesearchpython.__future__ import VideosSearch
 from config import YOUTUBE_IMG_URL
 
 # Constants
@@ -96,8 +106,8 @@ async def get_thumb(videoid: str) -> str:
     # Draw details
     draw = ImageDraw.Draw(bg)
     try:
-        title_font = ImageFont.truetype("DeadlineTech/assets/font2.ttf", 32)
-        regular_font = ImageFont.truetype("DeadlineTech/assets/font.ttf", 18)
+        title_font = ImageFont.truetype("SHUKLAMUSIC/assets/assets/font2.ttf", 32)
+        regular_font = ImageFont.truetype("SHUKLAMUSIC/assets/assets/font.ttf", 18)
     except OSError:
         title_font = regular_font = ImageFont.load_default()
 
@@ -107,8 +117,8 @@ async def get_thumb(videoid: str) -> str:
     bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
 
     draw.text((TITLE_X, TITLE_Y), trim_to_width(title, title_font, MAX_TITLE_WIDTH), fill="black", font=title_font)
+    draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
 
-draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
     # Progress bar
     draw.line([(BAR_X, BAR_Y), (BAR_X + BAR_RED_LEN, BAR_Y)], fill="red", width=6)
     draw.line([(BAR_X + BAR_RED_LEN, BAR_Y), (BAR_X + BAR_TOTAL_LEN, BAR_Y)], fill="gray", width=5)
@@ -119,7 +129,7 @@ draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_fon
     draw.text((BAR_X + BAR_TOTAL_LEN - (90 if is_live else 60), BAR_Y + 15), end_text, fill="red" if is_live else "black", font=regular_font)
 
     # Icons
-    icons_path = "DeadlineTech/assets/icons.png"
+    icons_path = "SHUKLAMUSIC/assets/assets/play_icons.png"
     if os.path.isfile(icons_path):
         ic = Image.open(icons_path).resize((ICONS_W, ICONS_H)).convert("RGBA")
         r, g, b, a = ic.split()
