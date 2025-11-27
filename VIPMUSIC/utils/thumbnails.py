@@ -68,7 +68,7 @@ async def get_thumb(videoid: str):
                     await f.write(await resp.read())
                     await f.close()
 
-        icons = Image.open("DeadlineTech/assets/icons.png")
+        icons = Image.open("VIPMUSIC/assets/icons.png")
         youtube = Image.open(f"cache/thumb{videoid}.png")
         image1 = changeImageSize(1280, 720, youtube)
         image2 = image1.convert("RGBA")
