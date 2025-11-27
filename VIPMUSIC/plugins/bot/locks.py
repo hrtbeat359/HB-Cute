@@ -78,7 +78,7 @@ def locks_keyboard(active: List[str]) -> InlineKeyboardMarkup:
     rows = []
     row = []
     for i, l in enumerate(LOCK_TYPES, 1):
-        icon = "🔴" if l in active else "🟢"
+        icon = "–" if l in active else "+"
         row.append(InlineKeyboardButton(f"{icon} {l}", callback_data=f"toggle::{l}"))
         if len(row) == 3:
             rows.append(row)
@@ -122,11 +122,11 @@ async def toggle_callback(_, query: CallbackQuery):
     if lock_type in locks:
         locks.remove(lock_type)
         await update_locks(query.message.chat.id, locks)
-        await query.answer(f"🟢 Unlocked: {lock_type}", show_alert=True)
+        await query.answer(f"🍏 Unlocked: {lock_type}", show_alert=True)
     else:
         locks.append(lock_type)
         await update_locks(query.message.chat.id, locks)
-        await query.answer(f"🔴 Locked: {lock_type}", show_alert=True)
+        await query.answer(f"🍎 Locked: {lock_type}", show_alert=True)
 
     # refresh keyboard
     try:
