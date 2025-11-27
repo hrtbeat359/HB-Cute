@@ -4,20 +4,34 @@ from youtubesearchpython.__future__ import VideosSearch
 from VIPMUSIC import app
 
 print("[get_thumb] getthumb")
-# Command handler for /getthumbnail
+
+
 @app.on_message(filters.command("getthumb", prefixes="/"))
 async def get_thumbnail_command(client, message):
     try:
-        # Extract video ID from the command
-        video_id = message.text.split(maxsplit=1)[1]
-        
-        # Search for the video using video ID
-        query = f"https://www.youtube.com/watch?v={video_id}"
+        # Check if ID provided
+        if len(message.command) < 2:
+            return await message.reply("❌ Usage: `/getthumb <video-id or search query>`", quote=True)
+
+        query = message.text.split(None, 1)[1]
+
+        # Perform YouTube search
         results = VideosSearch(query, limit=1)
-        for result in (await results.next())["result"]:
-            thumbnail_url = result["thumbnails"][0]["url"].split("?")[0]
-        
-        # Send the thumbnail as a photo
-        await message.reply_photo(thumbnail_url)
+        data = await results.next()
+
+        if not data.get("result"):
+            return await message.reply("❌ No results found. Try a different query.", quote=True)
+
+        result = data["result"][0]
+
+        # Get thumbnail safely
+        thumbnail_url = result["thumbnails"][0]["url"].split("?")[0]
+
+        await message.reply_photo(
+            thumbnail_url,
+            caption=f"**🎬 Title:** {result.get('title', 'Unknown')}\n\n"
+                    f"**🔗 URL:** {result.get('link', 'Unavailable')}"
+        )
+
     except Exception as e:
-        await message.reply(f"An error occurred: {e}")
+        await message.reply(f"⚠️ Error: `{e}`", quote=True)
