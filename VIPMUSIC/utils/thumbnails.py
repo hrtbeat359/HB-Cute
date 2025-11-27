@@ -108,8 +108,8 @@ async def get_thumb(videoid: str) -> str:
 
     # Fonts
     try:
-        title_font = ImageFont.truetype("VIPMUSIC/assets/assets/font2.ttf", 32)
-        regular_font = ImageFont.truetype("VIPMUSIC/assets/assets/font.ttf", 18)
+        title_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 32)
+        regular_font = ImageFont.truetype("VIPMUSIC/assets/font.ttf", 18)
     except OSError:
         title_font = regular_font = ImageFont.load_default()
 
@@ -134,7 +134,7 @@ async def get_thumb(videoid: str) -> str:
               fill="red" if is_live else "black", font=regular_font)
 
     # Icons
-    icons_path = "VIPMUSIC/assets/assets/play_icons.png"
+    icons_path = "VIPMUSIC/assets/play_icons.png"
     if os.path.isfile(icons_path):
         ic = Image.open(icons_path).resize((ICONS_W, ICONS_H)).convert("RGBA")
         r, g, b, a = ic.split()
@@ -143,7 +143,7 @@ async def get_thumb(videoid: str) -> str:
 
     # ------------------- WATERMARK WITH LOGO ------------------- #
     try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/assets/font2.ttf", 24)
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 24)
     except OSError:
         watermark_font = ImageFont.load_default()
 
