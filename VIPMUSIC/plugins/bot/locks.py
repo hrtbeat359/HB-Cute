@@ -86,7 +86,7 @@ def locks_keyboard(active: List[str]) -> InlineKeyboardMarkup:
     if row:
         rows.append(row)
     # final control row
-    rows.append([InlineKeyboardButton("❌ Close", callback_data="locks::close")])
+    rows.append([InlineKeyboardButton("⌯ Close ⌯", callback_data="locks::close")])
     return InlineKeyboardMarkup(rows)
 
 
@@ -97,7 +97,7 @@ async def open_lock_panel(_, message: Message):
     if not await is_admin_from_message(message):
         return await message.reply_text("Admins only.")
     locks = await get_locks(message.chat.id)
-    await message.reply_text("🔐 Lock Control Panel — tap to toggle", reply_markup=locks_keyboard(locks))
+    await message.reply_text("<blockquote>🔐 Available Locks</blockquote>", reply_markup=locks_keyboard(locks))
 
 
 @app.on_message(filters.command("locks") & filters.group)
@@ -130,7 +130,7 @@ async def toggle_callback(_, query: CallbackQuery):
 
     # refresh keyboard
     try:
-        await query.message.edit_text("🔐 Lock Control Panel — tap to toggle", reply_markup=locks_keyboard(locks))
+        await query.message.edit_text("<blockquote>🔐 Available Locks</blockquote>", reply_markup=locks_keyboard(locks))
     except Exception:
         pass
 
