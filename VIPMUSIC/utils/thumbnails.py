@@ -1,5 +1,7 @@
+# VIPMUSIC/utils/thumbnails.py
 import os
 import re
+from io import BytesIO
 import aiofiles
 import aiohttp
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
@@ -40,34 +42,43 @@ MAX_TITLE_WIDTH = 580
 
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     ellipsis = "…"
-    if font.getlength(text) <= max_w:
-        return text
+    try:
+        if font.getlength(text) <= max_w:
+            return text
+    except Exception:
+        # fallback if getlength not available
+        if font.getsize(text)[0] <= max_w:
+            return text
     for i in range(len(text) - 1, 0, -1):
-        if font.getlength(text[:i] + ellipsis) <= max_w:
-            return text[:i] + ellipsis
+        try:
+            if font.getlength(text[:i] + ellipsis) <= max_w:
+                return text[:i] + ellipsis
+        except Exception:
+            if font.getsize(text[:i] + ellipsis)[0] <= max_w:
+                return text[:i] + ellipsis
     return ellipsis
 
 
 async def get_thumb(videoid: str) -> str:
     cache_path = os.path.join(CACHE_DIR, f"{videoid}_v4.png")
+    # If you want to force refresh during debugging, uncomment next line
+    # if os.path.exists(cache_path): os.remove(cache_path)
     if os.path.exists(cache_path):
         return cache_path
 
-    # Fetch YouTube details
+    # Fetch YouTube details via VideosSearch
     results = VideosSearch(f"https://www.youtube.com/watch?v={videoid}", limit=1)
-
     try:
         results_data = await results.next()
         result_items = results_data.get("result", [])
         if not result_items:
             raise ValueError("No results found.")
-
         data = result_items[0]
-        title = re.sub(r"\W+", " ", data.get("title", "Unsupported Title")).title()
-        thumbnail = data.get("thumbnails", [{}])[0].get("url", YOUTUBE_IMG_URL)
+        title = re.sub(r"\W+", " ", data.get("title", "Unsupported Title")).strip().title()
+        thumb_url = data.get("thumbnails", [{}])[0].get("url", YOUTUBE_IMG_URL)
+        thumbnail = thumb_url.split("?")[0] if thumb_url else YOUTUBE_IMG_URL
         duration = data.get("duration")
         views = data.get("viewCount", {}).get("short", "Unknown Views")
-
     except Exception:
         title, thumbnail, duration, views = (
             "Unsupported Title",
@@ -79,19 +90,25 @@ async def get_thumb(videoid: str) -> str:
     is_live = not duration or str(duration).strip().lower() in {"", "live", "live now"}
     duration_text = "Live" if is_live else duration or "Unknown Mins"
 
-    # Download thumbnail
+    # Download thumbnail to temporary thumb_path
     thumb_path = os.path.join(CACHE_DIR, f"thumb{videoid}.png")
-
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(thumbnail) as resp:
                 if resp.status == 200:
                     async with aiofiles.open(thumb_path, "wb") as f:
                         await f.write(await resp.read())
+                else:
+                    # fallback to default image URL or stop
+                    thumb_path = None
     except Exception:
+        thumb_path = None
+
+    # If download failed, return a default image URL (or a local default)
+    if not thumb_path or not os.path.exists(thumb_path):
         return YOUTUBE_IMG_URL
 
-    # Base image
+    # Base image (resize to 1280x720)
     base = Image.open(thumb_path).resize((1280, 720)).convert("RGBA")
     bg = ImageEnhance.Brightness(base.filter(ImageFilter.BoxBlur(10))).enhance(0.6)
 
@@ -106,20 +123,24 @@ async def get_thumb(videoid: str) -> str:
 
     draw = ImageDraw.Draw(bg)
 
-    # Fonts
+    # Fonts - try expected path first, fallback to load_default
     try:
         title_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 32)
         regular_font = ImageFont.truetype("VIPMUSIC/assets/font.ttf", 18)
     except OSError:
-        title_font = regular_font = ImageFont.load_default()
+        try:
+            title_font = ImageFont.truetype("VIPMUSIC/assets/DejaVuSans-Bold.ttf", 26)
+            regular_font = ImageFont.truetype("VIPMUSIC/assets/DejaVuSans.ttf", 16)
+        except Exception:
+            title_font = regular_font = ImageFont.load_default()
 
     # Thumbnail with rounding
-    thumb = base.resize((THUMB_W, THUMB_H))
+    thumb = base.resize((THUMB_W, THUMB_H)).convert("RGBA")
     tmask = Image.new("L", (THUMB_W, THUMB_H), 0)
     ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255)
     bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
 
-    # Text
+    # Texts
     draw.text((TITLE_X, TITLE_Y), trim_to_width(title, title_font, MAX_TITLE_WIDTH), fill="black", font=title_font)
     draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
 
@@ -136,25 +157,36 @@ async def get_thumb(videoid: str) -> str:
     # Icons
     icons_path = "VIPMUSIC/assets/play_icons.png"
     if os.path.isfile(icons_path):
-        ic = Image.open(icons_path).resize((ICONS_W, ICONS_H)).convert("RGBA")
-        r, g, b, a = ic.split()
-        black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
-        bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
+        try:
+            ic = Image.open(icons_path).resize((ICONS_W, ICONS_H)).convert("RGBA")
+            # convert icon to black silhouette preserving alpha
+            r, g, b, a = ic.split()
+            black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
+            bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
+        except Exception:
+            pass
 
-    # ------------------- WATERMARK WITH LOGO ------------------- #
+    # Watermark text + logo
     try:
         watermark_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 24)
-    except OSError:
+    except Exception:
         watermark_font = ImageFont.load_default()
 
     watermark_text = "Made By. @HeartBeat_Fam"
-    text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
+    try:
+        text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
+    except Exception:
+        text_w, text_h = watermark_font.getsize(watermark_text)
 
     x = bg.width - text_w - 40
     y = bg.height - text_h - 30
 
-    sample = bg.crop((x, y, x + 50, y + 50)).convert("L")
-    brightness = sum(sample.getdata()) / (50 * 50)
+    # sample brightness under watermark area
+    try:
+        sample = bg.crop((x, y, x + 50, y + 50)).convert("L")
+        brightness = sum(sample.getdata()) / (50 * 50)
+    except Exception:
+        brightness = 200
 
     if brightness < 128:
         main_color = (255, 255, 255, 240)
@@ -169,23 +201,24 @@ async def get_thumb(videoid: str) -> str:
 
     draw.text((x, y), watermark_text, font=watermark_font, fill=main_color)
 
-    # Download watermark logo
+    # Download watermark logo and paste
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(THUMP_LOGO) as resp:
                 if resp.status == 200:
-                    logo_img = Image.open(BytesIO(await resp.read())).convert("RGBA")
+                    data = await resp.read()
+                    logo_img = Image.open(BytesIO(data)).convert("RGBA")
                     logo_img = logo_img.resize((60, 60))
                     bg.paste(logo_img, (x - 75, y - 10), logo_img)
-    except:
+    except Exception:
         pass
-    # ---------------------------------------------------------- #
 
     # Cleanup temp
     try:
         os.remove(thumb_path)
-    except OSError:
+    except Exception:
         pass
 
+    # Save final
     bg.save(cache_path)
     return cache_path
