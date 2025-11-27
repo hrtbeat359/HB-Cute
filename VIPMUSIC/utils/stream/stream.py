@@ -423,7 +423,7 @@ async def stream(
 
 
 
-
+"""
 # Function to get thumbnail by video ID
 async def get_thumb(videoid):
     try:
@@ -448,5 +448,5 @@ async def get_thumb(vidid):
     except Exception as e:
         return config.YOUTUBE_IMG_URL
     
-
+"""
                 
