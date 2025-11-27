@@ -230,8 +230,14 @@ async def nsfw_callback(client, callback_query: CallbackQuery):
         return
 
 
-# NSFW moderator: exclude ALL bot commands
-@app.on_message(filters.group & ~filters.command())
+# Custom filter to ignore bot commands
+def not_command_filter(_, __, message: Message):
+    if message.text and message.text.startswith("/"):
+        return False
+    return True
+
+
+@app.on_message(filters.group & filters.create(not_command_filter))
 async def nsfw_moderator(client, message: Message):
     if not message.from_user:
         return
@@ -240,10 +246,6 @@ async def nsfw_moderator(client, message: Message):
     settings = await load_settings(chat_id)
 
     if not settings.get("enabled", False):
-        return
-
-    # Ignore messages starting with /
-    if message.text and message.text.startswith("/"):
         return
 
     blocked = False
