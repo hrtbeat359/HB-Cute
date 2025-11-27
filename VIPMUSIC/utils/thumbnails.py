@@ -35,6 +35,7 @@ ICONS_Y = BAR_Y + 48
 
 MAX_TITLE_WIDTH = 580
 
+
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     ellipsis = "…"
     if font.getlength(text) <= max_w:
@@ -44,31 +45,41 @@ def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
             return text[:i] + ellipsis
     return ellipsis
 
+
 async def get_thumb(videoid: str) -> str:
     cache_path = os.path.join(CACHE_DIR, f"{videoid}_v4.png")
     if os.path.exists(cache_path):
         return cache_path
 
-    # YouTube video data fetch
+    # Fetch YouTube details
     results = VideosSearch(f"https://www.youtube.com/watch?v={videoid}", limit=1)
+
     try:
         results_data = await results.next()
         result_items = results_data.get("result", [])
         if not result_items:
             raise ValueError("No results found.")
+
         data = result_items[0]
         title = re.sub(r"\W+", " ", data.get("title", "Unsupported Title")).title()
         thumbnail = data.get("thumbnails", [{}])[0].get("url", YOUTUBE_IMG_URL)
         duration = data.get("duration")
         views = data.get("viewCount", {}).get("short", "Unknown Views")
+
     except Exception:
-        title, thumbnail, duration, views = "Unsupported Title", YOUTUBE_IMG_URL, None, "Unknown Views"
+        title, thumbnail, duration, views = (
+            "Unsupported Title",
+            YOUTUBE_IMG_URL,
+            None,
+            "Unknown Views",
+        )
 
     is_live = not duration or str(duration).strip().lower() in {"", "live", "live now"}
     duration_text = "Live" if is_live else duration or "Unknown Mins"
 
     # Download thumbnail
     thumb_path = os.path.join(CACHE_DIR, f"thumb{videoid}.png")
+
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(thumbnail) as resp:
@@ -78,7 +89,7 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         return YOUTUBE_IMG_URL
 
-    # Create base image
+    # Base image
     base = Image.open(thumb_path).resize((1280, 720)).convert("RGBA")
     bg = ImageEnhance.Brightness(base.filter(ImageFilter.BoxBlur(10))).enhance(0.6)
 
@@ -86,23 +97,27 @@ async def get_thumb(videoid: str) -> str:
     panel_area = bg.crop((PANEL_X, PANEL_Y, PANEL_X + PANEL_W, PANEL_Y + PANEL_H))
     overlay = Image.new("RGBA", (PANEL_W, PANEL_H), (255, 255, 255, TRANSPARENCY))
     frosted = Image.alpha_composite(panel_area, overlay)
+
     mask = Image.new("L", (PANEL_W, PANEL_H), 0)
     ImageDraw.Draw(mask).rounded_rectangle((0, 0, PANEL_W, PANEL_H), 50, fill=255)
     bg.paste(frosted, (PANEL_X, PANEL_Y), mask)
 
-    # Draw details
     draw = ImageDraw.Draw(bg)
+
+    # Fonts
     try:
         title_font = ImageFont.truetype("VIPMUSIC/assets/assets/font2.ttf", 32)
         regular_font = ImageFont.truetype("VIPMUSIC/assets/assets/font.ttf", 18)
     except OSError:
         title_font = regular_font = ImageFont.load_default()
 
+    # Thumbnail with rounding
     thumb = base.resize((THUMB_W, THUMB_H))
-    tmask = Image.new("L", thumb.size, 0)
+    tmask = Image.new("L", (THUMB_W, THUMB_H), 0)
     ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255)
     bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
 
+    # Text placement
     draw.text((TITLE_X, TITLE_Y), trim_to_width(title, title_font, MAX_TITLE_WIDTH), fill="black", font=title_font)
     draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
 
@@ -113,7 +128,8 @@ async def get_thumb(videoid: str) -> str:
 
     draw.text((BAR_X, BAR_Y + 15), "00:00", fill="black", font=regular_font)
     end_text = "Live" if is_live else duration_text
-    draw.text((BAR_X + BAR_TOTAL_LEN - (90 if is_live else 60), BAR_Y + 15), end_text, fill="red" if is_live else "black", font=regular_font)
+    draw.text((BAR_X + BAR_TOTAL_LEN - (90 if is_live else 60), BAR_Y + 15), end_text,
+              fill="red" if is_live else "black", font=regular_font)
 
     # Icons
     icons_path = "VIPMUSIC/assets/assets/play_icons.png"
@@ -123,7 +139,36 @@ async def get_thumb(videoid: str) -> str:
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
 
-    # Cleanup and save
+    # --------------- AUTO-COLOR WATERMARK --------------- #
+    try:
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/assets/font2.ttf", 24)
+    except OSError:
+        watermark_font = ImageFont.load_default()
+
+    watermark_text = "Made By. @HeartBeat_Offi"
+    text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
+
+    x = bg.width - text_w - 25
+    y = bg.height - text_h - 25
+
+    sample = bg.crop((x, y, x + 50, y + 50)).convert("L")
+    brightness = sum(sample.getdata()) / (50 * 50)
+
+    if brightness < 128:
+        main_color = (255, 255, 255, 240)
+        glow_color = (0, 0, 0, 180)
+    else:
+        main_color = (0, 0, 0, 240)
+        glow_color = (255, 255, 255, 180)
+
+    glow_positions = [(x + dx, y + dy) for dx in (-1, 1) for dy in (-1, 1)]
+    for pos in glow_positions:
+        draw.text(pos, watermark_text, font=watermark_font, fill=glow_color)
+
+    draw.text((x, y), watermark_text, font=watermark_font, fill=main_color)
+    # ----------------------------------------------------- #
+
+    # Cleanup
     try:
         os.remove(thumb_path)
     except OSError:
