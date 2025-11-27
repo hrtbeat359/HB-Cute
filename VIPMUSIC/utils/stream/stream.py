@@ -10,10 +10,10 @@ from VIPMUSIC.core.call import VIP
 from VIPMUSIC.misc import db
 from VIPMUSIC.utils.database import add_active_video_chat, is_active_chat
 from VIPMUSIC.utils.exceptions import AssistantErr
-from VIPMUSIC.utils.inline import aq_markup, close_markup, stream_markup
+from VIPMUSIC.utils.inline import aq_markup, queuemarkup, close_markup, stream_markup, stream_markup2
 from VIPMUSIC.utils.pastebin import VIPBin
 from VIPMUSIC.utils.stream.queue import put_queue, put_queue_index
-from VIPMUSIC.utils.thumbnails import get_thumb
+from youtubesearchpython.__future__ import VideosSearch
 
 
 async def stream(
@@ -99,18 +99,18 @@ async def stream(
                     forceplay=forceplay,
                 )
                 img = await get_thumb(vidid)
-                button = stream_markup(_, chat_id)
+                button = stream_markup(_, vidid, chat_id)
                 run = await app.send_photo(
                     original_chat_id,
                     photo=img,
                     caption=_["stream_1"].format(
                         f"https://t.me/{app.username}?start=info_{vidid}",
-                        title[:11],
+                        title[:23],
                         duration_min,
-                        user_name,
-                    ),
-                    reply_markup=InlineKeyboardMarkup(button),
-                )
+                        user_name), reply_markup=InlineKeyboardMarkup(button))
+                
+                    
+                
                 db[chat_id][0]["mystic"] = run
                 db[chat_id][0]["markup"] = "stream"
         if count == 0:
@@ -141,8 +141,7 @@ async def stream(
             file_path, direct = await YouTube.download(
                 vidid, mystic, videoid=True, video=status
             )
-        except Exception as ex:
-            print(ex)
+        except:
             raise AssistantErr(_["play_14"])
         if await is_active_chat(chat_id):
             await put_queue(
@@ -156,11 +155,13 @@ async def stream(
                 user_id,
                 "video" if video else "audio",
             )
+            img = await get_thumb(vidid)
             position = len(db.get(chat_id)) - 1
-            button = aq_markup(_, chat_id)
-            await app.send_message(
+            button = queuemarkup(_, vidid, chat_id)
+            await app.send_photo(
                 chat_id=original_chat_id,
-                text=_["queue_4"].format(position, title[:11], duration_min, user_name),
+                photo=img,
+                caption=_["queue_4"].format(position, title[:20], duration_min, user_name),
                 reply_markup=InlineKeyboardMarkup(button),
             )
         else:
@@ -186,18 +187,16 @@ async def stream(
                 forceplay=forceplay,
             )
             img = await get_thumb(vidid)
-            button = stream_markup(_, chat_id)
+            button = stream_markup(_, vidid, chat_id)
             run = await app.send_photo(
                 original_chat_id,
                 photo=img,
                 caption=_["stream_1"].format(
                     f"https://t.me/{app.username}?start=info_{vidid}",
-                    title[:11],
+                    title[:12],
                     duration_min,
-                    user_name,
-                ),
-                reply_markup=InlineKeyboardMarkup(button),
-            )
+                    user_name), reply_markup=InlineKeyboardMarkup(button))
+                
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "stream"
     elif streamtype == "soundcloud":
@@ -220,7 +219,7 @@ async def stream(
             button = aq_markup(_, chat_id)
             await app.send_message(
                 chat_id=original_chat_id,
-                text=_["queue_4"].format(position, title[:11], duration_min, user_name),
+                text=_["queue_4"].format(position, title[:12], duration_min, user_name),
                 reply_markup=InlineKeyboardMarkup(button),
             )
         else:
@@ -423,7 +422,7 @@ async def stream(
 
 
 
-"""
+
 # Function to get thumbnail by video ID
 async def get_thumb(videoid):
     try:
@@ -448,5 +447,5 @@ async def get_thumb(vidid):
     except Exception as e:
         return config.YOUTUBE_IMG_URL
     
-"""
+
                 
