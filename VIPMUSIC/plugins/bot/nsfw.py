@@ -230,11 +230,8 @@ async def nsfw_callback(client, callback_query: CallbackQuery):
         return
 
 
-# This is the fix: explicitly exclude admin NSFW commands from moderation
-@app.on_message(
-    filters.group
-    & ~filters.command(["nsfw", "setwarnimage", "setmutetime", "setflood", "setnsfw"])
-)
+# NSFW moderator: exclude ALL bot commands
+@app.on_message(filters.group & ~filters.command())
 async def nsfw_moderator(client, message: Message):
     if not message.from_user:
         return
@@ -243,6 +240,10 @@ async def nsfw_moderator(client, message: Message):
     settings = await load_settings(chat_id)
 
     if not settings.get("enabled", False):
+        return
+
+    # Ignore messages starting with /
+    if message.text and message.text.startswith("/"):
         return
 
     blocked = False
