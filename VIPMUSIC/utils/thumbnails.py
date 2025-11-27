@@ -10,6 +10,8 @@ from config import YOUTUBE_IMG_URL
 CACHE_DIR = "cache"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
+THUMP_LOGO = "https://files.catbox.moe/fowgxf.jpg"
+
 PANEL_W, PANEL_H = 763, 545
 PANEL_X = (1280 - PANEL_W) // 2
 PANEL_Y = 88
@@ -117,7 +119,7 @@ async def get_thumb(videoid: str) -> str:
     ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255)
     bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
 
-    # Text placement
+    # Text
     draw.text((TITLE_X, TITLE_Y), trim_to_width(title, title_font, MAX_TITLE_WIDTH), fill="black", font=title_font)
     draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
 
@@ -139,17 +141,17 @@ async def get_thumb(videoid: str) -> str:
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
 
-    # --------------- AUTO-COLOR WATERMARK --------------- #
+    # ------------------- WATERMARK WITH LOGO ------------------- #
     try:
         watermark_font = ImageFont.truetype("VIPMUSIC/assets/assets/font2.ttf", 24)
     except OSError:
         watermark_font = ImageFont.load_default()
 
-    watermark_text = "Made By. @HeartBeat_Offi"
+    watermark_text = "Made By. @HeartBeat_Fam"
     text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
 
-    x = bg.width - text_w - 25
-    y = bg.height - text_h - 25
+    x = bg.width - text_w - 40
+    y = bg.height - text_h - 30
 
     sample = bg.crop((x, y, x + 50, y + 50)).convert("L")
     brightness = sum(sample.getdata()) / (50 * 50)
@@ -166,9 +168,20 @@ async def get_thumb(videoid: str) -> str:
         draw.text(pos, watermark_text, font=watermark_font, fill=glow_color)
 
     draw.text((x, y), watermark_text, font=watermark_font, fill=main_color)
-    # ----------------------------------------------------- #
 
-    # Cleanup
+    # Download watermark logo
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(THUMP_LOGO) as resp:
+                if resp.status == 200:
+                    logo_img = Image.open(BytesIO(await resp.read())).convert("RGBA")
+                    logo_img = logo_img.resize((60, 60))
+                    bg.paste(logo_img, (x - 75, y - 10), logo_img)
+    except:
+        pass
+    # ---------------------------------------------------------- #
+
+    # Cleanup temp
     try:
         os.remove(thumb_path)
     except OSError:
