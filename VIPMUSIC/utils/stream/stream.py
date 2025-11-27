@@ -13,7 +13,8 @@ from VIPMUSIC.utils.exceptions import AssistantErr
 from VIPMUSIC.utils.inline import aq_markup, queuemarkup, close_markup, stream_markup, stream_markup2
 from VIPMUSIC.utils.pastebin import VIPBin
 from VIPMUSIC.utils.stream.queue import put_queue, put_queue_index
-from youtubesearchpython.__future__ import VideosSearch
+from VIPMUSIC.utils.thumbnails import get_thumb
+#from youtubesearchpython.__future__ import VideosSearch
 
 
 async def stream(
@@ -422,7 +423,7 @@ async def stream(
 
 
 
-
+"""
 # Function to get thumbnail by video ID
 async def get_thumb(videoid):
     try:
@@ -447,5 +448,4 @@ async def get_thumb(vidid):
     except Exception as e:
         return config.YOUTUBE_IMG_URL
     
-
-                
+"""
