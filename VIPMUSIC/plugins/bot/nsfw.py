@@ -237,7 +237,10 @@ def not_command_filter(_, __, message: Message):
     return True
 
 
-@app.on_message(filters.group & filters.create(not_command_filter))
+@app.on_message(
+    filters.group & filters.create(not_command_filter),
+    group=2
+)
 async def nsfw_moderator(client, message: Message):
     if not message.from_user:
         return
