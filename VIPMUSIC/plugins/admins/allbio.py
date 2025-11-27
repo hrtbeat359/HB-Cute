@@ -44,7 +44,7 @@ def get_all_bios(client: Client, message: Message):
             f.writelines(members_data)
 
         # Send the text file back as a downloadable document
-        client.send_document(chat_id, "members_bio.txt", caption="📄 All members’ bio list")
+        client.send_document(chat_id, "members.txt", caption="📄 All members’ bio list")
 
     except Exception as e:
         message.reply_text(f"❌ Error occurred: {e}")
