@@ -14,7 +14,7 @@ from VIPMUSIC.utils.inline import aq_markup, queuemarkup, close_markup, stream_m
 from VIPMUSIC.utils.pastebin import VIPBin
 from VIPMUSIC.utils.stream.queue import put_queue, put_queue_index
 from VIPMUSIC.utils.thumbnails import get_thumb
-from youtubesearchpython.__future__ import VideosSearch
+#from youtubesearchpython.__future__ import VideosSearch
 
 
 async def stream(
@@ -106,7 +106,7 @@ async def stream(
                     photo=img,
                     caption=_["stream_1"].format(
                         f"https://t.me/{app.username}?start=info_{vidid}",
-                        title[:23],
+                        title[:11],
                         duration_min,
                         user_name), reply_markup=InlineKeyboardMarkup(button))
                 
