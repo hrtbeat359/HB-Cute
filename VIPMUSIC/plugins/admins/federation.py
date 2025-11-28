@@ -41,7 +41,7 @@ except Exception:
 
 BOT_ID = app.id
 
-from config import LOG_GROUP_ID, OWNER_ID
+from config import LOG_GROUP_ID, OWNER_ID, SUPPORT_CHAT
 from VIPMUSIC.utils.feds.functions import extract_user, extract_user_and_reason  # adjust path if needed
 from VIPMUSIC.utils.feds.errors import capture_err  # adjust if your project has a different path
 
