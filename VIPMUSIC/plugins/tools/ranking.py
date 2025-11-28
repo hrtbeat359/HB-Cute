@@ -190,12 +190,13 @@ def format_leaderboard(title: str, items: List[Tuple[str, int]]) -> str:
 # -------------------------------------------------------------------
 # WATCHERS (SAFE)
 # -------------------------------------------------------------------
-@app.on_message(filters.group, group=6)
+# -------------------------------------------------------------------
+# WATCHERS (SAFE + NON-BLOCKING)
+# -------------------------------------------------------------------
+
+# Count today's messages — run AFTER all other handlers
+@app.on_message(filters.group & ~filters.command(), group=99)
 async def today_watcher(_, message: Message):
-    """
-    Counts per-chat 'today' counters (in-memory).
-    This watcher is defensive: any exception is caught and logged to avoid blocking other handlers.
-    """
     try:
         if not message.from_user:
             return
@@ -203,7 +204,6 @@ async def today_watcher(_, message: Message):
         chat_id = message.chat.id
         user_id = message.from_user.id
 
-        # guard with asyncio.Lock in case of concurrent updates
         async with _today_lock:
             if chat_id not in _today_counts:
                 _today_counts[chat_id] = {}
@@ -212,12 +212,9 @@ async def today_watcher(_, message: Message):
         print(f"[ranking] today_watcher error: {e}")
 
 
-@app.on_message(filters.group, group=7)
+# Global / weekly / monthly counter — ALSO run last
+@app.on_message(filters.group & ~filters.command(), group=100)
 async def global_watcher(_, message: Message):
-    """
-    Increment DB counters for global / weekly / monthly.
-    Defensive: never raise.
-    """
     try:
         if not message.from_user:
             return
