@@ -69,7 +69,7 @@ git+https://github.com/AsmSafone/SafoneAPI
 SafoneAPI
 async_pymongo #fed
 deep_translator #chatbot
-
+matplotlib==3.8.4 #botusage piechart
 # BioLink / extras
 regex
 coloredlogs
