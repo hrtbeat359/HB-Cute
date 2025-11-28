@@ -93,7 +93,7 @@ async def safe_edit_caption(msg: Message, caption: str, reply_markup: InlineKeyb
 # COMMAND: /vcstats
 # =============================================================
 @app.on_message(
-    filters.command(["vcstats", "vcs", "vct"], prefixes=["/", "!", "%", ",", ".", "@", "#"])
+    filters.command(["vcstats", "vcstat", "vcs", "vct"], prefixes=["/", "!", "%", ",", ".", "@", "#"])
     & ~BANNED_USERS
 )
 async def vcstats_handler(client, msg: Message):
