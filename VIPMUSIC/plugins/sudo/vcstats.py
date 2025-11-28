@@ -15,7 +15,7 @@ from VIPMUSIC.misc import SUDOERS
 from VIPMUSIC.utils.database import get_active_chats, get_active_video_chats
 from config import BANNED_USERS, START_IMG_URL
 
-
+print("[vcstats] vcstats")
 # =============================================================
 # MEMORY CACHE (FAST REFRESH BOOSTER)
 # =============================================================
