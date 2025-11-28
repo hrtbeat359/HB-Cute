@@ -7,7 +7,7 @@ from VIPMUSIC import app
 
 
 ###### @ghosttbatt 
-@app.on_message(filters.command(["bat", "ghosttbatt", "Bat", "here", "sha", "shan", "OnixGhost"], prefixes=["@", "Ghost ", "ghost ", "bat ","sha", "Sha"]))
+@app.on_message(filters.command(["bat", "ghosttbatt", "Bat", "here", "sha", "shan", "OnixGhost"], prefixes=["@", "Ghost ", "ghost ", "ghostt", "bat ", "batt", "sha", "Sha"]))
 async def goodmorning_handler(_, message):
     sender = message.from_user.mention
 
