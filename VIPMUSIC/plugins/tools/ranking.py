@@ -195,7 +195,8 @@ def format_leaderboard(title: str, items: List[Tuple[str, int]]) -> str:
 # -------------------------------------------------------------------
 
 # Count today's messages — run AFTER all other handlers
-@app.on_message(filters.group & ~filters.regex(r"^/"), group=999)
+# Count today's messages — run AFTER all other handlers
+@app.on_message(filters.group & filters.text & ~filters.regex(r"^/"), group=999)
 async def today_watcher(_, message: Message):
     try:
         if not message.from_user:
@@ -212,7 +213,8 @@ async def today_watcher(_, message: Message):
         print(f"[ranking] today_watcher error: {e}")
 
 
-@app.on_message(filters.group & ~filters.regex(r"^/"), group=1000)
+# Increase global counts — also safe
+@app.on_message(filters.group & filters.text & ~filters.regex(r"^/"), group=1000)
 async def global_watcher(_, message: Message):
     try:
         if not message.from_user:
