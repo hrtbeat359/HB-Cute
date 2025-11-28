@@ -7,7 +7,7 @@ from VIPMUSIC import app
 from VIPMUSIC.misc import SUDOERS
 from VIPMUSIC.utils.database import mongodb
 
-
+print("[botusage] totalusers, totalchats, totalchannels, monthlyusers")
 # ====== Mongo Collections ======
 users_col = mongodb.users
 chats_col = mongodb.chats
