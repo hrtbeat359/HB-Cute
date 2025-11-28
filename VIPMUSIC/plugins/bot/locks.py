@@ -1,8 +1,3 @@
-"""
-VIPMUSIC plugin: locks.py
-All 45 lock types with inline keyboard and admin-only toggles.
-Save as: VIPMUSIC/plugins/admins/locks.py
-"""
 import re
 import unicodedata
 from typing import List
