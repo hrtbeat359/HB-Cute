@@ -1,22 +1,17 @@
 import asyncio
-
 import importlib
-from sys import argv
 from pyrogram import idle
-from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
-from VIPMUSIC import LOGGER, app, userbot
+from VIPMUSIC import LOGGER, app, userbot, telethn
 from VIPMUSIC.core.call import VIP
 from VIPMUSIC.misc import sudo
 from VIPMUSIC.plugins import ALL_MODULES
 from VIPMUSIC.utils.database import get_banned_users, get_gbanned
 from config import BANNED_USERS
-from VIPMUSIC import telethn
 
-#from BioLink.biolink import biolink  # 👈 import BioLink 
 
-async def init():
+async def init_bot():
     if (
         not config.STRING1
         and not config.STRING2
@@ -24,44 +19,69 @@ async def init():
         and not config.STRING4
         and not config.STRING5
     ):
-        LOGGER(__name__).error("𝐒𝐭𝐫𝐢𝐧𝐠 𝐒𝐞𝐬𝐬𝐢𝐨𝐧 𝐍𝐨𝐭 𝐅𝐢𝐥𝐥𝐞𝐝, 𝐏𝐥𝐞𝐚𝐬𝐞 𝐅𝐢𝐥𝐥 𝐀 𝐏𝐲𝐫𝐨𝐠𝐫𝐚𝐦 V2 𝐒𝐞𝐬𝐬𝐢𝐨𝐧🤬")
-        
+        LOGGER(__name__).error(
+            "𝐒𝐭𝐫𝐢𝐧𝐠 𝐒𝐞𝐬𝐬𝐢𝐨𝐧 𝐍𝐨𝐭 𝐅𝐢𝐥𝐥𝐞𝐝, 𝐏𝐥𝐞𝐚𝐬𝐞 𝐅𝐢𝐥𝐥 𝐀 𝐏𝐲𝐫𝐨𝐠𝐫𝐚𝐦 V2 𝐒𝐞𝐬𝐬𝐢𝐨𝐧🤬"
+        )
+
     await sudo()
+
     try:
-        users = await get_gbanned()
-        for user_id in users:
-            BANNED_USERS.add(user_id)
-        users = await get_banned_users()
-        for user_id in users:
-            if user_id not in BANNED_USERS:
-                BANNED_USERS.add(user_id)
+        gb = await get_gbanned()
+        for u in gb:
+            BANNED_USERS.add(u)
+
+        ban = await get_banned_users()
+        for u in ban:
+            BANNED_USERS.add(u)
+
     except:
         pass
+
     await app.start()
 
-    # ---------------------------------------------------
-    # Load all plugins
-    # ---------------------------------------------------
+    # Load all modules safely
     for all_module in ALL_MODULES:
         importlib.import_module("VIPMUSIC.plugins" + all_module)
-    LOGGER("VIPMUSIC.plugins").info("𝐀𝐥𝐥 𝐅𝐞𝐚𝐭𝐮𝐫𝐞𝐬 𝐋𝐨𝐚𝐝𝐞𝐝 𝐁𝐚𝐛𝐲🥳...")
+
+    LOGGER("VIPMUSIC.plugins").info("𝐀𝐥𝐥 𝐅𝐞𝐚𝐭𝐮𝐫𝐞𝐬 𝐋𝐨𝐚𝐝𝐞𝐝🥳...")
+
     await userbot.start()
     await VIP.start()
     await VIP.decorators()
-    LOGGER("VIPMUSIC").info("\n╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝗩𝗜𝗣 𝗕𝗢𝗬♨️\n╚═════ஜ۩۞۩ஜ════╝"
+
+    LOGGER("VIPMUSIC").info(
+        "\n╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝗩𝗜𝗣 𝗕𝗢𝗬♨️\n╚═════ஜ۩۞۩ஜ════╝"
     )
+
+
+async def main():
+    # ----------------------------------------------------
+    # CRASH FIX 1: Start Telethon FIRST and ONLY ONCE
+    # ----------------------------------------------------
+    await telethn.start(bot_token=config.BOT_TOKEN)
+
+    # ----------------------------------------------------
+    # CRASH FIX 2: Then init the rest
+    # ----------------------------------------------------
+    await init_bot()
+
+    # ----------------------------------------------------
+    # CRASH FIX 3: Idle keeps loop active
+    # ----------------------------------------------------
     await idle()
+
+    # ----------------------------------------------------
+    # CRASH FIX 4: Clean shutdown order
+    # ----------------------------------------------------
     await telethn.disconnect()
-                
-    await app.stop()
     await userbot.stop()
-    LOGGER("VIPMUSIC").info("                 ╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝗩𝗜𝗣 𝗕𝗢𝗬♨️\n╚═════ஜ۩۞۩ஜ════╝")
-    
+    await app.stop()
+
+    LOGGER("VIPMUSIC").info(
+        "╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝗩𝗜𝗣 𝗕𝗢𝗬♨️\n╚═════ஜ۩۞۩ஜ════╝"
+    )
+
 
 if __name__ == "__main__":
-    async def main():
-        await telethn.start(bot_token=config.BOT_TOKEN)
-        await init()
-
-    asyncio.get_event_loop().run_until_complete(main())
-    
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
