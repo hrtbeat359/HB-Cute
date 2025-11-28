@@ -48,10 +48,8 @@ async def goodmorning_handler(_, message):
 
 def get_random_video():
     videos = [
-        "https://telegra.ph/file/2c63e594336bfab096835.mp4",
-        "https://telegra.ph/file/8e5a08a654079fef23659.mp4",
-        "https://telegra.ph/file/7dd498fb3c0ddd6c17e84.mp4",
-        "https://telegra.ph/file/941f1237d433974398b12.mp4",
+        "https://files.catbox.moe/8e9vtx.mp4",
+        "https://files.catbox.moe/8e9vtx.mp4",
     ]
     return random.choice(videos)
 
