@@ -14,6 +14,7 @@ from VIPMUSIC import app
 from VIPMUSIC.misc import SUDOERS
 from VIPMUSIC.utils.decorators.language import language
 
+print("[lscpu] lscpu")
 
 def _run_cmd(cmd: list) -> str:
     """Blocking helper to run a command and return decoded output."""
