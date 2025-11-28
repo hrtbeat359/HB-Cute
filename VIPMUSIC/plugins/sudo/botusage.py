@@ -21,7 +21,7 @@ chats_col = mongodb.chats
 channels_col = mongodb.channels
 monthly_col = mongodb.monthly_users
 
-print("[botusage] Loaded: users, chats, channels, monthly users")
+print("[botusage] botusage")
 
 
 # ===================== SUDO FILTER =====================
@@ -88,12 +88,12 @@ async def send_usage_graph(message):
         [
             [InlineKeyboardButton("🔄 Refresh", callback_data="refresh_stats_graph")],
             [
-                InlineKeyboardButton("Users", callback_data="show_users"),
+                InlineKeyboardButton("Tot-Users", callback_data="show_users"),
                 InlineKeyboardButton("Chats", callback_data="show_chats"),
             ],
             [
                 InlineKeyboardButton("Channels", callback_data="show_channels"),
-                InlineKeyboardButton("Monthly", callback_data="show_monthly"),
+                InlineKeyboardButton("MonthlyUsers", callback_data="show_monthly"),
             ],
         ]
     )
@@ -102,7 +102,7 @@ async def send_usage_graph(message):
 
 
 # ===================== COMMAND HANDLER =====================
-@app.on_message(filters.command("usagegraph") & sudo_only)
+@app.on_message(filters.command("botusage") & sudo_only)
 async def usage_graph_handler(client, message):
     await send_usage_graph(message)
 
