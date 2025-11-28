@@ -15,6 +15,8 @@ from VIPMUSIC.misc import SUDOERS
 from config import MONGO_DB_URI
 from motor.motor_asyncio import AsyncIOMotorClient
 
+print("[botstats] botstats")
+
 START_TIME = time.time()    # Bot start time
 
 
