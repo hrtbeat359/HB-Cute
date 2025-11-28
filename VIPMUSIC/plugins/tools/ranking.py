@@ -38,8 +38,10 @@ TZ = ZoneInfo("Asia/Kolkata")
 # DB SETUP (motor async)
 # -------------------------------------------------------------------
 mongo = AsyncIOMotorClient(MONGO_DB_URI)
-db = mongo.get_default_database() or mongo["ghosttlead"]
-ranking_db = db["ranking"]  # docs: { _id: user_id, total_messages, weekly_messages, monthly_messages }
+# DB init fix
+_default_db = mongo.get_default_database()
+db = _default_db if _default_db is not None else mongo["ghosttlead"]
+ranking_db = db["ranking"] # docs: { _id: user_id, total_messages, weekly_messages, monthly_messages }
 
 # -------------------------------------------------------------------
 # TODAY COUNTS (RAM) - memory-safe structure + lock for concurrency
