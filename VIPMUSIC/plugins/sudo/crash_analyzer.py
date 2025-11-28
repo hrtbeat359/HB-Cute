@@ -101,7 +101,7 @@ def try_fix_missing_import(error_text):
         return False, f"❌ Failed to install `{missing}`\n```\n{e.output.decode()}\n```"
 
 
-@app.on_message(filters.command("advancedcrashes") & sudo_only)
+@app.on_message(filters.command("crashespro") & sudo_only)
 async def advanced_crashes_handler(client, message: Message):
     report = "🔍 **Advanced VIPMUSIC Crash Analyzer (PyV2)**\n\n"
     broken = 0
