@@ -22,7 +22,7 @@ def first_page(_):
             InlineKeyboardButton(text=_["H_B_11"], callback_data="help_cat mention"),
         ],
         [
-            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
+            InlineKeyboardButton(text=_["START_BUTTON"], callback_data="settings_back_helper"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
