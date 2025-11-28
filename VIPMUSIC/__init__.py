@@ -5,7 +5,6 @@ from VIPMUSIC.core.userbot import Userbot
 from VIPMUSIC.misc import dbb, heroku
 from telethon import TelegramClient
 from config import API_ID, API_HASH
-
 from SafoneAPI import SafoneAPI
 from .logging import LOGGER
 
@@ -18,7 +17,6 @@ app = VIP()
 api = SafoneAPI()
 userbot = Userbot()
 
-
 from .platforms import *
 
 Apple = AppleAPI()
@@ -29,5 +27,10 @@ Resso = RessoAPI()
 Telegram = TeleAPI()
 YouTube = YouTubeAPI()
 
-#telethn = TelegramClient("VIPMUSIC", API_ID, API_HASH)
-telethn = TelegramClient("VIPMUSIC", API_ID, API_HASH, sequential_updates=True)
+# Correct Telethon initialization (no start here)
+telethn = TelegramClient(
+    "VIPMUSIC",
+    API_ID,
+    API_HASH,
+    sequential_updates=True
+)
