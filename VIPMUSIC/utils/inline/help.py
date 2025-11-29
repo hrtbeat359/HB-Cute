@@ -118,7 +118,7 @@ def games_panel2(_):
 
 
 
-def game_panel3(_):
+def games_panel3(_):
     buttons = [
         [
             InlineKeyboardButton(text="Penalty Shooter", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQZW5hbHR5U2hvb3RlcjIifX0")),
