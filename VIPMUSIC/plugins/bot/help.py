@@ -10,7 +10,7 @@ from VIPMUSIC.utils.inline.help import (
     first_page,
     private_help_panel,
     music_panel,
-    games_panel1,
+    games_panel,
     games_panel2,
     games_panel3,
     games_panel4,
@@ -174,7 +174,7 @@ async def help_category_cb(client, CallbackQuery, _):
         return
 
     if cat == "games":
-        keyboard = games_panel1(_)
+        keyboard = games_panel(_)
         try:
             await CallbackQuery.message.edit_text(_["help_1"], reply_markup=keyboard)
         except:
@@ -227,13 +227,14 @@ async def games_paging_cb(client, CallbackQuery, _):
     data = CallbackQuery.data.strip()
 
     if data == "games_p1":
-        keyboard = games_panel1(_)
+        keyboard = games_panel(_)
         try:
             await CallbackQuery.message.edit_text(_["help_1"], reply_markup=keyboard)
         except:
             pass
         await CallbackQuery.answer()
         return
+
     if data == "games_p2":
         keyboard = games_panel2(_)
         try:
@@ -242,6 +243,7 @@ async def games_paging_cb(client, CallbackQuery, _):
             pass
         await CallbackQuery.answer()
         return
+
     if data == "games_p3":
         keyboard = games_panel3(_)
         try:
@@ -250,6 +252,7 @@ async def games_paging_cb(client, CallbackQuery, _):
             pass
         await CallbackQuery.answer()
         return
+
     if data == "games_p4":
         keyboard = games_panel4(_)
         try:
@@ -258,6 +261,7 @@ async def games_paging_cb(client, CallbackQuery, _):
             pass
         await CallbackQuery.answer()
         return
+
     if data == "games_p5":
         keyboard = games_panel5(_)
         try:
