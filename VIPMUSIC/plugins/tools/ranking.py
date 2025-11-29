@@ -1,4 +1,5 @@
 # VIPMUSIC/plugins/tools/ranking.py
+
 import asyncio
 import datetime
 import time
@@ -41,6 +42,7 @@ mongo = AsyncIOMotorClient(MONGO_DB_URI)
 _default_db = mongo.get_default_database()
 db = _default_db if _default_db is not None else mongo["ghosttlead"]
 ranking_db = db["ranking"]
+autopost_db = db["ranking_autoposts"]  # stores chats where auto-post is enabled
 
 # -------------------------------------------------------------------
 # TODAY COUNTS (RAM)
@@ -76,9 +78,20 @@ async def db_get_top(field: str = "total_messages", limit: int = 10) -> List[dic
         return []
 
 
+async def db_get_top_user(field: str = "weekly_messages") -> Optional[dict]:
+    """Return the top user document for the given field or None."""
+    try:
+        doc = await ranking_db.find_one({}, sort=[(field, -1)])
+        return doc
+    except Exception as e:
+        print(f"[ranking] db_get_top_user error: {e}")
+        return None
+
+
 async def db_reset_field(field: str) -> None:
     try:
         await ranking_db.update_many({}, {"$set": {field: 0}})
+        print(f"[ranking] RESET {field}")
     except Exception as e:
         print(f"[ranking] db_reset_field error: {e}")
 
@@ -110,6 +123,33 @@ async def db_get_rank_for_field(user_id: int, field: str) -> int:
     except Exception as e:
         print(f"[ranking] db_get_rank_for_field error: {e}")
         return 0
+
+
+async def autopost_enable(chat_id: int, post_weekly: bool = True, post_monthly: bool = True) -> None:
+    try:
+        await autopost_db.update_one(
+            {"_id": chat_id},
+            {"$set": {"enabled": True, "post_weekly": post_weekly, "post_monthly": post_monthly, "hour": POST_HOUR, "minute": POST_MINUTE}},
+            upsert=True,
+        )
+    except Exception as e:
+        print(f"[ranking] autopost_enable error: {e}")
+
+
+async def autopost_disable(chat_id: int) -> None:
+    try:
+        await autopost_db.delete_one({"_id": chat_id})
+    except Exception as e:
+        print(f"[ranking] autopost_disable error: {e}")
+
+
+async def autopost_list() -> List[int]:
+    try:
+        docs = await autopost_db.find({"enabled": True}).to_list(length=1000)
+        return [d["_id"] for d in docs]
+    except Exception as e:
+        print(f"[ranking] autopost_list error: {e}")
+        return []
 
 
 # -------------------------------------------------------------------
@@ -170,15 +210,14 @@ def format_leaderboard(title: str, items: List[Tuple[str, int]]) -> str:
     for i, (name, count) in enumerate(items, 1):
         if len(name) > 30:
             name = name[:27] + "..."
-        lines.append(f"<blockquote><b>{i}.</b> {name} — <code>{count}</code></blockquote>")
+        crown = " 🏆" if i == 1 else ""
+        lines.append(f"<blockquote><b>{i}.</b> {name}{crown} — <code>{count}</code></blockquote>")
     return "\n".join(lines)
 
 
 # -------------------------------------------------------------------
-# WATCHERS (SAFE + WILL NOT BLOCK ANY COMMAND)
+# WATCHERS
 # -------------------------------------------------------------------
-
-# Global counter watcher — runs last
 @app.on_message(filters.group & filters.text & ~filters.regex(r"^/"), group=9999)
 async def watcher_global(_, message: Message):
     try:
@@ -188,7 +227,6 @@ async def watcher_global(_, message: Message):
         print(f"[ranking] watcher_global error: {e}")
 
 
-# Today watcher
 @app.on_message(filters.group & filters.text & ~filters.regex(r"^/"), group=10000)
 async def watcher_today(_, message: Message):
     try:
@@ -345,17 +383,36 @@ async def cmd_monthly(_, message: Message):
         print(f"[ranking] cmd_monthly error: {e}")
 
 
-# -------------------------------------------------------------------
-# CALLBACKS
-# -------------------------------------------------------------------
-async def _safe_edit(query: CallbackQuery, text: str, kb):
+# Auto-post enable/disable commands (admins only)
+@app.on_message(filters.command("autopost_on") & filters.group)
+async def cmd_autopost_on(_, message: Message):
     try:
-        return await query.message.edit_text(text, reply_markup=kb)
-    except:
-        try:
-            await query.answer("Unable to update!", show_alert=True)
-        except:
-            pass
+        # admin check
+        chat_id = message.chat.id
+        user_id = message.from_user.id
+        member = await app.get_chat_member(chat_id, user_id)
+        if member.status not in ("administrator", "creator"):
+            return await message.reply_text("Only group admins can enable auto-post.")
+
+        await autopost_enable(chat_id)
+        await message.reply_text("Auto-post enabled for this group. Weekly & Monthly winners will be posted automatically.")
+    except Exception as e:
+        print(f"[ranking] cmd_autopost_on error: {e}")
+
+
+@app.on_message(filters.command("autopost_off") & filters.group)
+async def cmd_autopost_off(_, message: Message):
+    try:
+        chat_id = message.chat.id
+        user_id = message.from_user.id
+        member = await app.get_chat_member(chat_id, user_id)
+        if member.status not in ("administrator", "creator"):
+            return await message.reply_text("Only group admins can disable auto-post.")
+
+        await autopost_disable(chat_id)
+        await message.reply_text("Auto-post disabled for this group.")
+    except Exception as e:
+        print(f"[ranking] cmd_autopost_off error: {e}")
 
 
 @app.on_callback_query(filters.regex("^today$"))
@@ -449,3 +506,109 @@ async def cb_weekly(_, q: CallbackQuery):
 
     except Exception as e:
         print(f"[ranking] cb_weekly error: {e}")
+
+
+# -------------------------------------------------------------------
+# SAFE EDIT (Fix for photo caption vs text)
+# -------------------------------------------------------------------
+async def _safe_edit(query: CallbackQuery, text: str, kb):
+    try:
+        if query.message.photo:
+            return await query.message.edit_caption(caption=text, reply_markup=kb)
+        else:
+            return await query.message.edit_text(text, reply_markup=kb)
+    except Exception:
+        try:
+            await query.answer("Unable to update!", show_alert=True)
+        except:
+            pass
+
+
+# -------------------------------------------------------------------
+# AUTO RESET + AUTO POST SCHEDULER (Weekly + Monthly)
+# -------------------------------------------------------------------
+async def _compose_winner_message(period: str, user_name: str, count: int) -> str:
+    if period == "weekly":
+        title = "🏆 𝗪𝗘𝗘𝗞𝗟𝗬 𝗪𝗜𝗡𝗡𝗘𝗥 🏆"
+    else:
+        title = "🏆 𝗠𝗢𝗡𝗧𝗛𝗟𝗬 𝗟𝗘𝗚𝗘𝗡𝗗 🏆"
+
+    msg = (
+        f"{title}\n\n"
+        f"Congratulations <b>{user_name}</b> 🎉\n\n"
+        f"You are the top performer this {period}!\n"
+        f"Total: <b>{count}</b> messages\n\n"
+        f"Keep shining!"
+    )
+    return msg
+
+
+async def _send_winner_to_chat(chat_id: int, period: str):
+    try:
+        field = "weekly_messages" if period == "weekly" else "monthly_messages"
+        top = await db_get_top_user(field)
+        if not top or int(top.get(field, 0)) == 0:
+            return
+
+        uid = top.get("_id")
+        count = int(top.get(field, 0))
+        name = await resolve_name(uid)
+        # Add crown emoji for top user in composed message and also mark in title
+        msg = await _compose_winner_message(period, name + " 🏆", count)
+
+        try:
+            await app.send_photo(chat_id, RANKING_PIC, caption=msg, parse_mode="html")
+        except Exception:
+            try:
+                await app.send_message(chat_id, msg, parse_mode="html")
+            except Exception as e:
+                print(f"[ranking] failed to send winner to {chat_id}: {e}")
+
+    except Exception as e:
+        print(f"[ranking] _send_winner_to_chat error: {e}")
+
+
+async def ranking_scheduler():
+    while True:
+        now = ist_now()
+
+        # Reset times (non-post): keep reset at 00:01 IST
+        try:
+            if now.weekday() == 0 and now.hour == 0 and now.minute == 1:
+                await db_reset_field("weekly_messages")
+                print("[ranking] weekly reset done")
+
+            if now.day == 1 and now.hour == 0 and now.minute == 1:
+                await db_reset_field("monthly_messages")
+                print("[ranking] monthly reset done")
+        except Exception as e:
+            print(f"[ranking] error during reset check: {e}")
+
+        # Auto-post times (configurable via AUTOPOST_TIME_* in config)
+        try:
+            # At configured POST_HOUR:POST_MINUTE, send weekly winners (on Monday) and monthly winners (on 1st)
+            if now.hour == POST_HOUR and now.minute == POST_MINUTE:
+                # Weekly post (only on Monday)
+                if now.weekday() == 0:
+                    chats = await autopost_list()
+                    for cid in chats:
+                        await _send_winner_to_chat(cid, "weekly")
+
+                # Monthly post (only on 1st)
+                if now.day == 1:
+                    chats = await autopost_list()
+                    for cid in chats:
+                        await _send_winner_to_chat(cid, "monthly")
+
+        except Exception as e:
+            print(f"[ranking] error during autopost: {e}")
+
+        await asyncio.sleep(60)  # check every 1 minute
+
+
+# Start scheduler safely
+try:
+    asyncio.create_task(ranking_scheduler())
+    print("[ranking] Scheduler started")
+except Exception as e:
+    print(f"[ranking] Scheduler start error: {e}")
