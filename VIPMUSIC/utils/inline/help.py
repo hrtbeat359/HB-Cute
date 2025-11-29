@@ -54,7 +54,7 @@ def music_panel(_):
     return InlineKeyboardMarkup(buttons)
 
 
-def games_panel1(_):
+def games_panel(_):
     buttons = [
         [
             InlineKeyboardButton(text="Pixel Dungeon", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),
