@@ -149,7 +149,6 @@ def games_panel3(_):
     return InlineKeyboardMarkup(buttons)
 
 
-
 def games_panel4(_):
     buttons = [
         [
