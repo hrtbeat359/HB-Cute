@@ -79,7 +79,7 @@ def games_panel1(_):
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
-            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="game_panel2"),
+            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p2"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
@@ -110,8 +110,8 @@ def games_panel2(_):
             InlineKeyboardButton(text="Atomic Drop", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBdG9taWNEcm9wMSJ9fQ")),
         ],
         [
-            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="game_panel1"),
-            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="game_panel3"),
+            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p1"),
+            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p3"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
@@ -142,8 +142,8 @@ def games_panel3(_):
             InlineKeyboardButton(text="Neon Racer", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uUmFjZXIifX0")),
         ],
         [
-            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="game_panel2"),
-            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="game_panel4"),
+            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p2"),
+            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p4"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
@@ -174,8 +174,8 @@ def games_panel4(_):
             InlineKeyboardButton(text="MotoFX", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb3RvRngifX0")),
         ],
         [
-            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="game_panel3"),
-            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="game_panel5"),
+            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p3"),
+            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p5"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
