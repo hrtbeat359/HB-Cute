@@ -61,10 +61,6 @@ def paginate_list(items, page, per_page=10):
 # SAFE EDIT HELPER (avoids MESSAGE_NOT_MODIFIED)
 # =============================================================
 async def safe_edit_caption(msg: Message, caption: str, reply_markup: InlineKeyboardMarkup = None):
-    """
-    Edit message caption only if different. If caption is same, try to edit reply_markup only.
-    Swallows MESSAGE_NOT_MODIFIED errors.
-    """
     try:
         existing = msg.caption or ""
         if existing.strip() == (caption or "").strip():
@@ -72,22 +68,21 @@ async def safe_edit_caption(msg: Message, caption: str, reply_markup: InlineKeyb
                 try:
                     await msg.edit_reply_markup(reply_markup)
                 except Exception:
-                    # ignore reply_markup edit errors
                     pass
             return
-        await msg.edit_caption(caption, reply_markup=reply_markup)
+
+        await msg.edit_caption(
+            caption,
+            reply_markup=reply_markup,
+        )
     except MessageNotModified:
-        # message unchanged; try to update reply_markup if provided
         if reply_markup is not None:
             try:
                 await msg.edit_reply_markup(reply_markup)
             except Exception:
                 pass
-        return
     except Exception as e:
-        # non-fatal: log and continue
         print("[vcstats] safe_edit_caption error:", e)
-
 
 # =============================================================
 # COMMAND: /vcstats
