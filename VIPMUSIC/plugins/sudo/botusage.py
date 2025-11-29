@@ -4,7 +4,8 @@ from pyrogram import filters
 from pyrogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    Message
+    Message,
+    InputMediaPhoto
 )
 
 import matplotlib.pyplot as plt
@@ -108,14 +109,13 @@ async def usage_graph_handler(client, message):
 
 
 # ===================== CALLBACK QUERY HANDLER =====================
-@app.on_callback_query()
+@app.on_callback_query(filters.regex("^(refresh_stats_graph|show_users|show_chats|show_channels|show_monthly)$"))
 async def callback_handler(client, callback):
 
     total_users, total_chats, total_channels, monthly_users = await get_stats()
 
-    # -------- REFRESH (Regenerate image + caption only) --------
+    # -------- REFRESH --------
     if callback.data == "refresh_stats_graph":
-
         img = await generate_pie_chart()
 
         new_caption = (
@@ -127,7 +127,7 @@ async def callback_handler(client, callback):
         )
 
         await callback.message.edit_media(
-            media=("photo", img),
+            InputMediaPhoto(img),
             reply_markup=callback.message.reply_markup
         )
 
