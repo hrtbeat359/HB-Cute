@@ -174,13 +174,14 @@ async def help_category_cb(client, CallbackQuery, _):
         return
 
     if cat == "games":
-        keyboard = games_panel1(_)
-        try:
-            await CallbackQuery.message.edit_text(_["help_1"], reply_markup=keyboard)
-        except:
-            pass
-        await CallbackQuery.answer()
-        return
+    keyboard = games_panel1(_)
+    try:
+        await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
+    except:
+        pass
+    await CallbackQuery.answer()
+    return
+
 
     if cat == "chat":
         keyboard = chat_panel(_)
@@ -288,6 +289,7 @@ async def games_paging_cb(client, CallbackQuery, _):
         keyboard = games_panel4(_)
     elif data == "games_p5":
         keyboard = games_panel5(_)
+    """
     else:
         return await CallbackQuery.answer()
 
@@ -296,7 +298,16 @@ async def games_paging_cb(client, CallbackQuery, _):
     except:
         pass
     await CallbackQuery.answer()
-    
+    """
+    else:
+        return await CallbackQuery.answer()
+
+    try:
+        await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
+    except:
+        pass
+
+    await CallbackQuery.answer()
 
 # Management paging callbacks: management_p1, management_p2, management_p3
 @app.on_callback_query(filters.regex(r"management_p1|management_p2|management_p3") & ~BANNED_USERS)
