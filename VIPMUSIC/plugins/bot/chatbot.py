@@ -252,10 +252,10 @@ async def listblock_cmd(client, message):
 def chatbot_keyboard(is_enabled: bool):
     if is_enabled:
         return InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🔴 Disable", callback_data="cb_disable")]]
+            [[InlineKeyboardButton("🍎 𝐃ɪ𝗌ᴀʙʟᴇ", callback_data="cb_disable")]]
         )
     return InlineKeyboardMarkup(
-        [[InlineKeyboardButton("🟢 Enable", callback_data="cb_enable")]]
+        [[InlineKeyboardButton("🍏 𝐄ɴᴀʙʟᴇ", callback_data="cb_enable")]]
     )
 
 
@@ -274,8 +274,8 @@ async def chatbot_settings_group(client, message):
     enabled = not doc or doc.get("status") == "enabled"
 
     txt = (
-        "**🤖 Chatbot Settings**\n\n"
-        f"Current Status: **{'🟢 Enabled' if enabled else '🔴 Disabled'}**\n"
+        "<blockquote>**🥂 𝐂ʜᴀᴛʙᴏᴛ 𝐒ᴇᴛᴛɪɴɢ𝗌**</blockquote>\n"
+        f"<blockquote>𝐂ᴜʀʀᴇɴᴛ 𝐒ᴛᴀᴛᴜ𝗌: **{'🍏 𝐄ɴᴀʙʟᴇᴅ' if enabled else '🍎 𝐃ɪ𝗌ᴀʙʟᴇᴅ'}**</blockquote>\n"
     )
     await message.reply_text(txt, reply_markup=chatbot_keyboard(enabled))
 
@@ -285,7 +285,7 @@ async def chatbot_settings_private(client, message):
     chat_id = message.chat.id
     doc = status_coll.find_one({"chat_id": chat_id})
     enabled = not doc or doc.get("status") == "enabled"
-    txt = f"**🤖 Chatbot (private)**\nStatus: **{'🟢 Enabled' if enabled else '🔴 Disabled'}**"
+    txt = f"**🥂 𝐂ʜᴀᴛʙᴏᴛ (private)**\n𝐒ᴛᴀᴛᴜ𝗌: **{'🍏 𝐄ɴᴀʙʟᴇᴅ' if enabled else '🍎 𝐃ɪ𝗌ᴀʙʟᴇᴅ'}**"
     await message.reply_text(txt, reply_markup=chatbot_keyboard(enabled))
 
 
@@ -305,7 +305,7 @@ async def chatbot_toggle_cb(client, cq: CallbackQuery):
             upsert=True,
         )
         await cq.message.edit_text(
-            "**🤖 Chatbot Enabled!**", reply_markup=chatbot_keyboard(True)
+            "**🍏 Chatbot Enabled!**", reply_markup=chatbot_keyboard(True)
         )
         await cq.answer("Enabled")
     else:
@@ -315,7 +315,7 @@ async def chatbot_toggle_cb(client, cq: CallbackQuery):
             upsert=True,
         )
         await cq.message.edit_text(
-            "**🤖 Chatbot Disabled!**", reply_markup=chatbot_keyboard(False)
+            "**🍎 Chatbot Disabled!**", reply_markup=chatbot_keyboard(False)
         )
         await cq.answer("Disabled")
 
