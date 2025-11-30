@@ -289,6 +289,16 @@ async def games_paging_cb(client, CallbackQuery, _):
         keyboard = games_panel4(_)
     elif data == "games_p5":
         keyboard = games_panel5(_)
+        # --------dummy
+    else:
+        return await CallbackQuery.answer()
+#--- paste the below balance here and delete
+    try:
+        await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
+    except:
+        pass
+
+    await CallbackQuery.answer()
     """
     else:
         return await CallbackQuery.answer()
@@ -299,15 +309,6 @@ async def games_paging_cb(client, CallbackQuery, _):
         pass
     await CallbackQuery.answer()
     """
-    else:
-        return await CallbackQuery.answer()
-
-    try:
-        await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
-    except:
-        pass
-
-    await CallbackQuery.answer()
 
 # Management paging callbacks: management_p1, management_p2, management_p3
 @app.on_callback_query(filters.regex(r"management_p1|management_p2|management_p3") & ~BANNED_USERS)
