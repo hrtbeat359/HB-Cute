@@ -54,9 +54,8 @@ def music_panel(_):
     return InlineKeyboardMarkup(buttons)
 
 
-def games_panel(_):
+def games_panel1(_):
     buttons = [
-        """
         [
             InlineKeyboardButton(text="Pixel Dungeon", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),
             InlineKeyboardButton(text="Karate Kido", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19")),
@@ -75,19 +74,16 @@ def games_panel(_):
             InlineKeyboardButton(text="Qube 2048", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJRdWJlMjA0OCJ9fQ")),
             InlineKeyboardButton(text="Moonshot", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb29uc2hvdCJ9fQ")),
         ],
-        """
         [
             InlineKeyboardButton(text=_["H_B_27"], callback_data="help_callback hb27"),
         ],
-        """
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
             InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p2"),
         ],
-        """
     ]
     return InlineKeyboardMarkup(buttons)
-"""
+
 
 def games_panel2(_):
     buttons = [
@@ -204,7 +200,7 @@ def games_panel5(_):
         ],
     ]
     return InlineKeyboardMarkup(buttons)
-"""
+
 
 def chat_panel(_):
     buttons = [
@@ -212,7 +208,7 @@ def chat_panel(_):
             InlineKeyboardButton(text=_["H_B_9"], callback_data="help_callback hb9"),
         ],
         [
-            InlineKeyboardButton(text=_["BACK_BUTTON"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19")), #callback_data="settings_back_helper"),
+            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
