@@ -10,11 +10,11 @@ from VIPMUSIC.utils.inline.help import (
     first_page,
     private_help_panel,
     music_panel,
-    games_panel,
-    #games_panel2,
-    #games_panel3,
-    #games_panel4,
-    #games_panel5,
+    games_panel1,
+    games_panel2,
+    games_panel3,
+    games_panel4,
+    games_panel5,
     chat_panel,
     reaction_panel,
     mention_panel,
@@ -174,7 +174,7 @@ async def help_category_cb(client, CallbackQuery, _):
         return
 
     if cat == "games":
-        keyboard = games_panel(_)
+        keyboard = games_panel1(_)
         try:
             await CallbackQuery.message.edit_text(_["help_1"], reply_markup=keyboard)
         except:
@@ -220,7 +220,7 @@ async def help_category_cb(client, CallbackQuery, _):
 
     return await CallbackQuery.answer("Unknown", show_alert=True)
 
-"""
+
 #game panel callbacks
 @app.on_callback_query(filters.regex(r"games_p1|games_p2|games_p3|games_p4|games_p5") & ~BANNED_USERS)
 @languageCB
@@ -228,7 +228,7 @@ async def games_paging_cb(client, CallbackQuery, _):
     data = CallbackQuery.data.strip()
 
     if data == "games_p1":
-        keyboard = games_panel(_)
+        keyboard = games_panel1(_)
         try:
             await CallbackQuery.message.edit_text(_["help_1"], reply_markup=keyboard)
         except:
@@ -272,7 +272,7 @@ async def games_paging_cb(client, CallbackQuery, _):
         await CallbackQuery.answer()
         return
         
-"""
+
 # Management paging callbacks: management_p1, management_p2, management_p3
 @app.on_callback_query(filters.regex(r"management_p1|management_p2|management_p3") & ~BANNED_USERS)
 @languageCB
