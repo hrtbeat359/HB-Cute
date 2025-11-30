@@ -57,22 +57,22 @@ def music_panel(_):
 def games_panel1(_):
     buttons = [
         [
-            InlineKeyboardButton(text="Pixel Dungeon", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),
-            InlineKeyboardButton(text="Karate Kido", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19")),
-            InlineKeyboardButton(text="Mars Rover", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYXJzUm92ZXIifX0")),
+            InlineKeyboardButton(text="GAME_1", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),
+            InlineKeyboardButton(text="GAME_2", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19")),
+            InlineKeyboardButton(text="GAME_3", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYXJzUm92ZXIifX0")),
         ],
         [
-            InlineKeyboardButton(text="Gravity Ninja: Emerald City", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5TmluamFFbWVyYWxkQ2l0eSJ9fQ")),
-            InlineKeyboardButton(text="ATARI Asteroids", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBdGFyaUFzdGVyb2lkcyJ9fQ")),
-            InlineKeyboardButton(text="Gravity Ninja", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5TmluamEifX0")),
+            InlineKeyboardButton(text="GAME_4", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5TmluamFFbWVyYWxkQ2l0eSJ9fQ")),
+            InlineKeyboardButton(text="GAME_5", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBdGFyaUFzdGVyb2lkcyJ9fQ")),
+            InlineKeyboardButton(text="GAME_6", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5TmluamEifX0")),
         ],
         [
-            InlineKeyboardButton(text="Gravity Unicorns", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5VW5pY29ybnMifX0")),
-            InlineKeyboardButton(text="Beach Racer", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCZWFjaFJhY2VyIn19")),
+            InlineKeyboardButton(text="GAME_7", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5VW5pY29ybnMifX0")),
+            InlineKeyboardButton(text="GAME_8", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCZWFjaFJhY2VyIn19")),
         ],
         [
-            InlineKeyboardButton(text="Qube 2048", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJRdWJlMjA0OCJ9fQ")),
-            InlineKeyboardButton(text="Moonshot", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb29uc2hvdCJ9fQ")),
+            InlineKeyboardButton(text="GAME_9", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJRdWJlMjA0OCJ9fQ")),
+            InlineKeyboardButton(text="GAME_10", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb29uc2hvdCJ9fQ")),
         ],
         [
             InlineKeyboardButton(text=_["H_B_27"], callback_data="help_callback hb27"),
@@ -88,25 +88,25 @@ def games_panel1(_):
 def games_panel2(_):
     buttons = [
         [
-            InlineKeyboardButton(text="Run", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSdW4ifX0")),
-            InlineKeyboardButton(text="Brick Stacker", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCcmlja1N0YWNrZXIifX0")),
-            InlineKeyboardButton(text="Into the Mocaverse", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJJbnRvVGhlTW9jYXZlcnNlIn19")),
+            InlineKeyboardButton(text="GAME_11", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSdW4ifX0")),
+            InlineKeyboardButton(text="GANE-12", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCcmlja1N0YWNrZXIifX0")),
+            InlineKeyboardButton(text="GAME_13", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJJbnRvVGhlTW9jYXZlcnNlIn19")),
         ],
         [
-            InlineKeyboardButton(text="Neon Blaster 2", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uQmxhc3QyIn19")),
-            InlineKeyboardButton(text="Bratz Pop", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCcmF0elBvcCJ9fQ")),
-            InlineKeyboardButton(text="Hooked 2048", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJIb29rZWQyMDQ4In19")),
+            InlineKeyboardButton(text="GAME_14", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uQmxhc3QyIn19")),
+            InlineKeyboardButton(text="GAME_15", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCcmF0elBvcCJ9fQ")),
+            InlineKeyboardButton(text="GAME_16", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJIb29rZWQyMDQ4In19")),
         ],
         [
-            InlineKeyboardButton(text="Ride or Die", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSaWRlT3JEaWUifX0")),
-            InlineKeyboardButton(text="Basket Boy Rush", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCYXNrZXRCb3lSdXNoIn19")),
+            InlineKeyboardButton(text="GAME_17", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSaWRlT3JEaWUifX0")),
+            InlineKeyboardButton(text="GAME_18", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCYXNrZXRCb3lSdXNoIn19")),
         ],
         [
-            InlineKeyboardButton(text="JumpTuber", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJKdW1wdHViZXIxIn19")),
-            InlineKeyboardButton(text="Spiky Fish 3", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTcGlreUZpc2gzIn19")),
+            InlineKeyboardButton(text="GAME_19", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJKdW1wdHViZXIxIn19")),
+            InlineKeyboardButton(text="GAME_20", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTcGlreUZpc2gzIn19")),
         ],
         [
-            InlineKeyboardButton(text="Atomic Drop", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBdG9taWNEcm9wMSJ9fQ")),
+            InlineKeyboardButton(text="GAME_21", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBdG9taWNEcm9wMSJ9fQ")),
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p1"),
@@ -120,25 +120,25 @@ def games_panel2(_):
 def games_panel3(_):
     buttons = [
         [
-            InlineKeyboardButton(text="Penalty Shooter", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQZW5hbHR5U2hvb3RlcjIifX0")),
-            InlineKeyboardButton(text="Sunshine Solitaire", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdW5zaGluZVNvbGl0YWlyZSJ9fQ")),
-            InlineKeyboardButton(text="Red and Blue", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSZWRBbmRCbHVlIn19")),
+            InlineKeyboardButton(text="GAME_22", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQZW5hbHR5U2hvb3RlcjIifX0")),
+            InlineKeyboardButton(text="GAME_23", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdW5zaGluZVNvbGl0YWlyZSJ9fQ")),
+            InlineKeyboardButton(text="GAME_24", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSZWRBbmRCbHVlIn19")),
         ],
         [
-            InlineKeyboardButton(text="Disco Ball", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSb2xsZXJEaXNjbyJ9fQ")),
-            InlineKeyboardButton(text="1+2=3", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJvbmV0d290aHJlZSJ9fQ")),
-            InlineKeyboardButton(text="Groovy Ski", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcm9vdnlTa2kifX0")),
+            InlineKeyboardButton(text="GAME_25", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSb2xsZXJEaXNjbyJ9fQ")),
+            InlineKeyboardButton(text="GAME_26", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJvbmV0d290aHJlZSJ9fQ")),
+            InlineKeyboardButton(text="GAME_27", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcm9vdnlTa2kifX0")),
         ],
         [
-            InlineKeyboardButton(text="Marble Dash", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYXJibGVEYXNoIn19")),
-            InlineKeyboardButton(text="Switch", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTd2l0Y2gxIn19")),
+            InlineKeyboardButton(text="GAME_28", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYXJibGVEYXNoIn19")),
+            InlineKeyboardButton(text="GAME_29", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTd2l0Y2gxIn19")),
         ],
         [
-            InlineKeyboardButton(text="Color Hit", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJDb2xvb3JIaXQifX0")),
-            InlineKeyboardButton(text="Tents and Trees", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJUZW50c0FuZFRyZWVzIn19")),
+            InlineKeyboardButton(text="GAME_30", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJDb2xvb3JIaXQifX0")),
+            InlineKeyboardButton(text="GAME_31", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJUZW50c0FuZFRyZWVzIn19")),
         ],
         [
-            InlineKeyboardButton(text="Neon Racer", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uUmFjZXIifX0")),
+            InlineKeyboardButton(text="GAME_32", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uUmFjZXIifX0")),
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p2"),
@@ -151,25 +151,25 @@ def games_panel3(_):
 def games_panel4(_):
     buttons = [
         [
-            InlineKeyboardButton(text="Samurai Hold'em", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTYW11cmFpSG9sZGVtIn19")),
-            InlineKeyboardButton(text="Man City Striker", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYW5DaXR5U3RyaWtlcjNEIn19")),
-            InlineKeyboardButton(text="SmartUp Shark", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTbWFydFVwU2hhcmsifX0")),
+            InlineKeyboardButton(text="GAME_33", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTYW11cmFpSG9sZGVtIn19")),
+            InlineKeyboardButton(text="GAME_34", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYW5DaXR5U3RyaWtlcjNEIn19")),
+            InlineKeyboardButton(text="GAME_35", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTbWFydFVwU2hhcmsifX0")),
         ],
         [
-            InlineKeyboardButton(text="F1 Racer", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJGMVJhY2VyIn19")),
-            InlineKeyboardButton(text="SUPERBUGZ", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdXBlcmJ1Z3oifX0")),
-            InlineKeyboardButton(text="Keep it UP", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLZWVwSXRVcCJ9fQ")),
+            InlineKeyboardButton(text="GAME_36", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJGMVJhY2VyIn19")),
+            InlineKeyboardButton(text="GAME_37", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdXBlcmJ1Z3oifX0")),
+            InlineKeyboardButton(text="GAME_38", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLZWVwSXRVcCJ9fQ")),
         ],
         [
-            InlineKeyboardButton(text="Kingdoms of 2048", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLaW5nZG9tc09mMjA0OCJ9fQ")),
-            InlineKeyboardButton(text="Globo Run", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHbG9ib1J1biJ9fQ")),
+            InlineKeyboardButton(text="GAME_39", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLaW5nZG9tc09mMjA0OCJ9fQ")),
+            InlineKeyboardButton(text="GAME_40", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHbG9ib1J1biJ9fQ")),
         ],
         [
-            InlineKeyboardButton(text="ASTRO CAT", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBc3Ryb2NhdCJ9fQ")),
-            InlineKeyboardButton(text="Space Orbit", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTcGFjZU9yYml0In19")),
+            InlineKeyboardButton(text="GAME_41", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBc3Ryb2NhdCJ9fQ")),
+            InlineKeyboardButton(text="GAME_42", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTcGFjZU9yYml0In19")),
         ],
         [
-            InlineKeyboardButton(text="MotoFX", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb3RvRngifX0")),
+            InlineKeyboardButton(text="GAME_43", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb3RvRngifX0")),
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p3"),
@@ -183,17 +183,17 @@ def games_panel4(_):
 def games_panel5(_):
     buttons = [
         [
-            InlineKeyboardButton(text="Neon Blaster", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uQmxhc3RlciJ9fQ")),
-            InlineKeyboardButton(text="Tamachi Jump", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJUYW1hY2hpSnVtcCJ9fQ")),
-            InlineKeyboardButton(text="Wizard's 21", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJXaXphcmRzMjEifX0")),
+            InlineKeyboardButton(text="GAME_44", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uQmxhc3RlciJ9fQ")),
+            InlineKeyboardButton(text="GAME_45", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJUYW1hY2hpSnVtcCJ9fQ")),
+            InlineKeyboardButton(text="GAME_46", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJXaXphcmRzMjEifX0")),
         ],
         [
-            InlineKeyboardButton(text="99 Blocks", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdWRva3VQdXp6bGUifX0")),
-            InlineKeyboardButton(text="Block Breaker", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCbG9ja0JyZWFrZXIifX0")),
+            InlineKeyboardButton(text="GAME_47", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdWRva3VQdXp6bGUifX0")),
+            InlineKeyboardButton(text="GAME_48", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCbG9ja0JyZWFrZXIifX0")),
         ],
         [
-            InlineKeyboardButton(text="Hoop Shot", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJIb29wU2hvdCJ9fQ")),
-            InlineKeyboardButton(text="Gravity Ninja 2", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5TmluamEyMSJ9fQ")),
+            InlineKeyboardButton(text="GAME_49", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJIb29wU2hvdCJ9fQ")),
+            InlineKeyboardButton(text="GAME_50", web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5TmluamEyMSJ9fQ")),
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
