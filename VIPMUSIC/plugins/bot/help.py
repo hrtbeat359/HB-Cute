@@ -273,7 +273,7 @@ async def games_paging_cb(client, CallbackQuery, _):
         return
 """
 # Games Panel
-@app.on_callback_query(filters.regex(r"games_p1|games_p2|games_p3|games_p4") & ~BANNED_USERS)
+@app.on_callback_query(filters.regex(r"games_p1|games_p2|games_p3|games_p4|games_p5") & ~BANNED_USERS)
 @languageCB
 async def games_paging_cb(client, CallbackQuery, _):
     data = CallbackQuery.data.strip()
