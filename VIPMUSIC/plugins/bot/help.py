@@ -172,15 +172,18 @@ async def help_category_cb(client, CallbackQuery, _):
             pass
         await CallbackQuery.answer()
         return
-
+#web-app callback
     if cat == "games":
-        keyboard = games_panel1(_)
-        try:
-            await CallbackQuery.message.edit_text(_["help_1"], reply_markup=keyboard)
-        except:
-            pass
+    keyboard = games_panel1(_)
+    try:
         await CallbackQuery.answer()
-        return
+        await CallbackQuery.message.reply(
+            _["help_1"],
+            reply_markup=keyboard
+        )
+    except Exception as e:
+        print(e)
+    return
 
     if cat == "chat":
         keyboard = chat_panel(_)
