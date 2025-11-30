@@ -212,7 +212,7 @@ def chat_panel(_):
             InlineKeyboardButton(text=_["H_B_9"], callback_data="help_callback hb9"),
         ],
         [
-            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
+            InlineKeyboardButton(text=_["BACK_BUTTON"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19")), #callback_data="settings_back_helper"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
