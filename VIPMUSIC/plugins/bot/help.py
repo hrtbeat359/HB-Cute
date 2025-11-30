@@ -174,13 +174,13 @@ async def help_category_cb(client, CallbackQuery, _):
         return
 
     if cat == "games":
-    keyboard = games_panel1(_)
-    try:
-        await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
-    except:
-        pass
-    await CallbackQuery.answer()
-    return
+        keyboard = games_panel1(_)
+        try:
+            await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
+            except:
+                pass
+            await CallbackQuery.answer()
+            return
 
 
     if cat == "chat":
