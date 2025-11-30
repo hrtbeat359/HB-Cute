@@ -1,7 +1,7 @@
 from typing import Union
 
 from pyrogram import filters, types
-from pyrogram.types import InlineKeyboardMarkup, Message
+from pyrogram.types import InlineKeyboardMarkup, Message, WebAppInfo
 
 from VIPMUSIC import app
 from VIPMUSIC.utils.database import get_lang
@@ -220,7 +220,7 @@ async def help_category_cb(client, CallbackQuery, _):
 
     return await CallbackQuery.answer("Unknown", show_alert=True)
 
-"""
+
 #game panel callbacks
 @app.on_callback_query(filters.regex(r"games_p1|games_p2|games_p3|games_p4|games_p5") & ~BANNED_USERS)
 @languageCB
@@ -272,7 +272,7 @@ async def games_paging_cb(client, CallbackQuery, _):
         await CallbackQuery.answer()
         return
         
-"""
+
 # Management paging callbacks: management_p1, management_p2, management_p3
 @app.on_callback_query(filters.regex(r"management_p1|management_p2|management_p3") & ~BANNED_USERS)
 @languageCB
