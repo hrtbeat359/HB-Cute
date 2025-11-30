@@ -262,7 +262,7 @@ def chatbot_keyboard(is_enabled: bool):
 # ============================================================
 #                    /chatbot COMMANDS
 # ============================================================
-@app.on_message(filters.command("chatbot") & filters.group)
+@app.on_message(filters.command(["chatbot", "chat"], prefixes=["/", "!", "", "%", ",", ".", "@", "#"]) & filters.group)
 async def chatbot_settings_group(client, message):
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -280,7 +280,7 @@ async def chatbot_settings_group(client, message):
     await message.reply_text(txt, reply_markup=chatbot_keyboard(enabled))
 
 
-@app.on_message(filters.command("chatbot") & filters.private)
+@app.on_message(filters.command(["chatbot", "chat"], prefixes=["/", "!", "", "%", ",", ".", "@", "#"]) & filters.private)
 async def chatbot_settings_private(client, message):
     chat_id = message.chat.id
     doc = status_coll.find_one({"chat_id": chat_id})
