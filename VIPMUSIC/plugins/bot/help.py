@@ -175,14 +175,19 @@ async def help_category_cb(client, CallbackQuery, _):
 #web-app callback
     if cat == "games":
     keyboard = games_panel1(_)
+
     try:
+        # Close the loading animation on button click
         await CallbackQuery.answer()
+
+        # Send a new message so WebApp buttons work on mobile
         await CallbackQuery.message.reply(
             _["help_1"],
             reply_markup=keyboard
         )
     except Exception as e:
-        print(e)
+        print("Error loading games panel:", e)
+
     return
 
     if cat == "chat":
