@@ -176,32 +176,41 @@ async def help_category_cb(client, CallbackQuery, _):
 
     if cat == "games":
         keyboard = games_panel1(_)
-
         try:
-            await CallbackQuery.answer()  # stop spinner first
+            await CallbackQuery.answer()
         except:
             pass
-                
+            
         try:
-            # ONLY update reply markup (do NOT include caption text that breaks mini app display)
             await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
-            print("GAMES CALLBACK TRIGGERED: edit_reply_markup")
+            print("GAMES CALLBACK: edit_reply_markup succeeded")
             return
         except Exception as e:
-            print("edit_reply_markup failed:", e)
-        
+            print("GAMES: edit_reply_markup failed:", repr(e))
+            
         try:
-            # If message cannot be edited (old message / media), send a new one
+            await CallbackQuery.message.edit_text(
+                "🎮 Games Menu",
+                reply_markup=keyboard
+            )
+            print("GAMES CALLBACK: edit_text (short) succeeded")
+            return
+        except Exception as e:
+            print("GAMES: edit_text (short) failed:", repr(e))
+            
+        try:
             await CallbackQuery.message.reply(
                 "🎮 Games Menu",
                 reply_markup=keyboard
             )
-            print("GAMES CALLBACK TRIGGERED: reply fallback")
+            print("GAMES CALLBACK: reply fallback succeeded")
             return
         except Exception as e:
-            print("reply fallback failed:", e)
-        
-        return await CallbackQuery.answer("⚠ Unable to open Games panel", show_alert=True)
+            print("GAMES: reply fallback failed:", repr(e))
+            
+        await CallbackQuery.answer("Unable to open Games panel (internal error).", show_alert=True)
+        return
+
 
     if cat == "chat":
         keyboard = chat_panel(_)
