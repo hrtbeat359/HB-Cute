@@ -110,12 +110,6 @@ HELP_10 = """<blockquote>**💫 ʀᴇᴀᴄᴛɪᴏɴꜱ:**</blockquote>
 HELP_11 = """<blockquote>**💞 ᴜʀᴜᴛᴛᴜ ᴛᴀɢꜱ:**</blockquote>
 <blockquote>🔻 /tagall ➠ ᴛᴀɢ ᴀʟʟ ᴜꜱᴇʀꜱ  
 🔻 /utag ➠ ᴜɴʟɪᴍɪᴛᴇᴅ ᴛᴀɢ  
-🔻 /gmtag ➠ ɢᴏᴏᴅ ᴍᴏʀɴɪɴɢ ᴛᴀɢ  
-🔻 /gntag ➠ ɢᴏᴏᴅ ɴɪɢʜᴛ ᴛᴀɢ  
-🔻 /uruttubaby ➠ ʀᴀɴᴅᴏᴍ ᴜʀᴜᴛᴛᴜ  
-🔻 /crush ➠ ʀᴀɴᴅᴏᴍ ʀᴏᴍᴀɴᴛɪᴄ ǫᴜᴏᴛᴇ  
-🔻 /soul ➠ ʀᴀɴᴅᴏᴍ ʟᴏᴠᴇ ǫᴜᴏᴛᴇ   
-🔻 /uruttu ➠ ɢᴇᴛ ʀᴀɴᴅᴏᴍ ᴜʀᴜᴛᴛᴜ ǫᴜᴏᴛᴇ</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
@@ -302,6 +296,22 @@ HELP_38 : """<blockquote>**🍬 ʀᴇᴀᴄᴛ ᴋᴇʏ𝗌:**</blockquote>
 /rmreact- ʀᴇᴍᴏᴠᴇ ᴀ ᴛᴇ𝗑ᴛ ɪɴ ᴀᴅᴅᴇᴅ ʀᴇᴀᴄᴛ ʟɪsᴛ</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_39 : """<blockquote>**🏓 𝗌ᴘᴇᴄɪᴀʟ ᴛᴀɢ:**</blockquote>
+<blockquote>🔻 /gmtag ➠ ɢᴏᴏᴅ ᴍᴏʀɴɪɴɢ ᴛᴀɢ  
+🔻 /gntag ➠ ɢᴏᴏᴅ ɴɪɢʜᴛ ᴛᴀɢ  
+🔻 /uruttubaby ➠ ʀᴀɴᴅᴏᴍ ᴜʀᴜᴛᴛᴜ</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_40 : """<blockquote>**🍭 ᴜʀᴜᴛᴛᴜ ǫᴜᴏᴛᴇ𝗌**</blockquote>
+<blockquote>🔻 /crush ➠ ʀᴀɴᴅᴏᴍ ʀᴏᴍᴀɴᴛɪᴄ ǫᴜᴏᴛᴇ  
+🔻 /soul ➠ ʀᴀɴᴅᴏᴍ ʟᴏᴠᴇ ǫᴜᴏᴛᴇ   
+🔻 /uruttu ➠ ɢᴇᴛ ʀᴀɴᴅᴏᴍ ᴜʀᴜᴛᴛᴜ ǫᴜᴏᴛᴇ</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+
 
 HELP_50 = """👾 𝐒ᴇʀᴠᴇʀ-𝐁ᴜ𝗌ʏ"""
 
