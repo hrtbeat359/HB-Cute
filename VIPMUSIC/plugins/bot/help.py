@@ -176,7 +176,7 @@ async def help_category_cb(client, CallbackQuery, _):
     if cat == "games":
         keyboard = games_panel1(_)
         try:
-            await CallbackQuery.message.edit_text(_["help_1"], reply_markup=keyboard)
+            await CallbackQuery.message.edit_text("🎮 Games Menu", reply_markup=keyboard)
             await CallbackQuery.answer()
         except Exception as e:
             print(e)
