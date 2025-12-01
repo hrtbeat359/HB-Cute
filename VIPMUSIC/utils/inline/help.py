@@ -44,6 +44,7 @@ def music_panel(_):
     # Music contains hb14 and hb22
     buttons = [
         [
+            InlineKeyboardButton(text=_["GAME_1"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),
             InlineKeyboardButton(text=_["H_B_14"], callback_data="help_callback hb14"),
             InlineKeyboardButton(text=_["H_B_22"], callback_data="help_callback hb22"),
         ],
