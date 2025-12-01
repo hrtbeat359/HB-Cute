@@ -55,8 +55,8 @@ HELP_4 = """<blockquote>**👿 ᴀᴄᴛɪᴏɴ**</blockquote>
 
 HELP_5 = """<blockquote>**📩 ʙɪᴏ**</blockquote>
 <blockquote>🔻 /setbio <ᴛᴇxᴛ> - ᴡʜɪʟᴇ ʀᴇᴘʟʏɪɴɢ, ᴡɪʟʟ ꜱᴀᴠᴇ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ʙɪᴏ
-🔻 /bio - ᴡɪʟʟ ɢᴇᴛ ʏᴏᴜʀ ᴏʀ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ʙɪᴏ. ᴛʜɪꜱ ᴄᴀɴɴᴏᴛ ʙᴇ ꜱᴇᴛ ʙʏ ʏᴏᴜʀꜱᴇʟꜰ.
-🔻 /setme <ᴛᴇxᴛ> - ᴡɪʟʟ ꜱᴇᴛ ʏᴏᴜʀ ɪɴꜰᴏ
+🔻 /setme - ᴡɪʟʟ ɢᴇᴛ ʏᴏᴜʀ ᴏʀ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ʙɪᴏ. ᴛʜɪꜱ ᴄᴀɴɴᴏᴛ ʙᴇ ꜱᴇᴛ ʙʏ ʏᴏᴜʀꜱᴇʟꜰ.
+🔻 /setbio <ᴛᴇxᴛ> - ᴡɪʟʟ ꜱᴇᴛ ʏᴏᴜʀ ɪɴꜰᴏ
 🔻 /me - ᴡɪʟʟ ɢᴇᴛ ʏᴏᴜʀ ᴏʀ ᴀɴᴏᴛʜᴇʀ ᴜꜱᴇʀ'ꜱ ɪɴꜰᴏ
 🔻 /bioall - ɢᴇᴛ ᴀʟʟ ᴜꜱᴇʀꜱ ʙɪᴏ .ᴛxᴛ</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
@@ -96,8 +96,7 @@ HELP_8 = """<blockquote>**⬇️ ᴅᴏᴡɴʟᴏᴀᴅꜱ:**</blockquote>
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
 HELP_9 = """<blockquote>**💬 ᴄʜᴀᴛ:**</blockquote>
-<blockquote>🔻 /chatbot <on/off> - ᴄʜᴀᴛʙᴏᴛ ɪꜱ ᴏɴ ᴏʀ ᴏꜰꜰ ɪɴ ɢʀᴏᴜᴘ</blockquote>
-<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+<blockquote>🔻 /chatbot <on/off> - ᴄʜᴀᴛʙᴏᴛ ɪꜱ ᴏɴ ᴏʀ ᴏꜰꜰ ɪɴ ɢʀᴏᴜᴘ<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
 HELP_10 = """<blockquote>**💫 ʀᴇᴀᴄᴛɪᴏɴꜱ:**</blockquote>
@@ -217,19 +216,7 @@ HELP_22 = """<blockquote>**🎵 ᴍᴜꜱɪᴄ:**</blockquote>
 🔻 /vplay <ꜱᴏɴɢ/ᴜʀʟ/ʀᴇᴘʟʏ> ➠ ᴘʟᴀʏ ᴠɪᴅᴇᴏ ꜱᴏɴɢ
 🔻 /cplay <ᴄʜᴀɴɴᴇʟɪᴅ/ꜱᴏɴɢ> - ᴘʟᴀʏ ꜱᴏɴɢ ꜰᴏʀ ᴄʜᴀɴɴᴇʟ
 🔻 /cvply - <ᴄʜᴀɴɴᴇʟɪᴅ/ꜱᴏɴɢ> - ᴘʟᴀʏ ᴠɪᴅᴇᴏ ꜰᴏʀ ᴄʜᴀɴɴᴇʟ
-🔻 /end - ꜱᴛᴏᴘ ᴛʜᴇ ꜱᴏɴɢꜱ
-🔻 /playforce - ꜰᴏʀᴄᴇ ᴛᴏ ᴘʟᴀʏ ᴀ ꜱᴏɴɢ ᴀɴᴅ ꜱᴋɪᴘ ᴄᴜʀʀᴇɴᴛ ᴛʀᴀᴄᴋ
-🔻 /pause ➠ ᴘᴀᴜꜱᴇ ᴘʟᴀʏʙᴀᴄᴋ  
-🔻 /resume ➠ ʀᴇꜱᴜᴍᴇ ᴘʟᴀʏʙᴀᴄᴋ  
-🔻 /skip ➠ ꜱᴋɪᴘ ᴄᴜʀʀᴇɴᴛ ᴛʀᴀᴄᴋ  
-🔻 /stop ➠ ꜱᴛᴏᴘ ᴘʟᴀʏʙᴀᴄᴋ  
-🔻 /mute ➠ ᴍᴜᴛᴇ ᴘʟᴀʏɪɴɢ ᴍᴜꜱɪᴄ  
-🔻 /unmute ➠ ᴜɴᴍᴜᴛᴇ ᴍᴜꜱɪᴄ  
-🔻 /playlist ➠ ᴠɪᴇᴡ ꜱᴀᴠᴇᴅ ᴘʟᴀʏʟɪꜱᴛꜱ  
-🔻 /addplaylist ➠ ᴀᴅᴅ ꜱᴏɴɢꜱ ᴛᴏ ᴘʟᴀʏʟɪꜱᴛ  
-🔻 /deleteplaylist ➠ ᴅᴇʟᴇᴛᴇ ꜱᴀᴠᴇᴅ ᴘʟᴀʏʟɪꜱᴛ  
-🔻 /settings ➠ ꜱʜᴏᴡ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ  
-🔻 /joinuserbot ➠ ɪɴᴠɪᴛᴇ ᴜꜱᴇʀʙᴏᴛ ᴛᴏ ɢʀᴏᴜᴘ</blockquote>
+🔻 /playforce - ꜰᴏʀᴄᴇ ᴛᴏ ᴘʟᴀʏ ᴀ ꜱᴏɴɢ ᴀɴᴅ ꜱᴋɪᴘ ᴄᴜʀʀᴇɴᴛ ᴛʀᴀᴄᴋ  
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
@@ -280,8 +267,55 @@ HELP_33 = """<blockquote>**🔥 ꜰʟᴀᴍᴇꜱ:**</blockquote>
 <blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
 [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
+HELP_34 = """<blockquote> **🎶 ᴍᴜ𝗌ɪᴄ ᴄᴏɴᴛʀᴏʟ𝗌 :**</blockquote>
+<blockquote>🔻/pause ➠ ᴘᴀᴜꜱᴇ ᴘʟᴀʏʙᴀᴄᴋ  
+🔻 /resume ➠ ʀᴇꜱᴜᴍᴇ ᴘʟᴀʏʙᴀᴄᴋ  
+🔻 /skip ➠ ꜱᴋɪᴘ ᴄᴜʀʀᴇɴᴛ ᴛʀᴀᴄᴋ  
+🔻 /stop ➠ ꜱᴛᴏᴘ ᴘʟᴀʏʙᴀᴄᴋ  
+🔻 /mute ➠ ᴍᴜᴛᴇ ᴘʟᴀʏɪɴɢ ᴍᴜꜱɪᴄ  
+🔻 /unmute ➠ ᴜɴᴍᴜᴛᴇ ᴍᴜꜱɪᴄ
+🔻 /end - ꜱᴛᴏᴘ ᴛʜᴇ ꜱᴏɴɢꜱ</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
+HELP_35 = """<blockquote>**🕊️ ᴘʟᴀʏʟɪ𝗌ᴛ:**<blockquote>
+<blockquote>🔻 /playlist ➠ ᴠɪᴇᴡ ꜱᴀᴠᴇᴅ ᴘʟᴀʏʟɪꜱᴛꜱ  
+🔻 /addplaylist ➠ ᴀᴅᴅ ꜱᴏɴɢꜱ ᴛᴏ ᴘʟᴀʏʟɪꜱᴛ  
+🔻 /deleteplaylist ➠ ᴅᴇʟᴇᴛᴇ ꜱᴀᴠᴇᴅ ᴘʟᴀʏʟɪꜱᴛ</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_36 : """<blockquote>**⚡ 𝗌ᴇᴛᴛɪɴɢ𝗌:**<blockquote>
+<blockquote>🔻 /settings ➠ ꜱʜᴏᴡ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ  
+🔻 /joinuserbot ➠ ɪɴᴠɪᴛᴇ ᴜꜱᴇʀʙᴏᴛ ᴛᴏ ɢʀᴏᴜᴘ</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_37 : """<blockquote>**💌 ʙʟᴏᴄᴋ ᴡᴏʀᴅ ᴄʜᴀᴛ:**<blockquote>
+<blockquote>🔻 /addblock ➠ ᴀᴅᴅ ᴀ ᴛᴇ𝗑ᴛ ᴛᴏ ʙʟᴏᴄᴋ-ᴄʜᴀᴛ
+🔻 /rmblock ➠ ʀᴇᴍᴏᴠᴇ ᴀ ʙʟᴏᴄᴋᴇᴅ ᴛᴇ𝗑ᴛ ᴛᴏ ᴄʜᴀᴛʙᴏᴛ</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
+
+HELP_38 : """<blockquote>**🍬 ʀᴇᴀᴄᴛ ᴋᴇʏ𝗌:**</blockquote>
+<blockquote>🔻/addreact - ᴀᴅᴅ ᴀ ɴᴀᴍᴇ ᴛᴏ ʀᴇᴀᴄᴛ ʟɪ𝗌ᴛ
+/rmreact- ʀᴇᴍᴏᴠᴇ ᴀ ᴛᴇ𝗑ᴛ ɪɴ ᴀᴅᴅᴇᴅ ʀᴇᴀᴄᴛ ʟɪsᴛ</blockquote>
+<blockquote>⋆｡°✩ **𝐇ʙ-𝐅ᴀᴍ** ✩°｡⋆  
+[ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴏғғɪ](https://t.me/HeartBeat_Offi) | [ʜᴇᴧꝛᴛʙᴇᴧᴛ ᴄʜᴧᴛ](https://t.me/HeartBeat_Fam)</blockquote>"""
 
 HELP_50 = """👾 𝐒ᴇʀᴠᴇʀ-𝐁ᴜ𝗌ʏ"""
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
