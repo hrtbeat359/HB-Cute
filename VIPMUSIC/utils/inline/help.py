@@ -79,7 +79,7 @@ def games_panel1(_):
         #],
         [
             #InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
-            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p2"),
+            #InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p2"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
