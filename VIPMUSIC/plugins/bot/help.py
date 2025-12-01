@@ -153,7 +153,7 @@ async def helper_cb(client, CallbackQuery, _):
 
 
 # Category callbacks: music, games, chat, reaction, mention, management ----------------
-@app.on_callback_query(filters.regex(r"help_cat") & ~BANNED_USERS)
+@app.on_callback_query(filters.regex(r"^help_cat") & ~BANNED_USERS)
 @languageCB
 async def help_category_cb(client, CallbackQuery, _):
     # data e.g. "help_cat music"
@@ -178,6 +178,7 @@ async def help_category_cb(client, CallbackQuery, _):
         try:
             await CallbackQuery.message.edit_text("🎮 Games Menu", reply_markup=keyboard)
             await CallbackQuery.answer()
+            print("GAMES CALLBACK TRIGGERED")
         except Exception as e:
             print(e)
         return
