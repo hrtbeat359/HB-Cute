@@ -8,15 +8,15 @@ from VIPMUSIC import app
 def first_page(_):
     buttons = [
         [
-            InlineKeyboardButton(text=_["H_B_22"], callback_data="help_cat music"),
-            InlineKeyboardButton(text=_["H_B_27"], callback_data="help_cat games"),
+            InlineKeyboardButton(text=_["CMD_MUSIC"], callback_data="help_cat music"),
+            InlineKeyboardButton(text=_["CMD_GAMES"], callback_data="help_cat games"),
         ],
         [
-            InlineKeyboardButton(text=_["H_B_3"], callback_data="help_cat management"),
+            InlineKeyboardButton(text=_["CMD_MANAGE"], callback_data="help_cat management"),
         ],
         [
-            InlineKeyboardButton(text=_["H_B_9"], callback_data="help_cat chat"),
-            InlineKeyboardButton(text=_["H_B_10"], callback_data="help_cat reaction"),
+            InlineKeyboardButton(text=_["CMD_CHAT"], callback_data="help_cat chat"),
+            InlineKeyboardButton(text=_["CMD_REACT"], callback_data="help_cat reaction"),
         ],
         [
             InlineKeyboardButton(text=_["H_B_11"], callback_data="help_cat mention"),
@@ -44,8 +44,13 @@ def music_panel(_):
     # Music contains hb14 and hb22
     buttons = [
         [
-            InlineKeyboardButton(text=_["H_B_14"], callback_data="help_callback hb14"),
             InlineKeyboardButton(text=_["H_B_22"], callback_data="help_callback hb22"),
+            InlineKeyboardButton(text=_["H_B_34"], callback_data="help_callback hb34"),
+            InlineKeyboardButton(text=_["H_B_14"], callback_data="help_callback hb14"),
+        ],
+        [
+            InlineKeyboardButton(text=_["H_B_36"], callback_data="help_callback hb36"),
+            InlineKeyboardButton(text=_["H_B_8"], callback_data="help_callback hb8"),
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
@@ -206,6 +211,7 @@ def chat_panel(_):
     buttons = [
         [
             InlineKeyboardButton(text=_["H_B_9"], callback_data="help_callback hb9"),
+            InlineKeyboardButton(text=_["H_B_37"], callback_data="help_callback hb37"),
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
@@ -218,6 +224,7 @@ def reaction_panel(_):
     buttons = [
         [
             InlineKeyboardButton(text=_["H_B_10"], callback_data="help_callback hb10"),
+            InlineKeyboardButton(text=_["H_B_38"], callback_data="help_callback hb38"),
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
@@ -230,6 +237,10 @@ def mention_panel(_):
     buttons = [
         [
             InlineKeyboardButton(text=_["H_B_11"], callback_data="help_callback hb11"),
+            InlineKeyboardButton(text=_["H_B_38"], callback_data="help_callback hb39"),
+        ],
+        [
+            InlineKeyboardButton(text=_["H_B_40"], callback_data="help_callback hb40"),
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
