@@ -55,20 +55,22 @@ message_counts = {}
 
 # ================= DEFAULT BLOCKED WORDS ================= #
 DEFAULT_BLOCKED = [
-    "sex", "porn", "nude", "boob", "boobs", "dick", "cock", "penis", "vagina",
+    "sex", "porn", "nude", "boob", "boobs", "dick", "cock", "penis", "vagina",
     "nipples", "xxx", "porno", "cum", "masturbate", "erotic", "adult", "playboy",
-    "hentai", "erotica", "fetish", "kink", "orgasm", "threesome", "xnxx", "xvideos", "xvideo", "pic", "nudepic",
-    
-    "punda", "koothi", "soothu", "sutthu", "mayiru", "olmari", "okka", 
-    "poolu", "olu", "sappu", "umbe", "kuththu", "thappu","suthu", "paalu",
-    "Adangommala", "Adangomala", "adangotha", "adangottha",
-    
-    "sunny", "call", "pm", "dm", "service", "ottha", "otta", "gommala",
-    "hole", "inch", "ash", "sexchat", "onlyfans", "cams", "chatsex", "adultchat",
-    "videochat", "sexting", "naked", "fetish", "lingerie", "eroticvideo",
-    
-    "💦", "💧", "🍑", "🍒", "🍆", "🥵",  "🍌", "💋", "👅", 
+    "hentai", "erotica", "fetish", "kink", "orgasm", "threesome", "xnxx",
+    "xvideos", "xvideo", "pic", "nudepic",
+
+    "punda", "koothi", "soothu", "sutthu", "mayiru", "olmari", "okka",
+    "poolu", "olu", "sappu", "umbe", "kuththu", "thappu", "suthu", "paalu",
+    "adangommala", "adangomala", "adangotha", "adangottha",
+
+    "sunny", "call", "pm", "dm", "service", "ottha", "otta", "gommala",
+    "hole", "inch", "ash", "sexchat", "onlyfans", "cams", "chatsex", "adultchat",
+    "videochat", "sexting", "naked", "lingerie", "eroticvideo",
+
+    "💦", "💧", "🍑", "🍒", "🍆", "🥵", "🍌", "💋", "👅"
 ]
+
 
 # ===================== INITIALIZE BLOCKLIST ===================== #
 for w in DEFAULT_BLOCKED:
