@@ -176,58 +176,57 @@ async def help_category_cb(client, CallbackQuery, _):
         await CallbackQuery.answer()
         return
         
+
     if cat == "games":
         keyboard = games_panel1(_)  # your WebAppInfo buttons here
-        # 1) Preferred: edit the existing message text (use different text to force edit)
-        try:
-            await CallbackQuery.message.edit_text(
-                "🎮 Games Menu",           # use explicit text to ensure Telegram applies edit
-                reply_markup=keyboard
-            )
-            # answer after edit to stop spinner
-            await CallbackQuery.answer()
-            print("GAMES CALLBACK TRIGGERED (edit_text)")
-            return
-        except Exception as e:
-            print("GAMES: edit_text failed:", repr(e))
 
-        # 2) Fallback: edit only reply_markup (works in many cases)
-        try:
-            await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
-            await CallbackQuery.answer()
-            print("GAMES CALLBACK TRIGGERED (edit_reply_markup)")
-            return
-        except Exception as e:
-            print("GAMES: edit_reply_markup failed:", repr(e))
+        try:
+            await CallbackQuery.message.edit_text(
+                "🎮 Games Menu",           # use explicit text to ensure Telegram applies edit
+                reply_markup=keyboard
+            )
+            # answer after edit to stop spinner
+            await CallbackQuery.answer()
+            print("GAMES CALLBACK TRIGGERED (edit_text)")
+            return
+        except Exception as e:
+            print("GAMES: edit_text failed:", repr(e))
 
-        # 3) Last resort: send a new message (note: some clients ignore web_app in new messages)
-        try:
-            await CallbackQuery.answer()  # stop spinner before sending a new message
-            await CallbackQuery.message.reply(
-                "🎮 Games Menu (Fallback message)",
-                reply_markup=keyboard
-            )
-            print("GAMES CALLBACK TRIGGERED (reply fallback)")
-            return
-        except Exception as e:
-            print("GAMES: reply fallback failed:", repr(e))
-            # final fallback: send a plain text with a couple of URLs so user can still play
-            try:
-                await CallbackQuery.message.reply(
-                    "Couldn't show mini-app buttons. Open these links:\n",
-                    "Pixel Dungeon: https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0\n",
-                    "Karate Kido: https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19",
-                )
-                await CallbackQuery.answer()
+        try:
+            await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
+            await CallbackQuery.answer()
+            print("GAMES CALLBACK TRIGGERED (edit_reply_markup)")
+            return
+        except Exception as e:
+            print("GAMES: edit_reply_markup failed:", repr(e))
+
+        try:
+            await CallbackQuery.answer()  # stop spinner before sending a new message
+            await CallbackQuery.message.reply(
+                "🎮 Games Menu (Fallback message)",
+                reply_markup=keyboard
+            )
+            print("GAMES CALLBACK TRIGGERED (reply fallback)")
+            return
+        except Exception as e:
+            print("GAMES: reply fallback failed:", repr(e))
+            # final fallback: send a plain text with a couple of URLs so user can still play
+            try:
+                await CallbackQuery.message.reply(
+                    "Couldn't show mini-app buttons. Open these links:\n"
+                    "Pixel Dungeon: https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0\n"
+                    "Karate Kido: https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19"
+                )
+                await CallbackQuery.answer()
                 print("GAMES CALLBACK: fallback URL message sent")
-                return
-            except Exception as e2:
-                print("GAMES: final fallback also failed:", repr(e2))
-                # give user an alert
-                await CallbackQuery.answer("Unable to open games menu (internal error).", show_alert=True)
-                return
+                return
+            except Exception as e2:
+                print("GAMES: final fallback also failed:", repr(e2))
+                # give user an alert
+                await CallbackQuery.answer("Unable to open games menu (internal error).", show_alert=True)
+                return
 
- 
+
 
 
     if cat == "chat":
