@@ -172,7 +172,8 @@ async def help_category_cb(client, CallbackQuery, _):
             pass
         await CallbackQuery.answer()
         return
-#web-app callback
+        
+    
     if cat == "games":
         keyboard = games_panel1(_)
         try:
