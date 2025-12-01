@@ -156,6 +156,9 @@ async def helper_cb(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex(r"^help_cat") & ~BANNED_USERS)
 @languageCB
 async def help_category_cb(client, CallbackQuery, _):
+    print("Callback received:", CallbackQuery.data)
+
+async def help_category_cb(client, CallbackQuery, _):
     # data e.g. "help_cat music"
     data = CallbackQuery.data.strip()
     try:
