@@ -177,14 +177,20 @@ async def help_category_cb(client, CallbackQuery, _):
     if cat == "games":
         keyboard = games_panel1(_)
         try:
+            # Answer callback first
             await CallbackQuery.answer()
+
+            # Send a NEW message with mini-app buttons
             await CallbackQuery.message.reply(
                 "🎮 Games Menu",
                 reply_markup=keyboard
             )
+            
             print("GAMES CALLBACK TRIGGERED")
+
         except Exception as e:
-            print(e)
+            print("Error in games callback:", e)
+
         return
 
 
