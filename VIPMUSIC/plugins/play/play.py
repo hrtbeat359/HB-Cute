@@ -504,8 +504,9 @@ async def play_commnd(
                     caption=cap,
                     reply_markup=InlineKeyboardMarkup(buttons),
                 )
-                return await play_logs(message, streamtype=f"URL Searched Inline")
                 """
+                return await play_logs(message, streamtype=f"URL Searched Inline")
+                
 
 
 @app.on_callback_query(filters.regex("MusicStream") & ~BANNED_USERS)
@@ -1170,6 +1171,7 @@ async def get_thumb(vidid):
     except Exception as e:
         return config.YOUTUBE_IMG_URL
     
+
 
 
 
