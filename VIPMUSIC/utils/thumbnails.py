@@ -137,7 +137,7 @@ async def get_thumb(videoid: str) -> str:
     # Thumbnail with rounding
     thumb = base.resize((THUMB_W, THUMB_H)).convert("RGBA")
     tmask = Image.new("L", (THUMB_W, THUMB_H), 0)
-    ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=0) # white ->fill=255
+    ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255) 
     bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
 
     # Texts
@@ -178,8 +178,8 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         text_w, text_h = watermark_font.getsize(watermark_text)
 
-    x = bg.width - text_w - 60 # default 40
-    y = bg.height - text_h - 50 #default 30
+    x = bg.width - text_w - 150 # default 40
+    y = bg.height - text_h - 140 #default 30
 
     # sample brightness under watermark area
     try:
