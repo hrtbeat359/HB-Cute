@@ -829,7 +829,7 @@ async def stream(
                     photo=img,
                     caption=_["stream_1"].format(
                         f"https://t.me/{app.username}?start=info_{vidid}",
-                        title[:18],
+                        title[:11],
                         duration_min,
                         user_name), reply_markup=InlineKeyboardMarkup(button))
                 
@@ -1171,6 +1171,7 @@ async def get_thumb(vidid):
     except Exception as e:
         return config.YOUTUBE_IMG_URL
     
+
 
 
 
