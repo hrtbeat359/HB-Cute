@@ -885,7 +885,7 @@ async def stream(
             await app.send_photo(
                 chat_id=original_chat_id,
                 photo=img,
-                caption=_["queue_4"].format(position, title[:18], duration_min, user_name),
+                caption=_["queue_4"].format(position, title[:11], duration_min, user_name),
                 reply_markup=InlineKeyboardMarkup(button),
             )
         else:
@@ -1146,7 +1146,7 @@ async def stream(
 
 
 
-
+"""
 # Function to get thumbnail by video ID
 async def get_thumb(videoid):
     try:
@@ -1170,11 +1170,4 @@ async def get_thumb(vidid):
         return thumbnail
     except Exception as e:
         return config.YOUTUBE_IMG_URL
-    
-
-
-
-
-
-
-
+"""
