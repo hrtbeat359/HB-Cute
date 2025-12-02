@@ -68,7 +68,8 @@ DEFAULT_BLOCKED = [
     "hole", "inch", "ash", "sexchat", "onlyfans", "cams", "chatsex", "adultchat",
     "videochat", "sexting", "naked", "lingerie", "eroticvideo",
 
-    "💦", "💧", "🍑", "🍒", "🍆", "🥵", "🍌", "💋", "👅"
+    "/start", "/help", "/play", "/vplay", "/end", "/playforce", "/vplayforce", "/skip", "/pause", "/seek", "/loop", "/ban", "fban", "/warn", "/mute", "/unban", "/unfban", "/newfed", "/chatfed", "/fedstat", "/myfeds",
+    "💦", "💧", "🍑", "🍒", "🍆", "🥵", "🍌", "💋", "👅",
 ]
 
 
