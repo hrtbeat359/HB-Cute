@@ -178,8 +178,8 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         text_w, text_h = watermark_font.getsize(watermark_text)
 
-    x = bg.width - text_w - 150 # default 40
-    y = bg.height - text_h - 140 #default 30
+    x = bg.width - text_w - 40
+    y = bg.height - text_h - 30
 
     # sample brightness under watermark area
     try:
