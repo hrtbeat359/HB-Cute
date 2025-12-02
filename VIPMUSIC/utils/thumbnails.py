@@ -11,6 +11,7 @@ from pydub import AudioSegment
 from pydub.utils import make_chunks
 from config import YOUTUBE_IMG_URL
 import tempfile
+import math
 
 # Constants
 CACHE_DIR = "cache"
@@ -72,7 +73,6 @@ def duration_to_seconds(d):
         return 0
 
 async def download_audio(url: str) -> str:
-    """Download audio to temp file for waveform"""
     tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
     try:
         async with aiohttp.ClientSession() as session:
@@ -85,7 +85,7 @@ async def download_audio(url: str) -> str:
         return None
 
 async def get_thumb(videoid: str) -> str:
-    cache_path = os.path.join(CACHE_DIR, f"{videoid}_vwave_final.png")
+    cache_path = os.path.join(CACHE_DIR, f"{videoid}_vwave_style.png")
     if os.path.exists(cache_path):
         return cache_path
 
@@ -182,28 +182,27 @@ async def get_thumb(videoid: str) -> str:
             if audio_file:
                 try:
                     audio = AudioSegment.from_file(audio_file)
-                    total_chunks = 50
+                    total_chunks = 60
                     chunk_length_ms = max(1, len(audio) // total_chunks)
                     chunks = make_chunks(audio, chunk_length_ms)
+                    prev_y = THUMB_Y + THUMB_H
                     for i, chunk in enumerate(chunks):
-                        x1 = THUMB_X + int(i * THUMB_W / total_chunks)
-                        x2 = x1 + max(3, int(THUMB_W / total_chunks * 0.9))
+                        x = THUMB_X + int(i * THUMB_W / total_chunks)
                         magnitude = max(chunk.max, 5)
-                        y1 = THUMB_Y + THUMB_H - int(magnitude / 32768 * 150)  # scaled
-                        y2 = THUMB_Y + THUMB_H
-                        draw.rectangle([x1, y1, x2, y2], fill=(255, 0, 0, 220))
+                        y = THUMB_Y + THUMB_H - int(magnitude / 32768 * 150)
+                        # Smooth bars with sine curve
+                        y = int(prev_y - (prev_y - y) * 0.6)
+                        draw.line([(x, THUMB_Y + THUMB_H), (x, y)], fill=(255, 50, 50, 220), width=4)
+                        prev_y = y
                 except Exception:
-                    # fallback random bars
                     for i in range(50):
-                        x1 = THUMB_X + int(i * THUMB_W / 50)
-                        x2 = x1 + 5
-                        y1 = THUMB_Y + THUMB_H - random.randint(5, 60)
-                        y2 = THUMB_Y + THUMB_H
-                        draw.rectangle([x1, y1, x2, y2], fill=(255, 0, 0, 200))
+                        x = THUMB_X + int(i * THUMB_W / 50)
+                        y = THUMB_Y + THUMB_H - random.randint(5, 60)
+                        draw.line([(x, THUMB_Y + THUMB_H), (x, y)], fill=(255,0,0,200), width=4)
                 finally:
                     os.remove(audio_file)
 
-    # Title stroke
+    # Title stroke & glow
     title_txt = trim_to_width(title, title_font, MAX_TITLE_WIDTH)
     for offset in [(1,1),(-1,-1),(1,-1),(-1,1)]:
         draw.text((TITLE_X+offset[0], TITLE_Y+offset[1]), title_txt, font=title_font, fill="black")
@@ -238,7 +237,7 @@ async def get_thumb(videoid: str) -> str:
 
     # Watermark
     try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 36)
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 48)
     except Exception:
         watermark_font = ImageFont.load_default()
 
@@ -248,9 +247,9 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         text_w, text_h = watermark_font.getsize(watermark_text)
 
-    x = bg.width - text_w - 100
-    y = bg.height - text_h - 100
-    glow_positions = [(x + dx, y + dy) for dx in (-1, 1) for dy in (-1, 1)]
+    x = bg.width - text_w - 80
+    y = bg.height - text_h - 80
+    glow_positions = [(x + dx, y + dy) for dx in (-1,1) for dy in (-1,1)]
     for pos in glow_positions:
         draw.text(pos, watermark_text, font=watermark_font, fill=(0,0,0,200))
     draw.text((x, y), watermark_text, font=watermark_font, fill=(255,255,255,255))
@@ -261,8 +260,8 @@ async def get_thumb(videoid: str) -> str:
             async with session.get(THUMP_LOGO) as resp:
                 if resp.status == 200:
                     data = await resp.read()
-                    logo_img = Image.open(BytesIO(data)).convert("RGBA").resize((100,100))
-                    bg.paste(logo_img, (x - 110, y - 10), logo_img)
+                    logo_img = Image.open(BytesIO(data)).convert("RGBA").resize((120,120))
+                    bg.paste(logo_img, (x - 130, y - 10), logo_img)
     except Exception:
         pass
 
