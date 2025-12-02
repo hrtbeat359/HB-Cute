@@ -33,6 +33,7 @@ from VIPMUSIC.utils.logger import play_logs
 from config import BANNED_USERS, lyrical
 from time import time
 from VIPMUSIC.utils.extraction import extract_user
+from VIPMUSIC.utils.thumbnails import get_thumb
 
 print("[play] play, vplay, cplay, cvplay, playforce, cvplayforce")
 
@@ -491,12 +492,20 @@ async def play_commnd(
                     "f" if fplay else "d",
                 )
                 await mystic.delete()
+                thumb = await get_thumb(track_id) # START THAMBNAIL PATCH --------
+                await message.reply_photo(
+                    photo=thumb,
+                    caption=cap,
+                    reply_markup=InlineKeyboardMarkup(buttons),
+                ) # END THUMBNAIL PATCH - the below hide lone is orginal. this is continuing to after await mistic delete(494th line)
+                """
                 await message.reply_photo(
                     photo=img,
                     caption=cap,
                     reply_markup=InlineKeyboardMarkup(buttons),
                 )
                 return await play_logs(message, streamtype=f"URL Searched Inline")
+                """
 
 
 @app.on_callback_query(filters.regex("MusicStream") & ~BANNED_USERS)
@@ -1161,6 +1170,7 @@ async def get_thumb(vidid):
     except Exception as e:
         return config.YOUTUBE_IMG_URL
     
+
 
 
 
