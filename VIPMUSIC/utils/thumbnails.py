@@ -39,9 +39,9 @@ MAX_TITLE_WIDTH = 580
 
 # Watermark config
 WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
-WATERMARK_TEXT = "Made By. @HeartBeat_Offi"
-WATERMARK_FONT_PATH = "VIPMUSIC/assets/font2.ttf"
-WATERMARK_FONT_SIZE = 28
+WATERMARK_TEXT = "Made By. @ HeartBeat_Offi"
+WATERMARK_FONT_PATH = "VIPMUSIC/assets/Sprintura_Demo.otf"
+WATERMARK_FONT_SIZE = 22
 WM_LOGO_SIZE = (60, 60)
 
 
