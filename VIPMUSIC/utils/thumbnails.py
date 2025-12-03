@@ -1,3 +1,5 @@
+# VIPMUSIC/utils/thumbnails.py
+
 import os
 import re
 import aiofiles
@@ -34,14 +36,14 @@ ICONS_X = PANEL_X + (PANEL_W - ICONS_W) // 2
 ICONS_Y = BAR_Y + 48
 
 MAX_TITLE_WIDTH = 580
-"""
+
 # Watermark config
 WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
 WATERMARK_TEXT = "Made By. @HeartBeat_Offi"
 WATERMARK_FONT_PATH = "VIPMUSIC/assets/font2.ttf"
 WATERMARK_FONT_SIZE = 34
 WM_LOGO_SIZE = (120, 120)
-"""
+
 
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     ellipsis = "…"
@@ -62,10 +64,7 @@ async def get_thumb(videoid: str) -> str:
     results = VideosSearch(f"https://www.youtube.com/watch?v={videoid}", limit=1)
     try:
         results_data = await results.next()
-        result_items = results_data.get("result", [])
-        if not result_items:
-            raise ValueError("No results found.")
-        data = result_items[0]
+        data = results_data.get("result", [])[0]
         title = re.sub(r"\W+", " ", data.get("title", "Unsupported Title")).title()
         thumbnail = data.get("thumbnails", [{}])[0].get("url", YOUTUBE_IMG_URL)
         duration = data.get("duration")
@@ -91,7 +90,7 @@ async def get_thumb(videoid: str) -> str:
     base = Image.open(thumb_path).resize((1280, 720)).convert("RGBA")
     bg = ImageEnhance.Brightness(base.filter(ImageFilter.BoxBlur(10))).enhance(0.6)
 
-    # Frosted panel
+    # Frosted glass panel
     panel_area = bg.crop((PANEL_X, PANEL_Y, PANEL_X + PANEL_W, PANEL_Y + PANEL_H))
     overlay = Image.new("RGBA", (PANEL_W, PANEL_H), (255, 255, 255, TRANSPARENCY))
     frosted = Image.alpha_composite(panel_area, overlay)
@@ -112,18 +111,18 @@ async def get_thumb(videoid: str) -> str:
     ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255)
     bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
 
+    # Main text
     draw.text((TITLE_X, TITLE_Y), trim_to_width(title, title_font, MAX_TITLE_WIDTH), fill="black", font=title_font)
     draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
 
     # Progress bar
     draw.line([(BAR_X, BAR_Y), (BAR_X + BAR_RED_LEN, BAR_Y)], fill="red", width=6)
     draw.line([(BAR_X + BAR_RED_LEN, BAR_Y), (BAR_X + BAR_TOTAL_LEN, BAR_Y)], fill="gray", width=5)
-    draw.ellipse([(BAR_X + BAR_RED_LEN - 7, BAR_Y - 7), (BAR_X + BAR_RED_LEN + 7, BAR_Y + 7)], fill="red")
-
+    draw.ellipse([(BAR_X + BAR_RED_LEN - 7, BAR_Y - 7),
+                  (BAR_X + BAR_RED_LEN + 7, BAR_Y + 7)], fill="red")
     draw.text((BAR_X, BAR_Y + 15), "00:00", fill="black", font=regular_font)
-    end_text = "Live" if is_live else duration_text
-    draw.text((BAR_X + BAR_TOTAL_LEN - (90 if is_live else 60), BAR_Y + 15),
-              end_text, fill="red" if is_live else "black", font=regular_font)
+    draw.text((BAR_X + BAR_TOTAL_LEN - 60, BAR_Y + 15),
+              duration_text, fill="red" if is_live else "black", font=regular_font)
 
     # Icons
     icons_path = "VIPMUSIC/assets/play_icons.png"
@@ -132,47 +131,39 @@ async def get_thumb(videoid: str) -> str:
         r, g, b, a = ic.split()
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
-"""
-    # -------- WATERMARK ----------
-    try:
-        wm_text = WATERMARK_TEXT.encode("ascii", "ignore").decode()
-    except Exception:
-        wm_text = re.sub(r"[^\x00-\x7F]+", "", WATERMARK_TEXT)
 
+    # -------- WATERMARK OUTSIDE PANEL --------
     try:
         wm_font = ImageFont.truetype(WATERMARK_FONT_PATH, WATERMARK_FONT_SIZE)
     except Exception:
         wm_font = ImageFont.load_default()
 
-    logo_y = 720 - WM_LOGO_SIZE[1] - 80
-    text_y = logo_y + WM_LOGO_SIZE[1] + 8
+    # Position watermark below panel
+    wm_logo_y = PANEL_Y + PANEL_H + 15
+    wm_text_y = wm_logo_y + WM_LOGO_SIZE[1] + 8
 
+    # Paste logo centered
     if os.path.isfile(WM_LOGO_PATH):
         try:
             wm_logo = Image.open(WM_LOGO_PATH).convert("RGBA")
-            wm_logo = wm_logo.resize(WM_LOGO_SIZE)
-            logo_x = (1280 - wm_logo.width) // 2
-            bg.paste(wm_logo, (logo_x, logo_y), wm_logo)
+            wm_logo = wm_logo.resize(WM_LOGO_SIZE, Image.LANCZOS)
+            wm_logo_x = (1280 - wm_logo.width) // 2
+            bg.alpha_composite(wm_logo, (wm_logo_x, wm_logo_y))
         except Exception:
             pass
 
     try:
-        text_w = wm_font.getlength(wm_text)
+        text_w = wm_font.getlength(WATERMARK_TEXT)
     except Exception:
-        try:
-            text_w, _ = draw.textsize(wm_text, font=wm_font)
-        except Exception:
-            text_w = len(wm_text) * (WATERMARK_FONT_SIZE // 2)
+        text_w = draw.textlength(WATERMARK_TEXT, font=wm_font)
 
-    text_x = (1280 - text_w) // 2
+    wm_text_x = (1280 - text_w) // 2
 
-    try:
-        draw.text((text_x + 2, text_y + 2), wm_text, font=wm_font, fill="black")
-        draw.text((text_x, text_y), wm_text, font=wm_font, fill="white")
-    except Exception:
-        draw.text((text_x, text_y), wm_text, font=ImageFont.load_default(), fill="white")
-    # -------- END WATERMARK -------
-"""
+    # Draw text
+    draw.text((wm_text_x + 2, wm_text_y + 2), WATERMARK_TEXT, font=wm_font, fill="black")
+    draw.text((wm_text_x, wm_text_y), WATERMARK_TEXT, font=wm_font, fill="white")
+    # -------- END WATERMARK --------
+
     try:
         os.remove(thumb_path)
     except OSError:
