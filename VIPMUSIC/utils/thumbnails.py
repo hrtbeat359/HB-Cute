@@ -1,180 +1,100 @@
 # -*- coding: utf-8 -*-
-
 import os
 import re
+import sys
+from io import BytesIO
 import aiofiles
 import aiohttp
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 from youtubesearchpython.__future__ import VideosSearch
 from config import YOUTUBE_IMG_URL
 
+# Force terminal output to UTF-8
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
+
 # Constants
 CACHE_DIR = "cache"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
 LOGO_PATH = "VIPMUSIC/assets/thumb.png"
-
-PANEL_W, PANEL_H = 763, 545
-PANEL_X = (1280 - PANEL_W) // 2
-PANEL_Y = 88
-TRANSPARENCY = 170
-INNER_OFFSET = 36
-
-THUMB_W, THUMB_H = 542, 273
-THUMB_X = PANEL_X + (PANEL_W - THUMB_W) // 2
-THUMB_Y = PANEL_Y + INNER_OFFSET
-
-TITLE_X = 377
-META_X = 377
-TITLE_Y = THUMB_Y + THUMB_H + 10
-META_Y = TITLE_Y + 45
-
-BAR_X, BAR_Y = 388, META_Y + 45
-BAR_RED_LEN = 280
-BAR_TOTAL_LEN = 480
-
-ICONS_W, ICONS_H = 415, 45
-ICONS_X = PANEL_X + (PANEL_W - ICONS_W) // 2
-ICONS_Y = BAR_Y + 48
-
-MAX_TITLE_WIDTH = 580
+WATERMARK_TEXT = "Made By. @HeartBeat_Offi"
 
 
-def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
-    ellipsis = "…"
-    if font.getlength(text) <= max_w:
-        return text
-    for i in range(len(text) - 1, 0, -1):
-        if font.getlength(text[:i] + ellipsis) <= max_w:
-            return text[:i] + ellipsis
-    return ellipsis
-
-
-async def get_thumb(videoid: str) -> str:
-    safe_id = videoid.encode("utf-8", "ignore").decode("utf-8")
-    cache_path = os.path.join(CACHE_DIR, f"{safe_id}_v4.png")
-
+async def get_thumb(videoid: str):
+    cache_path = os.path.join(CACHE_DIR, f"{videoid}_v4.png")
     if os.path.exists(cache_path):
         return cache_path
 
-    # YouTube video data fetch
-    results = VideosSearch(f"https://www.youtube.com/watch?v={videoid}", limit=1)
     try:
-        results_data = await results.next()
-        result_items = results_data.get("result", [])
-        if not result_items:
-            raise ValueError("No results found.")
-
-        data = result_items[0]
-
+        search = VideosSearch(videoid, limit=1)
+        data = (await search.next()).get("result", [])[0]
         raw_title = data.get("title", "Unsupported Title")
-        title = raw_title.encode("utf-8", "ignore").decode("utf-8")
-        title = re.sub(r"\s+", " ", title).strip()
 
-        thumbnail = data.get("thumbnails", [{}])[0].get("url", YOUTUBE_IMG_URL)
-        duration = data.get("duration")
-        views = data.get("viewCount", {}).get("short", "Unknown Views")
+        # ---- Safe Title Processing ----
+        draw_title = raw_title.encode("utf-8", "ignore").decode("utf-8")  # keep emojis for drawing
+        safe_title = re.sub(r"[^\x00-\x7F]+", "", raw_title)  # remove non-ascii
+        safe_title = re.sub(r"[^a-zA-Z0-9 _-]", "", safe_title).strip().replace(" ", "_")
 
+        # thumbnail image url
+        thumbnail_url = data["thumbnails"][0]["url"].split("?")[0]
     except Exception:
-        title, thumbnail, duration, views = "Unsupported Title", YOUTUBE_IMG_URL, None, "Unknown Views"
+        thumbnail_url = YOUTUBE_IMG_URL
+        draw_title = "Music Streaming"
+        safe_title = "music"
 
-    is_live = not duration or str(duration).lower() in {"", "live", "live now"}
-    duration_text = "Live" if is_live else duration or "Unknown Mins"
-
-    # Download thumbnail
-    thumb_path = os.path.join(CACHE_DIR, f"thumb{videoid}.png")
+    # ---- Download Image ----
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(thumbnail) as resp:
-                if resp.status == 200:
-                    async with aiofiles.open(thumb_path, "wb") as f:
-                        await f.write(await resp.read())
-    except:
-        return YOUTUBE_IMG_URL
+            async with session.get(thumbnail_url) as response:
+                content = await response.read()
+        image = Image.open(BytesIO(content)).convert("RGBA")
+    except Exception:
+        return None
 
-    # Base blur background
-    base = Image.open(thumb_path).resize((1280, 720)).convert("RGBA")
-    bg = ImageEnhance.Brightness(base.filter(ImageFilter.BoxBlur(10))).enhance(0.6)
+    # ---- Base Blur Effect ----
+    blurred = image.filter(ImageFilter.GaussianBlur(15))
+    enhancer = ImageEnhance.Brightness(blurred)
+    blurred = enhancer.enhance(0.6)
 
-    # Frosted glass panel
-    panel_area = bg.crop((PANEL_X, PANEL_Y, PANEL_X + PANEL_W, PANEL_Y + PANEL_H))
-    overlay = Image.new("RGBA", (PANEL_W, PANEL_H), (255, 255, 255, TRANSPARENCY))
-    frosted = Image.alpha_composite(panel_area, overlay)
-    mask = Image.new("L", (PANEL_W, PANEL_H), 0)
-    ImageDraw.Draw(mask).rounded_rectangle((0, 0, PANEL_W, PANEL_H), 50, fill=255)
-    bg.paste(frosted, (PANEL_X, PANEL_Y), mask)
-
-    draw = ImageDraw.Draw(bg)
-
+    # ---- Add Title Text ----
+    draw = ImageDraw.Draw(blurred)
     try:
-        title_font = ImageFont.truetype("SHUKLAMUSIC/assets/assets/font2.ttf", 32)
-        regular_font = ImageFont.truetype("SHUKLAMUSIC/assets/assets/font.ttf", 18)
-    except:
-        title_font = regular_font = ImageFont.load_default()
+        font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 48)
+    except Exception:
+        font = ImageFont.load_default()
 
-    # Video thumbnail image
-    thumb = base.resize((THUMB_W, THUMB_H))
-    tmask = Image.new("L", thumb.size, 0)
-    ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255)
-    bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
+    text_w, text_h = draw.textsize(draw_title, font=font)
+    x = (blurred.width - text_w) / 2
+    y = blurred.height * 0.1
+    draw.text((x, y), draw_title, font=font, fill="white")
 
-    # Text
-    draw.text((TITLE_X, TITLE_Y), trim_to_width(title, title_font, MAX_TITLE_WIDTH), fill="black", font=title_font)
-    draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
-
-    # Progress bar
-    draw.line([(BAR_X, BAR_Y), (BAR_X + BAR_RED_LEN, BAR_Y)], fill="red", width=6)
-    draw.line([(BAR_X + BAR_RED_LEN, BAR_Y), (BAR_X + BAR_TOTAL_LEN, BAR_Y)], fill="gray", width=5)
-    draw.ellipse([(BAR_X + BAR_RED_LEN - 7, BAR_Y - 7), (BAR_X + BAR_RED_LEN + 7, BAR_Y + 7)], fill="red")
-
-    draw.text((BAR_X, BAR_Y + 15), "00:00", fill="black", font=regular_font)
-    end_text = "Live" if is_live else duration_text
-    draw.text((BAR_X + BAR_TOTAL_LEN - (90 if is_live else 60), BAR_Y + 15), end_text, fill="red" if is_live else "black", font=regular_font)
-
-    # Icons
-    icons_path = "VUPMUSIC/assets/assets/play_icons.png"
-    if os.path.isfile(icons_path):
-        ic = Image.open(icons_path).resize((ICONS_W, ICONS_H)).convert("RGBA")
-        r, g, b, a = ic.split()
-        black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
-        bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
-
-    # ---------------- WATERMARK + CENTER LOGO ----------------
-    watermark_text = "Made By @HeartBeat_Offi"
-
+    # ---- Watermark text ----
     try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura_Demo.otf", 42)
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 34)  # bigger watermark
     except:
         watermark_font = ImageFont.load_default()
 
-    text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
-    x = (base.width - text_w) // 2
-    y = base.height - text_h - 50
+    wm_w, wm_h = draw.textsize(WATERMARK_TEXT, font=watermark_font)
+    draw.text(
+        ((blurred.width - wm_w) / 2, blurred.height - wm_h - 25),
+        WATERMARK_TEXT,
+        font=watermark_font,
+        fill="white",
+    )
 
-    sample = bg.crop((x, y, x + text_w, y + text_h)).convert("L")
-    brightness = sum(sample.getdata()) / (text_w * text_h)
-
-    main_color = "white" if brightness < 128 else "black"
-    glow_color = "black" if brightness < 128 else "white"
-
-    for dx, dy in [(-3, -3), (3, -3), (-3, 3), (3, 3)]:
-        draw.text((x + dx, y + dy), watermark_text, font=watermark_font, fill=glow_color)
-
-    draw.text((x, y), watermark_text, font=watermark_font, fill=main_color)
-
+    # ---- Watermark Logo Center ----
     try:
-        logo = Image.open(LOGO_PATH).convert("RGBA").resize((90, 90))
-        logo_x = (base.width - 90) // 2
-        logo_y = y - 95
-        bg.paste(logo, (logo_x, logo_y), logo)
-    except:
+        logo = Image.open(LOGO_PATH).convert("RGBA")
+        logo = logo.resize((160, 160))  # bigger & visible
+        lx = (blurred.width - logo.width) // 2
+        ly = (blurred.height - logo.height) // 2
+        blurred.paste(logo, (lx, ly), logo)
+    except Exception:
         pass
 
-    # Remove downloaded thumbnail temp
-    try:
-        os.remove(thumb_path)
-    except:
-        pass
+    # ---- Save Final Image ----
+    final = blurred.convert("RGB")
+    final.save(cache_path, format="PNG")
 
-    bg.save(cache_path)
     return cache_path
