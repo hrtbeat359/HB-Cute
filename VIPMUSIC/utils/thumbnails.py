@@ -41,8 +41,8 @@ MAX_TITLE_WIDTH = 580
 WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
 WATERMARK_TEXT = "Made By. @HeartBeat_Offi"
 WATERMARK_FONT_PATH = "VIPMUSIC/assets/font2.ttf"
-WATERMARK_FONT_SIZE = 34
-WM_LOGO_SIZE = (120, 120)
+WATERMARK_FONT_SIZE = 28
+WM_LOGO_SIZE = (60, 60)
 
 
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
@@ -132,15 +132,19 @@ async def get_thumb(videoid: str) -> str:
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
 
-    # -------- WATERMARK OUTSIDE PANEL --------
+        # -------- WATERMARK SEPARATE LAYER (OUTSIDE PANEL) ----------
+    # Independent layer to avoid affecting panel fonts
+    wm_layer = Image.new("RGBA", (1280, 720), (0, 0, 0, 0))
+    wm_draw = ImageDraw.Draw(wm_layer)
+
     try:
         wm_font = ImageFont.truetype(WATERMARK_FONT_PATH, WATERMARK_FONT_SIZE)
     except Exception:
         wm_font = ImageFont.load_default()
 
     # Position watermark below panel
-    wm_logo_y = PANEL_Y + PANEL_H + 15
-    wm_text_y = wm_logo_y + WM_LOGO_SIZE[1] + 8
+    wm_logo_y = PANEL_Y + PANEL_H + 20
+    wm_text_y = wm_logo_y + WM_LOGO_SIZE[1] + 6
 
     # Paste logo centered
     if os.path.isfile(WM_LOGO_PATH):
@@ -148,21 +152,25 @@ async def get_thumb(videoid: str) -> str:
             wm_logo = Image.open(WM_LOGO_PATH).convert("RGBA")
             wm_logo = wm_logo.resize(WM_LOGO_SIZE, Image.LANCZOS)
             wm_logo_x = (1280 - wm_logo.width) // 2
-            bg.alpha_composite(wm_logo, (wm_logo_x, wm_logo_y))
+            wm_layer.alpha_composite(wm_logo, (wm_logo_x, wm_logo_y))
         except Exception:
             pass
 
+    # Text width calc
     try:
         text_w = wm_font.getlength(WATERMARK_TEXT)
     except Exception:
-        text_w = draw.textlength(WATERMARK_TEXT, font=wm_font)
+        text_w = wm_draw.textlength(WATERMARK_TEXT, font=wm_font)
 
     wm_text_x = (1280 - text_w) // 2
 
-    # Draw text
-    draw.text((wm_text_x + 2, wm_text_y + 2), WATERMARK_TEXT, font=wm_font, fill="black")
-    draw.text((wm_text_x, wm_text_y), WATERMARK_TEXT, font=wm_font, fill="white")
-    # -------- END WATERMARK --------
+    # Shadow + main text
+    wm_draw.text((wm_text_x + 2, wm_text_y + 2), WATERMARK_TEXT, font=wm_font, fill="black")
+    wm_draw.text((wm_text_x, wm_text_y), WATERMARK_TEXT, font=wm_font, fill="white")
+
+    # Merge watermark layer without affecting panel text
+    bg = Image.alpha_composite(bg, wm_layer)
+    # -------- END WATERMARK ----------------
 
     try:
         os.remove(thumb_path)
