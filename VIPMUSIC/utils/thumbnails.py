@@ -168,11 +168,11 @@ async def get_thumb(videoid: str) -> str:
 
     # Watermark text + logo
     try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 24)
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 60)
     except Exception:
         watermark_font = ImageFont.load_default()
 
-    watermark_text = "Made By. @HeartBeat_Fam"
+    watermark_text = "Made By. @ HeartBeat_Offi"
     try:
         text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
     except Exception:
