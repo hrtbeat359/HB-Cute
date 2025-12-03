@@ -38,7 +38,7 @@ MAX_TITLE_WIDTH = 580
 # Watermark
 WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
 WATERMARK_TEXT = "Made By. @HeartBeat_Offi"
-WATERMARK_FONT_PATH = "VIPMUSIC/assets/Sprintura Demo.otf"
+WATERMARK_FONT_PATH = "VIPMUSIC/assets/font2.ttf" #Sprintura Demo.otf"
 
 
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
