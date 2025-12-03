@@ -166,21 +166,6 @@ async def get_thumb(videoid: str) -> str:
         except Exception:
             pass
 
-    # Watermark text + logo
-    try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 30)
-    except Exception:
-        watermark_font = ImageFont.load_default()
-
-    watermark_text = "Made By. @ HeartBeat_Offi"
-    try:
-        text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
-    except Exception:
-        text_w, text_h = watermark_font.getsize(watermark_text)
-
-    x = bg.width - text_w - 40
-    y = bg.height - text_h - 30
-
     # sample brightness under watermark area
     try:
         sample = bg.crop((x, y, x + 50, y + 50)).convert("L")
@@ -201,24 +186,33 @@ async def get_thumb(videoid: str) -> str:
 
     draw.text((x, y), watermark_text, font=watermark_font, fill=main_color)
 
-    # Download watermark logo and paste
+    # Watermark text white + shadow
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(THUMP_LOGO) as resp:
-                if resp.status == 200:
-                    data = await resp.read()
-                    logo_img = Image.open(BytesIO(data)).convert("RGBA")
-                    logo_img = logo_img.resize((60, 60))
-                    bg.paste(logo_img, (x - 75, y - 10), logo_img)
-    except Exception:
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 20)
+    except:
+        watermark_font = ImageFont.load_default()
+
+    watermark_text = "Made By. @ HeartBeat_Offi"
+    text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
+    x = base.width - text_w - 40
+    y = base.height - text_h - 30
+
+    for dx, dy in [(-2, -2), (2, -2), (-2, 2), (2, 2)]:
+        draw.text((x + dx, y + dy), watermark_text, fill="black", font=watermark_font)
+
+    draw.text((x, y), watermark_text, fill="white", font=watermark_font)
+
+    # LOGO paste (local)
+    try:
+        logo_img = Image.open(LOGO_PATH).convert("RGBA").resize((65, 65))
+        base.paste(logo_img, (x - 80, y - 10), logo_img)
+    except:
         pass
 
-    # Cleanup temp
     try:
         os.remove(thumb_path)
-    except Exception:
+    except:
         pass
 
-    # Save final
-    bg.save(cache_path)
+    base.save(cache_path)
     return cache_path
