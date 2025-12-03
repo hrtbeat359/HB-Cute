@@ -34,14 +34,14 @@ ICONS_X = PANEL_X + (PANEL_W - ICONS_W) // 2
 ICONS_Y = BAR_Y + 48
 
 MAX_TITLE_WIDTH = 580
-
+"""
 # Watermark config
 WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
 WATERMARK_TEXT = "Made By. @HeartBeat_Offi"
 WATERMARK_FONT_PATH = "VIPMUSIC/assets/font2.ttf"
 WATERMARK_FONT_SIZE = 34
 WM_LOGO_SIZE = (120, 120)
-
+"""
 
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     ellipsis = "…"
@@ -132,7 +132,7 @@ async def get_thumb(videoid: str) -> str:
         r, g, b, a = ic.split()
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
-
+"""
     # -------- WATERMARK ----------
     try:
         wm_text = WATERMARK_TEXT.encode("ascii", "ignore").decode()
@@ -172,7 +172,7 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         draw.text((text_x, text_y), wm_text, font=ImageFont.load_default(), fill="white")
     # -------- END WATERMARK -------
-
+"""
     try:
         os.remove(thumb_path)
     except OSError:
