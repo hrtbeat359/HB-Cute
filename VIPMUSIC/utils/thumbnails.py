@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import re
 import aiofiles
@@ -10,7 +12,7 @@ from config import YOUTUBE_IMG_URL
 CACHE_DIR = "cache"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
-LOGO_PATH = "VIPMUSIC/assets/thumb.png"  # Watermark logo path
+LOGO_PATH = "VIPMUSIC/assets/thumb.png"
 
 PANEL_W, PANEL_H = 763, 545
 PANEL_X = (1280 - PANEL_W) // 2
@@ -37,6 +39,7 @@ ICONS_Y = BAR_Y + 48
 
 MAX_TITLE_WIDTH = 580
 
+
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     ellipsis = "…"
     if font.getlength(text) <= max_w:
@@ -46,8 +49,11 @@ def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
             return text[:i] + ellipsis
     return ellipsis
 
+
 async def get_thumb(videoid: str) -> str:
-    cache_path = os.path.join(CACHE_DIR, f"{videoid}_v4.png")
+    safe_id = videoid.encode("utf-8", "ignore").decode("utf-8")
+    cache_path = os.path.join(CACHE_DIR, f"{safe_id}_v4.png")
+
     if os.path.exists(cache_path):
         return cache_path
 
@@ -58,15 +64,21 @@ async def get_thumb(videoid: str) -> str:
         result_items = results_data.get("result", [])
         if not result_items:
             raise ValueError("No results found.")
+
         data = result_items[0]
-        title = re.sub(r"\W+", " ", data.get("title", "Unsupported Title")).title()
+
+        raw_title = data.get("title", "Unsupported Title")
+        title = raw_title.encode("utf-8", "ignore").decode("utf-8")
+        title = re.sub(r"\s+", " ", title).strip()
+
         thumbnail = data.get("thumbnails", [{}])[0].get("url", YOUTUBE_IMG_URL)
         duration = data.get("duration")
         views = data.get("viewCount", {}).get("short", "Unknown Views")
+
     except Exception:
         title, thumbnail, duration, views = "Unsupported Title", YOUTUBE_IMG_URL, None, "Unknown Views"
 
-    is_live = not duration or str(duration).strip().lower() in {"", "live", "live now"}
+    is_live = not duration or str(duration).lower() in {"", "live", "live now"}
     duration_text = "Live" if is_live else duration or "Unknown Mins"
 
     # Download thumbnail
@@ -77,10 +89,10 @@ async def get_thumb(videoid: str) -> str:
                 if resp.status == 200:
                     async with aiofiles.open(thumb_path, "wb") as f:
                         await f.write(await resp.read())
-    except Exception:
+    except:
         return YOUTUBE_IMG_URL
 
-    # Create base image
+    # Base blur background
     base = Image.open(thumb_path).resize((1280, 720)).convert("RGBA")
     bg = ImageEnhance.Brightness(base.filter(ImageFilter.BoxBlur(10))).enhance(0.6)
 
@@ -93,17 +105,20 @@ async def get_thumb(videoid: str) -> str:
     bg.paste(frosted, (PANEL_X, PANEL_Y), mask)
 
     draw = ImageDraw.Draw(bg)
+
     try:
         title_font = ImageFont.truetype("SHUKLAMUSIC/assets/assets/font2.ttf", 32)
         regular_font = ImageFont.truetype("SHUKLAMUSIC/assets/assets/font.ttf", 18)
-    except OSError:
+    except:
         title_font = regular_font = ImageFont.load_default()
 
+    # Video thumbnail image
     thumb = base.resize((THUMB_W, THUMB_H))
     tmask = Image.new("L", thumb.size, 0)
     ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255)
     bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
 
+    # Text
     draw.text((TITLE_X, TITLE_Y), trim_to_width(title, title_font, MAX_TITLE_WIDTH), fill="black", font=title_font)
     draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
 
@@ -124,34 +139,29 @@ async def get_thumb(videoid: str) -> str:
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
 
-        # ------------------ CENTER WATERMARK (TEXT + LOGO) ------------------
-    watermark_text = u"Made By @HeartBeat_Offi"  # UTF-8 safe text
+    # ---------------- WATERMARK + CENTER LOGO ----------------
+    watermark_text = "Made By @HeartBeat_Offi"
 
     try:
-        font_path = "VIPMUSIC/assets/Sprintura_Demo.otf"  # rename with underscore (avoid spaces)
-        watermark_font = ImageFont.truetype(font_path, 42)
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura_Demo.otf", 42)
     except:
         watermark_font = ImageFont.load_default()
 
-    # Compute text position
     text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
     x = (base.width - text_w) // 2
     y = base.height - text_h - 50
 
-    # Brightness-based color switching
     sample = bg.crop((x, y, x + text_w, y + text_h)).convert("L")
     brightness = sum(sample.getdata()) / (text_w * text_h)
 
     main_color = "white" if brightness < 128 else "black"
     glow_color = "black" if brightness < 128 else "white"
 
-    # Glow Effect
     for dx, dy in [(-3, -3), (3, -3), (-3, 3), (3, 3)]:
         draw.text((x + dx, y + dy), watermark_text, font=watermark_font, fill=glow_color)
 
     draw.text((x, y), watermark_text, font=watermark_font, fill=main_color)
 
-    # Center Logo Above Text
     try:
         logo = Image.open(LOGO_PATH).convert("RGBA").resize((90, 90))
         logo_x = (base.width - 90) // 2
@@ -159,3 +169,12 @@ async def get_thumb(videoid: str) -> str:
         bg.paste(logo, (logo_x, logo_y), logo)
     except:
         pass
+
+    # Remove downloaded thumbnail temp
+    try:
+        os.remove(thumb_path)
+    except:
+        pass
+
+    bg.save(cache_path)
+    return cache_path
