@@ -124,42 +124,38 @@ async def get_thumb(videoid: str) -> str:
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
 
-    # ------------------ CENTER WATERMARK (TEXT + LOGO) ------------------
-    watermark_text = "Made By. @HeartBeat_Offi"
+        # ------------------ CENTER WATERMARK (TEXT + LOGO) ------------------
+    watermark_text = u"Made By @HeartBeat_Offi"  # UTF-8 safe text
+
     try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 38)
+        font_path = "VIPMUSIC/assets/Sprintura_Demo.otf"  # rename with underscore (avoid spaces)
+        watermark_font = ImageFont.truetype(font_path, 42)
     except:
         watermark_font = ImageFont.load_default()
 
+    # Compute text position
     text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
     x = (base.width - text_w) // 2
-    y = base.height - text_h - 45
+    y = base.height - text_h - 50
 
+    # Brightness-based color switching
     sample = bg.crop((x, y, x + text_w, y + text_h)).convert("L")
     brightness = sum(sample.getdata()) / (text_w * text_h)
 
     main_color = "white" if brightness < 128 else "black"
     glow_color = "black" if brightness < 128 else "white"
 
-    for dx, dy in [(-2, -2), (2, -2), (-2, 2), (2, 2)]:
+    # Glow Effect
+    for dx, dy in [(-3, -3), (3, -3), (-3, 3), (3, 3)]:
         draw.text((x + dx, y + dy), watermark_text, font=watermark_font, fill=glow_color)
 
     draw.text((x, y), watermark_text, font=watermark_font, fill=main_color)
 
-    # Logo centered above text
+    # Center Logo Above Text
     try:
-        logo = Image.open(LOGO_PATH).convert("RGBA").resize((80, 80))
-        logo_x = (base.width - 80) // 2
-        logo_y = y - 85
+        logo = Image.open(LOGO_PATH).convert("RGBA").resize((90, 90))
+        logo_x = (base.width - 90) // 2
+        logo_y = y - 95
         bg.paste(logo, (logo_x, logo_y), logo)
     except:
         pass
-
-    # Cleanup and save
-    try:
-        os.remove(thumb_path)
-    except:
-        pass
-
-    bg.save(cache_path)
-    return cache_path
