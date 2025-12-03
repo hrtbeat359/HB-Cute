@@ -53,7 +53,6 @@ async def get_thumb(videoid: str) -> str:
     if os.path.exists(cache_path):
         return cache_path
 
-    # YouTube video data fetch
     results = VideosSearch(f"https://www.youtube.com/watch?v={videoid}", limit=1)
     try:
         results_data = await results.next()
@@ -68,7 +67,6 @@ async def get_thumb(videoid: str) -> str:
     is_live = not duration or str(duration).strip().lower() in {"", "live", "live now"}
     duration_text = "Live" if is_live else duration or "Unknown Mins"
 
-    # Download thumbnail
     thumb_path = os.path.join(CACHE_DIR, f"thumb{videoid}.png")
     try:
         async with aiohttp.ClientSession() as session:
@@ -79,11 +77,9 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         return YOUTUBE_IMG_URL
 
-    # Create base image
     base = Image.open(thumb_path).resize((1280, 720)).convert("RGBA")
     bg = ImageEnhance.Brightness(base.filter(ImageFilter.BoxBlur(10))).enhance(0.6)
 
-    # Frosted glass panel
     panel_area = bg.crop((PANEL_X, PANEL_Y, PANEL_X + PANEL_W, PANEL_Y + PANEL_H))
     overlay = Image.new("RGBA", (PANEL_W, PANEL_H), (255, 255, 255, TRANSPARENCY))
     frosted = Image.alpha_composite(panel_area, overlay)
@@ -104,11 +100,9 @@ async def get_thumb(videoid: str) -> str:
     ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255)
     bg.paste(thumb, (THUMB_X, THUMB_Y), tmask)
 
-    # Main text
     draw.text((TITLE_X, TITLE_Y), trim_to_width(title, title_font, MAX_TITLE_WIDTH), fill="black", font=title_font)
     draw.text((META_X, META_Y), f"YouTube | {views}", fill="black", font=regular_font)
 
-    # Progress bar
     draw.line([(BAR_X, BAR_Y), (BAR_X + BAR_RED_LEN, BAR_Y)], fill="red", width=6)
     draw.line([(BAR_X + BAR_RED_LEN, BAR_Y), (BAR_X + BAR_TOTAL_LEN, BAR_Y)], fill="gray", width=5)
     draw.ellipse([(BAR_X + BAR_RED_LEN - 7, BAR_Y - 7),
@@ -117,7 +111,6 @@ async def get_thumb(videoid: str) -> str:
     draw.text((BAR_X + BAR_TOTAL_LEN - 60, BAR_Y + 15),
               duration_text, fill="red" if is_live else "black", font=regular_font)
 
-    # Icons
     icons_path = "VIPMUSIC/assets/play_icons.png"
     if os.path.isfile(icons_path):
         ic = Image.open(icons_path).resize((ICONS_W, ICONS_H)).convert("RGBA")
@@ -125,14 +118,13 @@ async def get_thumb(videoid: str) -> str:
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
 
-        # -------- WATERMARK SEPARATE LAYER (OUTSIDE PANEL) ----------
+    # ---------------- WATERMARK FIX -----------------
     WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
     WATERMARK_TEXT = "Made By. @ HeartBeat_Offi"
     WATERMARK_FONT_PATH = "VIPMUSIC/assets/Sprintura_Demo.otf"
     WATERMARK_FONT_SIZE = 34
     WM_LOGO_SIZE = (60, 60)
 
-    # Separate layer to avoid affecting other fonts
     wm_layer = Image.new("RGBA", (1280, 720), (0, 0, 0, 0))
     wm_draw = ImageDraw.Draw(wm_layer)
 
@@ -141,11 +133,8 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         wm_font = ImageFont.load_default()
 
-    # Y-position outside panel bottom area
-    wm_y = PANEL_Y + PANEL_H + 30  # vertical placement
+    wm_y = int(PANEL_Y + PANEL_H + 30)
 
-    # Load logo
-    logo_w = logo_h = WM_LOGO_SIZE[0]
     wm_logo = None
     if os.path.isfile(WM_LOGO_PATH):
         try:
@@ -153,29 +142,23 @@ async def get_thumb(videoid: str) -> str:
         except Exception:
             wm_logo = None
 
-    # Text width calculation
-    try:
-        text_w = wm_font.getlength(WATERMARK_TEXT)
-    except Exception:
-        text_w = wm_draw.textlength(WATERMARK_TEXT, font=wm_font)
+    text_w = int(wm_font.getlength(WATERMARK_TEXT))
 
-    total_width = logo_w + 12 + text_w  # logo + space + text
-    start_x = (1280 - total_width) // 2
+    logo_w, logo_h = WM_LOGO_SIZE
+    total_width = int(logo_w + 12 + text_w)
+    start_x = int((1280 - total_width) // 2)
 
-    # Draw logo
     if wm_logo:
         wm_layer.alpha_composite(wm_logo, (start_x, wm_y))
 
-    # draw text to right of logo
-    text_x = start_x + logo_w + 12
-    text_y = wm_y + (logo_h - WATERMARK_FONT_SIZE) // 2
+    text_x = int(start_x + logo_w + 12)
+    text_y = int(wm_y + (logo_h - WATERMARK_FONT_SIZE) // 2)
 
     wm_draw.text((text_x + 2, text_y + 2), WATERMARK_TEXT, font=wm_font, fill="black")
     wm_draw.text((text_x, text_y), WATERMARK_TEXT, font=wm_font, fill="white")
 
-    # Merge layer
     bg = Image.alpha_composite(bg, wm_layer)
-    # -------- END WATERMARK ----------------
+    # ---------------- END WATERMARK -----------------
 
     try:
         os.remove(thumb_path)
