@@ -168,7 +168,7 @@ async def get_thumb(videoid: str) -> str:
 
     # Watermark text + logo
     try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 60)
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 30)
     except Exception:
         watermark_font = ImageFont.load_default()
 
