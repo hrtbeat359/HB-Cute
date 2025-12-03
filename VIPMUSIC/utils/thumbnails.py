@@ -35,6 +35,13 @@ ICONS_Y = BAR_Y + 48
 
 MAX_TITLE_WIDTH = 580
 
+# Watermark config (change paths/names if you want)
+WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"         # watermark logo file
+WATERMARK_TEXT = "Made By. @HeartBeat_Offi"       # watermark text
+WATERMARK_FONT_PATH = "VIPMUSIC/assets/font2.ttf" # preferred watermark font
+WATERMARK_FONT_SIZE = 34                          # font size for watermark text
+WM_LOGO_SIZE = (120, 120)
+
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     ellipsis = "…"
     if font.getlength(text) <= max_w:
