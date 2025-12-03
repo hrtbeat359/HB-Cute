@@ -128,13 +128,13 @@ async def get_thumb(videoid: str) -> str:
     # ------------------ CENTER WATERMARK (TEXT + LOGO) ------------------
     watermark_text = "Made By. @HeartBeat_Offi"
     try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 38)
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 38)
     except:
         watermark_font = ImageFont.load_default()
 
     text_w, text_h = draw.textsize(watermark_text, font=watermark_font)
     x = (base.width - text_w) // 2
-    y = base.height - text_h - 45
+    y = base.height - text_h - 25 #45 text watermark position 
 
     sample = bg.crop((x, y, x + text_w, y + text_h)).convert("L")
     brightness = sum(sample.getdata()) / (text_w * text_h)
@@ -151,7 +151,7 @@ async def get_thumb(videoid: str) -> str:
     try:
         logo = Image.open(LOGO_PATH).convert("RGBA").resize((80, 80))
         logo_x = (base.width - 80) // 2
-        logo_y = y - 85
+        logo_y = y - 70 #85 logo watermark position 
         bg.paste(logo, (logo_x, logo_y), logo)
     except:
         pass
