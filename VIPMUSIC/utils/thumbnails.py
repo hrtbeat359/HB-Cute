@@ -124,7 +124,7 @@ async def get_thumb(videoid: str) -> str:
         r, g, b, a = ic.split()
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
-
+"""
     # ------------------ CENTER WATERMARK (TEXT + LOGO) ------------------
     watermark_text = "Made By. @HeartBeat_Offi"
     try:
@@ -155,7 +155,7 @@ async def get_thumb(videoid: str) -> str:
         bg.paste(logo, (logo_x, logo_y), logo)
     except:
         pass
-
+"""
     # Cleanup and save
     try:
         os.remove(thumb_path)
