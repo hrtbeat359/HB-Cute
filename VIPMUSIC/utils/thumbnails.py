@@ -9,11 +9,9 @@ from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 from youtubesearchpython.__future__ import VideosSearch
 from config import YOUTUBE_IMG_URL
 
-# Constants
 CACHE_DIR = "cache"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
-THUMP_LOGO = "https://files.catbox.moe/fowgxf.jpg"
 LOGO_PATH = "VIPMUSIC/assets/thumb.png"
 
 PANEL_W, PANEL_H = 763, 545
@@ -42,7 +40,7 @@ ICONS_Y = BAR_Y + 50
 MAX_TITLE_WIDTH = 600
 
 
-def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
+def trim_to_width(text, font, max_w):
     ellipsis = "…"
     try:
         if font.getlength(text) <= max_w:
@@ -50,14 +48,14 @@ def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     except:
         if font.getsize(text)[0] <= max_w:
             return text
-
     for i in range(len(text) - 1, 0, -1):
+        chunk = text[:i] + ellipsis
         try:
-            if font.getlength(text[:i] + ellipsis) <= max_w:
-                return text[:i] + ellipsis
+            if font.getlength(chunk) <= max_w:
+                return chunk
         except:
-            if font.getsize(text[:i] + ellipsis)[0] <= max_w:
-                return text[:i] + ellipsis
+            if font.getsize(chunk)[0] <= max_w:
+                return chunk
     return ellipsis
 
 
@@ -71,12 +69,14 @@ async def get_thumb(videoid: str) -> str:
         results_data = await results.next()
         items = results_data.get("result", [])
         data = items[0]
-        title = re.sub(r"\W+", " ", data.get("title", "Unsupported Title")).title()
+
+        # FIX: preserve all Unicode characters safely
+        title = str(data.get("title", "Unsupported Title"))
         thumbnail = data.get("thumbnails", [{}])[0].get("url", YOUTUBE_IMG_URL)
         duration = data.get("duration")
         views = data.get("viewCount", {}).get("short", "Unknown Views")
     except:
-        title, thumbnail, duration, views = ("Unsupported Title", YOUTUBE_IMG_URL, None, "Unknown Views")
+        title, thumbnail, duration, views = "Unsupported Title", YOUTUBE_IMG_URL, None, "Unknown Views"
 
     is_live = not duration or str(duration).lower() in {"", "live", "live now"}
     duration_text = "Live" if is_live else duration or "Unknown"
@@ -88,12 +88,7 @@ async def get_thumb(videoid: str) -> str:
                 if resp.status == 200:
                     async with aiofiles.open(thumb_path, "wb") as f:
                         await f.write(await resp.read())
-                else:
-                    thumb_path = None
     except:
-        thumb_path = None
-
-    if not thumb_path or not os.path.exists(thumb_path):
         return YOUTUBE_IMG_URL
 
     base = Image.open(thumb_path).resize((1280, 720)).convert("RGBA")
@@ -102,20 +97,21 @@ async def get_thumb(videoid: str) -> str:
     panel = bg.crop((PANEL_X, PANEL_Y, PANEL_X + PANEL_W, PANEL_Y + PANEL_H))
     overlay = Image.new("RGBA", (PANEL_W, PANEL_H), (255, 255, 255, TRANSPARENCY))
     frosted = Image.alpha_composite(panel, overlay)
+
     mask = Image.new("L", (PANEL_W, PANEL_H), 0)
     ImageDraw.Draw(mask).rounded_rectangle((0, 0, PANEL_W, PANEL_H), 50, fill=255)
     bg.paste(frosted, (PANEL_X, PANEL_Y), mask)
 
     draw = ImageDraw.Draw(bg)
 
-    # ---- Updated Font Sizes (from reference) ----
+    # Increased Sizes
     try:
-        title_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 42)  # was 32
-        regular_font = ImageFont.truetype("VIPMUSIC/assets/font.ttf", 28)  # was 18
+        title_font = ImageFont.truetype("VIPMUSIC/assets/font2.ttf", 42)
+        regular_font = ImageFont.truetype("VIPMUSIC/assets/font.ttf", 28)
     except:
         title_font = regular_font = ImageFont.load_default()
 
-    # Rounded thumbnail preview
+    # Thumbnail rounded
     thumb = base.resize((THUMB_W, THUMB_H)).convert("RGBA")
     tmask = Image.new("L", (THUMB_W, THUMB_H), 0)
     ImageDraw.Draw(tmask).rounded_rectangle((0, 0, THUMB_W, THUMB_H), 20, fill=255)
@@ -131,7 +127,6 @@ async def get_thumb(videoid: str) -> str:
     draw.text((BAR_X, BAR_Y + 18), "00:00", fill="black", font=regular_font)
     draw.text((BAR_X + BAR_TOTAL_LEN - 80, BAR_Y + 18), duration_text, fill="black", font=regular_font)
 
-    # Icons
     try:
         icons = Image.open("VIPMUSIC/assets/play_icons.png").resize((ICONS_W, ICONS_H)).convert("RGBA")
         r, g, b, a = icons.split()
@@ -140,12 +135,10 @@ async def get_thumb(videoid: str) -> str:
     except:
         pass
 
-    # Watermark section unchanged...
-
     try:
         os.remove(thumb_path)
     except:
         pass
 
-    bg.save(cache_path)
+    bg.save(cache_path, format="PNG")
     return cache_path
