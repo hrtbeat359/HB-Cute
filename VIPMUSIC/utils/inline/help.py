@@ -80,11 +80,11 @@ def games_panel1(_):
             InlineKeyboardButton(text=_["GAME_10"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb29uc2hvdCJ9fQ")),
         ],
         #[
-         #   InlineKeyboardButton(text=_["H_B_27"], callback_data="help_callback hb27"),
+        #    InlineKeyboardButton(text=_["H_B_27"], callback_data="help_callback hb27"),
         #],
         [
-            #InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
-            #InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p2"),
+            InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
+            InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p2"),
         ],
     ]
     return InlineKeyboardMarkup(buttons)
