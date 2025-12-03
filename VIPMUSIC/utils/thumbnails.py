@@ -147,7 +147,7 @@ async def get_thumb(videoid: str) -> str:
     # ----- CENTER WATERMARK -----
     watermark_text = "Made By. @HeartBeat_Offi"
     try:
-        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 38)
+        watermark_font = ImageFont.truetype("VIPMUSIC/assets/Sprintura Demo.otf", 20)
     except:
         watermark_font = ImageFont.load_default()
 
