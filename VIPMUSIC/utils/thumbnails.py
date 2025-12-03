@@ -37,13 +37,6 @@ ICONS_Y = BAR_Y + 48
 
 MAX_TITLE_WIDTH = 580
 
-# Watermark config
-WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
-WATERMARK_TEXT = "Made By. @ HeartBeat_Offi"
-WATERMARK_FONT_PATH = "VIPMUSIC/assets/Sprintura_Demo.otf"
-WATERMARK_FONT_SIZE = 22
-WM_LOGO_SIZE = (60, 60)
-
 
 def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     ellipsis = "…"
@@ -133,7 +126,13 @@ async def get_thumb(videoid: str) -> str:
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
 
         # -------- WATERMARK SEPARATE LAYER (OUTSIDE PANEL) ----------
-    # Independent layer to avoid affecting panel fonts
+    WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
+    WATERMARK_TEXT = "Made By. @ HeartBeat_Offi"
+    WATERMARK_FONT_PATH = "VIPMUSIC/assets/Sprintura_Demo.otf"
+    WATERMARK_FONT_SIZE = 34
+    WM_LOGO_SIZE = (60, 60)
+
+    # Separate layer to avoid affecting other fonts
     wm_layer = Image.new("RGBA", (1280, 720), (0, 0, 0, 0))
     wm_draw = ImageDraw.Draw(wm_layer)
 
@@ -142,33 +141,39 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         wm_font = ImageFont.load_default()
 
-    # Position watermark below panel
-    wm_logo_y = PANEL_Y + PANEL_H + 20
-    wm_text_y = wm_logo_y + WM_LOGO_SIZE[1] + 6
+    # Y-position outside panel bottom area
+    wm_y = PANEL_Y + PANEL_H + 30  # vertical placement
 
-    # Paste logo centered
+    # Load logo
+    logo_w = logo_h = WM_LOGO_SIZE[0]
+    wm_logo = None
     if os.path.isfile(WM_LOGO_PATH):
         try:
-            wm_logo = Image.open(WM_LOGO_PATH).convert("RGBA")
-            wm_logo = wm_logo.resize(WM_LOGO_SIZE, Image.LANCZOS)
-            wm_logo_x = (1280 - wm_logo.width) // 2
-            wm_layer.alpha_composite(wm_logo, (wm_logo_x, wm_logo_y))
+            wm_logo = Image.open(WM_LOGO_PATH).convert("RGBA").resize(WM_LOGO_SIZE, Image.LANCZOS)
         except Exception:
-            pass
+            wm_logo = None
 
-    # Text width calc
+    # Text width calculation
     try:
         text_w = wm_font.getlength(WATERMARK_TEXT)
     except Exception:
         text_w = wm_draw.textlength(WATERMARK_TEXT, font=wm_font)
 
-    wm_text_x = (1280 - text_w) // 2
+    total_width = logo_w + 12 + text_w  # logo + space + text
+    start_x = (1280 - total_width) // 2
 
-    # Shadow + main text
-    wm_draw.text((wm_text_x + 2, wm_text_y + 2), WATERMARK_TEXT, font=wm_font, fill="black")
-    wm_draw.text((wm_text_x, wm_text_y), WATERMARK_TEXT, font=wm_font, fill="white")
+    # Draw logo
+    if wm_logo:
+        wm_layer.alpha_composite(wm_logo, (start_x, wm_y))
 
-    # Merge watermark layer without affecting panel text
+    # draw text to right of logo
+    text_x = start_x + logo_w + 12
+    text_y = wm_y + (logo_h - WATERMARK_FONT_SIZE) // 2
+
+    wm_draw.text((text_x + 2, text_y + 2), WATERMARK_TEXT, font=wm_font, fill="black")
+    wm_draw.text((text_x, text_y), WATERMARK_TEXT, font=wm_font, fill="white")
+
+    # Merge layer
     bg = Image.alpha_composite(bg, wm_layer)
     # -------- END WATERMARK ----------------
 
