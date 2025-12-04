@@ -118,12 +118,10 @@ async def get_thumb(videoid: str) -> str:
         black_ic = Image.merge("RGBA", (r.point(lambda *_: 0), g.point(lambda *_: 0), b.point(lambda *_: 0), a))
         bg.paste(black_ic, (ICONS_X, ICONS_Y), black_ic)
 
-    # ---------------- WATERMARK FIX -----------------
-    WM_LOGO_PATH = "VIPMUSIC/assets/thumb.png"
+    # -------- WATERMARK TEXT ONLY --------------
     WATERMARK_TEXT = "Made By. @ HeartBeat_Offi"
     WATERMARK_FONT_PATH = "VIPMUSIC/assets/Sprintura_Demo.otf"
     WATERMARK_FONT_SIZE = 34
-    WM_LOGO_SIZE = (60, 60)
 
     wm_layer = Image.new("RGBA", (1280, 720), (0, 0, 0, 0))
     wm_draw = ImageDraw.Draw(wm_layer)
@@ -135,30 +133,14 @@ async def get_thumb(videoid: str) -> str:
 
     wm_y = int(PANEL_Y + PANEL_H + 30)
 
-    wm_logo = None
-    if os.path.isfile(WM_LOGO_PATH):
-        try:
-            wm_logo = Image.open(WM_LOGO_PATH).convert("RGBA").resize(WM_LOGO_SIZE, Image.LANCZOS)
-        except Exception:
-            wm_logo = None
-
     text_w = int(wm_font.getlength(WATERMARK_TEXT))
+    start_x = int((1280 - text_w) // 2)
 
-    logo_w, logo_h = WM_LOGO_SIZE
-    total_width = int(logo_w + 12 + text_w)
-    start_x = int((1280 - total_width) // 2)
-
-    if wm_logo:
-        wm_layer.alpha_composite(wm_logo, (start_x, wm_y))
-
-    text_x = int(start_x + logo_w + 12)
-    text_y = int(wm_y + (logo_h - WATERMARK_FONT_SIZE) // 2)
-
-    wm_draw.text((text_x + 2, text_y + 2), WATERMARK_TEXT, font=wm_font, fill="black")
-    wm_draw.text((text_x, text_y), WATERMARK_TEXT, font=wm_font, fill="white")
+    wm_draw.text((start_x + 2, wm_y + 2), WATERMARK_TEXT, font=wm_font, fill="black")
+    wm_draw.text((start_x, wm_y), WATERMARK_TEXT, font=wm_font, fill="white")
 
     bg = Image.alpha_composite(bg, wm_layer)
-    # ---------------- END WATERMARK -----------------
+    # -------- END WATERMARK -----------------
 
     try:
         os.remove(thumb_path)
