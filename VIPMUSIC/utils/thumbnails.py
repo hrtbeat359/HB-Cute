@@ -209,8 +209,7 @@ try:
     if os.path.isfile(THUMP_LOGO):
         # Local file
         logo_img = Image.open(THUMP_LOGO).convert("RGBA")
-    else:
-        # URL download
+    else: #URL Download
         async with aiohttp.ClientSession() as session:
             async with session.get(THUMP_LOGO) as resp:
                 if resp.status == 200:
