@@ -19,7 +19,7 @@ def first_page(_):
             InlineKeyboardButton(text=_["CMD_REACT"], callback_data="help_cat reaction"),
         ],
         [
-            InlineKeyboardButton(text=_["H_B_11"], callback_data="help_cat mention"),
+            InlineKeyboardButton(text=_["CMD_MENTION"], callback_data="help_cat mention"),
         ],
         #[
          #   InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
@@ -62,10 +62,7 @@ def music_panel(_):
 def games_panel1(_):
     buttons = [
         [
-            InlineKeyboardButton(
-                text=_["GAME_1"],
-                web_app=WebAppInfo(url="https://ultrashort.info/gkR6Ci") #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")
-            ),
+            InlineKeyboardButton(text=_["GAME_1"], web_app=WebAppInfo(url="https://ultrashort.info/gkR6Ci")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0
             #InlineKeyboardButton(text=_["GAME_2"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19")),
             #InlineKeyboardButton(text=_["GAME_3"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYXJzUm92ZXIifX0")),
         ],
