@@ -178,8 +178,9 @@ async def get_thumb(videoid: str) -> str:
     except Exception:
         text_w, text_h = watermark_font.getsize(watermark_text)
 
-    x = bg.width - text_w - 150 # default 40
-    y = bg.height - text_h - 140 #default 30
+    # Bottom center outside panel
+    x = (bg.width // 2) - (text_w // 2)
+    y = PANEL_Y + PANEL_H + 25  # 25px below panel
 
     # sample brightness under watermark area
     try:
@@ -209,7 +210,7 @@ async def get_thumb(videoid: str) -> str:
                     data = await resp.read()
                     logo_img = Image.open(BytesIO(data)).convert("RGBA")
                     logo_img = logo_img.resize((60, 60))
-                    bg.paste(logo_img, (x - 75, y - 10), logo_img)
+                    bg.paste(logo_img, (x - 80, y - 20), logo_img)  # center-left of text
     except Exception:
         pass
 
