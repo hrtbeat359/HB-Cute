@@ -176,38 +176,36 @@ async def help_category_cb(client, CallbackQuery, _):
 
     if cat == "games":
         keyboard = games_panel1(_)
+        
         try:
             await CallbackQuery.answer()
         except:
             pass
             
         try:
-            await CallbackQuery.message.edit_reply_markup(reply_markup=keyboard)
-            print("GAMES CALLBACK: edit_reply_markup succeeded")
-            return
-        except Exception as e:
-            print("GAMES: edit_reply_markup failed:", repr(e))
-            
-        try:
             await CallbackQuery.message.edit_text(
                 "🎮 Games Menu",
                 reply_markup=keyboard
             )
-            print("GAMES CALLBACK: edit_text (short) succeeded")
             return
         except Exception as e:
-            print("GAMES: edit_text (short) failed:", repr(e))
+            print("GAMES: edit_text failed:", repr(e))
+            
+        try:
+            await CallbackQuery.message.edit_reply_markup(keyboard)
+            return
+        except Exception as e:
+            print("GAMES: edit_reply_markup failed:", repr(e))
             
         try:
             await CallbackQuery.message.reply(
                 "🎮 Games Menu",
                 reply_markup=keyboard
             )
-            print("GAMES CALLBACK: reply fallback succeeded")
             return
         except Exception as e:
             print("GAMES: reply fallback failed:", repr(e))
-            
+        
         await CallbackQuery.answer("Unable to open Games panel (internal error).", show_alert=True)
         return
 
