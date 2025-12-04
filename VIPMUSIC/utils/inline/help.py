@@ -62,7 +62,7 @@ def music_panel(_):
 def games_panel1(_):
     buttons = [
         [
-            InlineKeyboardButton(text=_["GAME_1"], web_app=WebAppInfo(url="https://www.google.com/"), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),  
+            InlineKeyboardButton(text=_["GAME_1"], web_app=WebAppInfo(url="https://www.google.com/")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),  
         ],
         """
             InlineKeyboardButton(text=_["GAME_2"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19")),
