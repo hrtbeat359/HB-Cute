@@ -93,25 +93,25 @@ def games_panel1(_):
 def games_panel2(_):
     buttons = [
         [
-            InlineKeyboardButton(text=_["GAME_11"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSdW4ifX0")),
-            InlineKeyboardButton(text=_["GANE-12"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCcmlja1N0YWNrZXIifX0")),
-            InlineKeyboardButton(text=_["GAME_13"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJJbnRvVGhlTW9jYXZlcnNlIn19")),
+            InlineKeyboardButton(text=_["GAME_11"], web_app=WebAppInfo(url="https://ultrashort.info/K3cP4N")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSdW4ifX0
+            InlineKeyboardButton(text=_["GANE-12"], web_app=WebAppInfo(url="https://ultrashort.info/9iS2ot")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCcmlja1N0YWNrZXIifX0
+            InlineKeyboardButton(text=_["GAME_13"], web_app=WebAppInfo(url="https://ultrashort.info/NVMWSU")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJJbnRvVGhlTW9jYXZlcnNlIn19
         ],
         [
-            InlineKeyboardButton(text=_["GAME_14"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uQmxhc3QyIn19")),
-            InlineKeyboardButton(text=_["GAME_15"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCcmF0elBvcCJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_16"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJIb29rZWQyMDQ4In19")),
+            InlineKeyboardButton(text=_["GAME_14"], web_app=WebAppInfo(url="https://ultrashort.info/zbL7Ee")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uQmxhc3QyIn19
+            InlineKeyboardButton(text=_["GAME_15"], web_app=WebAppInfo(url="https://ultrashort.info/ZxPIFE")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCcmF0elBvcCJ9fQ
+            InlineKeyboardButton(text=_["GAME_16"], web_app=WebAppInfo(url="https://ultrashort.info/qbSQ7L")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJIb29rZWQyMDQ4In19
         ],
         [
-            InlineKeyboardButton(text=_["GAME_17"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSaWRlT3JEaWUifX0")),
-            InlineKeyboardButton(text=_["GAME_18"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCYXNrZXRCb3lSdXNoIn19")),
+            InlineKeyboardButton(text=_["GAME_17"], web_app=WebAppInfo(url="https://ultrashort.info/1TFVOO")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSaWRlT3JEaWUifX0
+            InlineKeyboardButton(text=_["GAME_18"], web_app=WebAppInfo(url="https://ultrashort.info/CvIbGW")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCYXNrZXRCb3lSdXNoIn19
         ],
         [
-            InlineKeyboardButton(text=_["GAME_19"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJKdW1wdHViZXIxIn19")),
-            InlineKeyboardButton(text=_["GAME_20"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTcGlreUZpc2gzIn19")),
+            InlineKeyboardButton(text=_["GAME_19"], web_app=WebAppInfo(url="https://ultrashort.info/z5T0hl")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJKdW1wdHViZXIxIn19
+            InlineKeyboardButton(text=_["GAME_20"], web_app=WebAppInfo(url="https://ultrashort.info/wXu7P9")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTcGlreUZpc2gzIn19
         ],
         [
-            InlineKeyboardButton(text=_["GAME_21"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBdG9taWNEcm9wMSJ9fQ")),
+            InlineKeyboardButton(text=_["GAME_21"], web_app=WebAppInfo(url="https://ultrashort.info/o8d7m4")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBdG9taWNEcm9wMSJ9fQ
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p1"),
@@ -125,25 +125,25 @@ def games_panel2(_):
 def games_panel3(_):
     buttons = [
         [
-            InlineKeyboardButton(text=_["GAME_22"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQZW5hbHR5U2hvb3RlcjIifX0")),
-            InlineKeyboardButton(text=_["GAME_23"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdW5zaGluZVNvbGl0YWlyZSJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_24"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSZWRBbmRCbHVlIn19")),
+            InlineKeyboardButton(text=_["GAME_22"], web_app=WebAppInfo(url="https://ultrashort.info/VqWr4i")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQZW5hbHR5U2hvb3RlcjIifX0
+            InlineKeyboardButton(text=_["GAME_23"], web_app=WebAppInfo(url="https://ultrashort.info/cUUfD8")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdW5zaGluZVNvbGl0YWlyZSJ9fQ
+            InlineKeyboardButton(text=_["GAME_24"], web_app=WebAppInfo(url="https://ultrashort.info/5UF1ky")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSZWRBbmRCbHVlIn19
         ],
         [
-            InlineKeyboardButton(text=_["GAME_25"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSb2xsZXJEaXNjbyJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_26"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJvbmV0d290aHJlZSJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_27"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcm9vdnlTa2kifX0")),
+            InlineKeyboardButton(text=_["GAME_25"], web_app=WebAppInfo(url="https://ultrashort.info/SL3s2o")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJSb2xsZXJEaXNjbyJ9fQ
+            InlineKeyboardButton(text=_["GAME_26"], web_app=WebAppInfo(url="https://ultrashort.info/MSOvrx")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJvbmV0d290aHJlZSJ9fQ
+            InlineKeyboardButton(text=_["GAME_27"], web_app=WebAppInfo(url="https://ultrashort.info/mlcO59")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcm9vdnlTa2kifX0
         ],
         [
-            InlineKeyboardButton(text=_["GAME_28"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYXJibGVEYXNoIn19")),
-            InlineKeyboardButton(text=_["GAME_29"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTd2l0Y2gxIn19")),
+            InlineKeyboardButton(text=_["GAME_28"], web_app=WebAppInfo(url="https://ultrashort.info/Q5mfgi")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYXJibGVEYXNoIn19
+            InlineKeyboardButton(text=_["GAME_29"], web_app=WebAppInfo(url="https://ultrashort.info/tK6bF9")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTd2l0Y2gxIn19
         ],
         [
-            InlineKeyboardButton(text=_["GAME_30"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJDb2xvb3JIaXQifX0")),
-            InlineKeyboardButton(text=_["GAME_31"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJUZW50c0FuZFRyZWVzIn19")),
+            InlineKeyboardButton(text=_["GAME_30"], web_app=WebAppInfo(url="https://ultrashort.info/HJZmt1")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJDb2xvb3JIaXQifX0
+            InlineKeyboardButton(text=_["GAME_31"], web_app=WebAppInfo(url="https://ultrashort.info/qu3Xjd")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJUZW50c0FuZFRyZWVzIn19
         ],
         [
-            InlineKeyboardButton(text=_["GAME_32"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uUmFjZXIifX0")),
+            InlineKeyboardButton(text=_["GAME_32"], web_app=WebAppInfo(url="https://ultrashort.info/ISf9PD")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uUmFjZXIifX0
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p2"),
@@ -156,25 +156,25 @@ def games_panel3(_):
 def games_panel4(_):
     buttons = [
         [
-            InlineKeyboardButton(text=_["GAME_33"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTYW11cmFpSG9sZGVtIn19")),
-            InlineKeyboardButton(text=_["GAME_34"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYW5DaXR5U3RyaWtlcjNEIn19")),
-            InlineKeyboardButton(text=_["GAME_35"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTbWFydFVwU2hhcmsifX0")),
+            InlineKeyboardButton(text=_["GAME_33"], web_app=WebAppInfo(url="https://ultrashort.info/xJSEBZ")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTYW11cmFpSG9sZGVtIn19
+            InlineKeyboardButton(text=_["GAME_34"], web_app=WebAppInfo(url="https://ultrashort.info/Xv8xLQ")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYW5DaXR5U3RyaWtlcjNEIn19
+            InlineKeyboardButton(text=_["GAME_35"], web_app=WebAppInfo(url="https://ultrashort.info/zgG9Cz")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTbWFydFVwU2hhcmsifX0
         ],
         [
-            InlineKeyboardButton(text=_["GAME_36"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJGMVJhY2VyIn19")),
-            InlineKeyboardButton(text=_["GAME_37"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdXBlcmJ1Z3oifX0")),
-            InlineKeyboardButton(text=_["GAME_38"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLZWVwSXRVcCJ9fQ")),
+            InlineKeyboardButton(text=_["GAME_36"], web_app=WebAppInfo(url="https://ultrashort.info/uEVnVD")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJGMVJhY2VyIn19
+            InlineKeyboardButton(text=_["GAME_37"], web_app=WebAppInfo(url="https://ultrashort.info/z7SnZT")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdXBlcmJ1Z3oifX0
+            InlineKeyboardButton(text=_["GAME_38"], web_app=WebAppInfo(url="https://ultrashort.info/YbjaHn")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLZWVwSXRVcCJ9fQ
         ],
         [
-            InlineKeyboardButton(text=_["GAME_39"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLaW5nZG9tc09mMjA0OCJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_40"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHbG9ib1J1biJ9fQ")),
+            InlineKeyboardButton(text=_["GAME_39"], web_app=WebAppInfo(url="https://ultrashort.info/CWatkc")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLaW5nZG9tc09mMjA0OCJ9fQ
+            InlineKeyboardButton(text=_["GAME_40"], web_app=WebAppInfo(url="https://ultrashort.info/2Sn9J1")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHbG9ib1J1biJ9fQ
         ],
         [
-            InlineKeyboardButton(text=_["GAME_41"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBc3Ryb2NhdCJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_42"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTcGFjZU9yYml0In19")),
+            InlineKeyboardButton(text=_["GAME_41"], web_app=WebAppInfo(url="https://ultrashort.info/GqgTKg")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJBc3Ryb2NhdCJ9fQ
+            InlineKeyboardButton(text=_["GAME_42"], web_app=WebAppInfo(url="https://ultrashort.info/U4n7cR")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTcGFjZU9yYml0In19
         ],
         [
-            InlineKeyboardButton(text=_["GAME_43"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb3RvRngifX0")),
+            InlineKeyboardButton(text=_["GAME_43"], web_app=WebAppInfo(url="https://ultrashort.info/zDemd8")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb3RvRngifX0
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="games_p3"),
@@ -188,17 +188,17 @@ def games_panel4(_):
 def games_panel5(_):
     buttons = [
         [
-            InlineKeyboardButton(text=_["GAME_44"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uQmxhc3RlciJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_45"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJUYW1hY2hpSnVtcCJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_46"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJXaXphcmRzMjEifX0")),
+            InlineKeyboardButton(text=_["GAME_44"], web_app=WebAppInfo(url="https://ultrashort.info/ivhBMA")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJOZW9uQmxhc3RlciJ9fQ
+            InlineKeyboardButton(text=_["GAME_45"], web_app=WebAppInfo(url="https://ultrashort.info/LJ2kSZ")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJUYW1hY2hpSnVtcCJ9fQ
+            InlineKeyboardButton(text=_["GAME_46"], web_app=WebAppInfo(url="https://ultrashort.info/4SHOGN")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJXaXphcmRzMjEifX0
         ],
         [
-            InlineKeyboardButton(text=_["GAME_47"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdWRva3VQdXp6bGUifX0")),
-            InlineKeyboardButton(text=_["GAME_48"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCbG9ja0JyZWFrZXIifX0")),
+            InlineKeyboardButton(text=_["GAME_47"], web_app=WebAppInfo(url="https://ultrashort.info/h9GT5e")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJTdWRva3VQdXp6bGUifX0
+            InlineKeyboardButton(text=_["GAME_48"], web_app=WebAppInfo(url="https://ultrashort.info/DN6bd4")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJCbG9ja0JyZWFrZXIifX0
         ],
         [
-            InlineKeyboardButton(text=_["GAME_49"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJIb29wU2hvdCJ9fQ")),
-            InlineKeyboardButton(text=_["GAME_50"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5TmluamEyMSJ9fQ")),
+            InlineKeyboardButton(text=_["GAME_49"], web_app=WebAppInfo(url="https://ultrashort.info/YbSe53")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJIb29wU2hvdCJ9fQ
+            InlineKeyboardButton(text=_["GAME_50"], web_app=WebAppInfo(url="https://ultrashort.info/Mh9b2H")), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJHcmF2aXR5TmluamEyMSJ9fQ
         ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
