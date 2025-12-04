@@ -12,7 +12,7 @@ from config import YOUTUBE_IMG_URL
 CACHE_DIR = "cache"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
-THUMP_LOGO = "https://files.catbox.moe/fowgxf.jpg"
+THUMP_LOGO = "VIPMUSIC/assets/thumb.png"
 
 PANEL_W, PANEL_H = 763, 545
 PANEL_X = (1280 - PANEL_W) // 2
