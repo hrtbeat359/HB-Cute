@@ -62,7 +62,8 @@ def music_panel(_):
 def games_panel1(_):
     buttons = [
         [
-            InlineKeyboardButton(text=_["GAME_1"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),
+            InlineKeyboardButton(text=_["GAME_1"], web_app=WebAppInfo(url="https://www.google.com/"), #https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJQaXhlbER1bmdlb24ifX0")),
+            """
             InlineKeyboardButton(text=_["GAME_2"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJLYXJhdGVLaWRvIn19")),
             InlineKeyboardButton(text=_["GAME_3"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNYXJzUm92ZXIifX0")),
         ],
@@ -79,9 +80,10 @@ def games_panel1(_):
             InlineKeyboardButton(text=_["GAME_9"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJRdWJlMjA0OCJ9fQ")),
             InlineKeyboardButton(text=_["GAME_10"], web_app=WebAppInfo(url="https://t.me/gamee/game?startapp=eyJnYW1lIjp7InNsdWciOiJNb29uc2hvdCJ9fQ")),
         ],
-        #[
-        #    InlineKeyboardButton(text=_["H_B_27"], callback_data="help_callback hb27"),
-        #],
+        """
+        [
+            InlineKeyboardButton(text=_["H_B_27"], callback_data="help_callback hb27"),
+        ],
         [
             InlineKeyboardButton(text=_["BACK_BUTTON"], callback_data="settings_back_helper"),
             InlineKeyboardButton(text=_["NEXT_BUTTON"], callback_data="games_p2"),
