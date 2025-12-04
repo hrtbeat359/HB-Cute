@@ -202,25 +202,36 @@ async def get_thumb(videoid: str) -> str:
 
     draw.text((x, y), watermark_text, font=watermark_font, fill=main_color)
 
-    # Download watermark logo and paste
-    # Watermark logo (local file or URL)
-try:
-    logo_img = None
-    if os.path.isfile(THUMP_LOGO):
-        # Local file
-        logo_img = Image.open(THUMP_LOGO).convert("RGBA")
-    else: #URL Download
-        async with aiohttp.ClientSession() as session:
-            async with session.get(THUMP_LOGO) as resp:
-                if resp.status == 200:
-                    data = await resp.read()
-                    logo_img = Image.open(BytesIO(data)).convert("RGBA")
+    # Download watermark logo and paste # Watermark logo (local file or URL)
+    try:
+        logo_img = None
+        if os.path.isfile(THUMP_LOGO):
+            # Local file
+            logo_img = Image.open(THUMP_LOGO).convert("RGBA")
+        else:  # URL Download
+            async with aiohttp.ClientSession() as session:
+                async with session.get(THUMP_LOGO) as resp:
+                    if resp.status == 200:
+                        data = await resp.read()
+                        logo_img = Image.open(BytesIO(data)).convert("RGBA")
 
-    if logo_img:
-        logo_img = logo_img.resize((60, 60))
-        bg.paste(logo_img, (x - 80, y - 20), logo_img)  # center-left
-except Exception as e:
-    print("WM logo paste err:", e)
+        if logo_img:
+            logo_img = logo_img.resize((60, 60))
+            bg.paste(logo_img, (x - 80, y - 20), logo_img)  # center-left
+
+    except Exception as e:
+        print("WM logo paste err:", e)
+
+    # Cleanup temp
+    try:
+        os.remove(thumb_path)
+    except Exception:
+        pass
+
+    # Save final
+    bg.save(cache_path)
+    return cache_path
+
 
     # Cleanup temp
     try:
